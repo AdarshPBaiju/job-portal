@@ -20,6 +20,6 @@ from core.views import home,about
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("",include("core.urls", namespace='core')),
-    path("user/",include("user.urls",namespace='user')),
+    path("",include("core.urls", namespace="core")),
+    path("user/",include("user.urls", namespace="user")),
 ]

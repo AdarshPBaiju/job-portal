@@ -16,12 +16,12 @@ class RedirectAuthenticatedUserMixin:
 
 
 
-class Login(RedirectAuthenticatedUserMixin,LoginView):
+class Login(RedirectAuthenticatedUserMixin, LoginView):
     template_name = 'user/login.html'
     success_url = reverse_lazy('core:home')
 
-class Register(RedirectAuthenticatedUserMixin,FormView):
-    form_class=UserRegistrationForm
+class Register(RedirectAuthenticatedUserMixin, FormView):
+    form_class = UserRegistrationForm
     success_url = reverse_lazy('user:login')
     template_name = 'user/register.html'
 
