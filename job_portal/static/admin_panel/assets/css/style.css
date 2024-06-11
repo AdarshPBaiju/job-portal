@@ -172,7 +172,7 @@ a:hover { text-decoration: none; }
                              list Style 1
 -----------------------------------------------------------------------*/
 .iq-list-style-1 { margin: 0; padding: 0; }
-.iq-list-style-1 li { display: inline-block; float: left; list-style-type: none; margin-right: 15px; }
+.iq-list-style-1 li { display: inline-block; float:left; list-style-type: none; margin-right: 15px; }
 .iq-list-style-1 li:last-child { margin-right: 0; }
 .iq-list-style-1 li a { color: var(--iq-icon-color); }
 .iq-list-style-1 li a i { color: var(--iq-icon-color); margin-right: 5px; }

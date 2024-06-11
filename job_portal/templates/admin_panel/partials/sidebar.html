@@ -29,8 +29,8 @@
             </li>
 
             <li class="iq-menu-title"><i class="ri-subtract-line"></i><span>Datas</span></li>
-            <li {% if request.path == '/admin-dashboard/users/' %}class="active"{% endif %}><a href="{% url "admin-d:userslist" %}" class="iq-waves-effect" aria-expanded="false"><i class="ri-chat-check-line"></i><span>Users</span></a></li>
-            <li {% if request.path == '/admin-dashboard/companies/' %}class="active"{% endif %}><a href="{% url "admin-d:companylist" %}" class="iq-waves-effect" aria-expanded="false"><i class="ri-chat-check-line"></i><span>Companies</span></a></li>
+            <li {% if request.path == '/admin-dashboard/users/' %}class="active"{% endif %}><a href="{% url "admin-d:userslist" %}" class="iq-waves-effect" aria-expanded="false"><i class="fa-solid fa-users"></i><span>Users</span></a></li>
+            <li {% if request.path == '/admin-dashboard/companies/' %}class="active"{% endif %}><a href="{% url "admin-d:companylist" %}" class="iq-waves-effect" aria-expanded="false"><i class="fa-regular fa-building"></i><span>Companies</span></a></li>
             <li>
                <a href="#userinfo" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="ri-user-line"></i><span>Subscriptions</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
                <ul id="userinfo" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
