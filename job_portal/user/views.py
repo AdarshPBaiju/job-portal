@@ -7,7 +7,6 @@ from django.shortcuts import redirect
 
 
 # Create your views here.
-
 class RedirectAuthenticatedUserMixin:
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -19,6 +18,9 @@ class RedirectAuthenticatedUserMixin:
 class Login(RedirectAuthenticatedUserMixin, LoginView):
     template_name = 'user/login.html'
     success_url = reverse_lazy('core:home')
+
+    def get_success_url(self):
+        return reverse_lazy('core:home')
 
 class Register(RedirectAuthenticatedUserMixin, FormView):
     form_class = UserRegistrationForm
