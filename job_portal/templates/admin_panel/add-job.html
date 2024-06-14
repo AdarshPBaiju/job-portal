@@ -37,6 +37,7 @@
                                </div>
                                <div class="form-group  col-md-6">
                                   <label for="exampleFormControlSelect2">SKill</label>
+                                  <input type="text" id="skillSearchInput" class="form-control" placeholder="Search skill...">
                                   <select multiple="" class="form-control" id="exampleFormControlSelect2">
                                      <option>Skill-1</option>
                                      <option>Skill-2</option>
@@ -88,4 +89,33 @@
        </div>
     </div>
  </div>
+ <script>
+   // Get the search input element
+   const searchInput = document.getElementById('skillSearchInput');
+   
+   // Get all options inside the select
+   const selectElement = document.getElementById('exampleFormControlSelect2');
+   const options = selectElement.getElementsByTagName('option');
+   
+   // Convert HTMLCollection to array for easier manipulation
+   const optionsArray = Array.from(options);
+   
+   // Add event listener for input changes
+   searchInput.addEventListener('input', function() {
+       const searchTerm = searchInput.value.toLowerCase();
+       
+       // Loop through each option and hide/show based on the search term
+       optionsArray.forEach(function(option) {
+           const text = option.textContent.toLowerCase();
+           
+           // Check if the option's text content contains the search term
+           if (text.includes(searchTerm)) {
+               option.style.display = 'block'; // Show the option
+           } else {
+               option.style.display = 'none'; // Hide the option
+           }
+       });
+   });
+</script>
+
 {% endblock content %}

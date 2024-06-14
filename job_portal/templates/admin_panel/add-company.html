@@ -13,7 +13,7 @@
                       </div>
                    </div>
                    <div class="iq-card-body">
-                      <form>
+                     <form method="post" enctype="multipart/form-data">
                          <div class="form-group">
                             <div class="add-img-user profile-img-edit">
                                <img class="profile-pic img-fluid" src="{% static 'admin_panel/assets/images/logo.png' %}" alt="profile-pic">
@@ -34,16 +34,16 @@
                          </div>
                          <div class="form-group">
                             <label>Company Sector:</label>
-                            <select class="form-control" id="selectuserrole">
-                               <option>Select</option>
-                               <option>IT Sector</option>
+                            <select class="form-control" name='country' id="selectuserrole" required>
+                               <option value="">Select</option>
+                               <option >IT Sector</option>
                                <option>Finance Sector</option>
                                <option>Business</option>
                             </select>
                          </div>
                          <div class="form-group">
                             <label for="furl">Facebook Url:</label>
-                            <input type="text" class="form-control" id="furl" placeholder="Facebook Url">
+                            <input type="text" class="form-control" id="furl" placeholder="Facebook Url" required>
                          </div>
                          <div class="form-group">
                             <label for="turl">Twitter Url:</label>
@@ -74,6 +74,10 @@
                                   <label for="fname">Company Name:</label>
                                   <input type="text" class="form-control" id="fname" placeholder="First Name">
                                </div>
+                               <div class="form-group col-md-12">
+                                 <label for="exampleFormControlTextarea1">Overview:</label>
+                                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
+                              </div>
                                <div class="form-group col-md-6">
                                  <label>Owner:</label>
                                  <select class="form-control" id="selectcountry">
@@ -113,7 +117,14 @@
                                   <label for="city">Town/City:</label>
                                   <input type="text" class="form-control" id="city" placeholder="Town/City">
                                </div>
+                               <div class="form-group col-md-12">
+                                  <label for="exampleFormControlTextarea1">Headquarters Location:</label>
+                                  <textarea class="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
+                               </div>
                             </div>
+                            <div class="checkbox">
+                              <label><input class="mr-2" type="checkbox" name="two_factor_auth">Active</label>
+                          </div>
                             <button type="submit" class="btn btn-primary">Add New User</button>
                          </form>
                       </div>
