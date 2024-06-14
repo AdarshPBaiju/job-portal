@@ -57,17 +57,3 @@ Variable
   --iq-light-border: #f2edff;  
   --iq-dark-border: #d7dbda;    
 }
-
-/* Dark Variable */
-:root { 
-  --iq-dark-title-text: #fff;
-  --iq-dark-body-text: #fff;
-  --iq-dark-body-bg :rgba(34,31,58,1);
-  --iq-dark-card-bg: rgba(36,36, 62,1);
-  --iq-dropdown-bg: #fff;
-  --iq-dropdown-border: #fff;
-  --iq-dark-hover-bg:rgba(41,42,72,1);
-  --iq-dark-icon-color:rgba(122,102,153,1);
-  --iq-dark-shadow-1:rgba(24,20,31,.1);
-  --iq-dark-shadow-2:rgba(24,20,31,.15)
-}

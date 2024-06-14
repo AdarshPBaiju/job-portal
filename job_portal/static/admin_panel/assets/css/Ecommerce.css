@@ -3,8 +3,7 @@
     margin-bottom: 6px;
     margin-right: 4px;
 }
-.algolia-search-filter{
-}
+
 .ais-SortBy-select{
     width: 100%;
 }
@@ -92,10 +91,7 @@ div#powered-by {
 .iq-product-layout-grid .iq-product-action{
     text-align: left;
 }
-.iq-product-layout-list .iq-product-action{
-    /*border-left: 1px solid #ddd;*/
-    /*text-align: right;*/
-}
+
 .iq-product-action .btn i {
     padding-right: 0;
 }

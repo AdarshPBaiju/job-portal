@@ -32,6 +32,11 @@
                   <ul class="navbar-nav ml-auto navbar-list">
                      
                      <li class="nav-item">
+                        <a href="/" target="_blank">
+                           <span><i class="fa-solid fa-eye"></i></span>
+                        </a>
+                     </li>
+                     <li class="nav-item">
                         <a href="javascript:void();" class="search-toggle iq-waves-effect">
                            <div id="lottie-beil"></div>
                            <span class="bg-danger dots"></span>
@@ -183,7 +188,7 @@
                                  <h5 class="mb-0 text-white line-height">Hello Nik jone</h5>
                                  <span class="text-white font-size-12">Admin</span>
                               </div>
-                              <a href="profile.html" class="iq-sub-card iq-bg-primary-hover">
+                              <a href="{% url "admin-d:profile" %}" class="iq-sub-card iq-bg-primary-hover">
                                  <div class="media align-items-center">
                                     <div class="rounded iq-card-icon iq-bg-primary">
                                        <i class="ri-file-user-line"></i>
@@ -194,7 +199,7 @@
                                     </div>
                                  </div>
                               </a>
-                              <a href="profile-edit.html" class="iq-sub-card iq-bg-primary-hover">
+                              <a href="{% url "admin-d:profile-edit" %}" class="iq-sub-card iq-bg-primary-hover">
                                  <div class="media align-items-center">
                                     <div class="rounded iq-card-icon iq-bg-primary">
                                        <i class="ri-profile-line"></i>
@@ -205,7 +210,7 @@
                                     </div>
                                  </div>
                               </a>
-                              <a href="account-setting.html" class="iq-sub-card iq-bg-primary-hover">
+                              {% comment %} <a href="account-setting.html" class="iq-sub-card iq-bg-primary-hover">
                                  <div class="media align-items-center">
                                     <div class="rounded iq-card-icon iq-bg-primary">
                                        <i class="ri-account-box-line"></i>
@@ -215,8 +220,8 @@
                                        <p class="mb-0 font-size-12">Manage your account parameters.</p>
                                     </div>
                                  </div>
-                              </a>
-                              <a href="privacy-setting.html" class="iq-sub-card iq-bg-primary-hover">
+                              </a> {% endcomment %}
+                              {% comment %} <a href="privacy-setting.html" class="iq-sub-card iq-bg-primary-hover">
                                  <div class="media align-items-center">
                                     <div class="rounded iq-card-icon iq-bg-primary">
                                        <i class="ri-lock-line"></i>
@@ -226,7 +231,7 @@
                                        <p class="mb-0 font-size-12">Control your privacy parameters.</p>
                                     </div>
                                  </div>
-                              </a>
+                              </a> {% endcomment %}
                               <div class="d-inline-block w-100 text-center p-3">
                                  <a class="btn btn-primary dark-btn-primary" href="sign-in.html" role="button">Sign out<i class="ri-login-box-line ml-2"></i></a>
                               </div>

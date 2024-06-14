@@ -1,6 +1,6 @@
 {% extends 'admin_panel/layout/base.html' %}
 {% load static %}
-{% block title %}User Detail{% endblock title %}
+{% block title %}Profile{% endblock title %}
 {% block content %}
 <div id="content-page" class="content-page">
    <div class="container-fluid">
@@ -12,7 +12,7 @@
                      <div class="cover-container">
                         <img style="width: 100%;" src="{% static 'admin_panel/assets/images/page-img/profile-bg.jpg' %}" alt="profile-bg" class="rounded img-fluid">
                         <ul class="header-nav d-flex flex-wrap justify-end p-0 m-0">
-                           <li><a href="{% url "admin-d:userupdate" %}"><i class="ri-pencil-line"></i></a></li>
+                           <li><a href="admin-d:userupdate"><i class="ri-pencil-line"></i></a></li>
                         </ul>
                      </div>
                      <div class="profile-info p-4">
