@@ -33,7 +33,7 @@
             <li {% if request.path == '/administrator/company/create/' %}class="active"{% endif %}><a href="{% url "admin-d:companycreate" %}" class="iq-waves-effect" aria-expanded="false"><i class="fa-solid fa-building-circle-arrow-right"></i><span>&nbsp;Add Company</span></a></li>
             <li class="iq-menu-title"><i class="ri-subtract-line"></i><span>&nbsp;Jobs</span></li>
             <li {% if request.path == '/administrator/job/' %}class="active"{% endif %}><a href="{% url "admin-d:job-list" %}" class="iq-waves-effect"><i class="fa-solid fa-briefcase"></i><span>&nbsp;Job List</span></a></li>
-            <li {% if request.path == '/administrator/job/create/' %}class="active"{% endif %}><a href="{% url "admin-d:job-create" %}" class="iq-waves-effect"><i class="fa-solid fa-briefcase"></i><span>&nbsp;Add Job</span></a></li>
+            <li {% if request.path == '/administrator/job/create/' %}class="active"{% endif %}><a href="{% url "admin-d:job-create" %}" class="iq-waves-effect"><i class="fa-solid fa-plus"></i><span>&nbsp;Add Job</span></a></li>
             <!-- <li>
                <a href="#userinfo" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="ri-user-line"></i><span>Subscriptions</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
                <ul id="userinfo" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">

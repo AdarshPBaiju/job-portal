@@ -33,7 +33,7 @@ class CompanyAddView(TemplateView):
     template_name = 'admin_panel/add-company.html'
 
 class CompanyUpdateView(TemplateView):
-    template_name = 'admin_panel/companieslist.html'
+    template_name = 'admin_panel/update-company.html'
 
 class CompanyDetailView(TemplateView):
     template_name = 'admin_panel/company-detail.html'

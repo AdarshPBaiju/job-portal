@@ -2,269 +2,168 @@
 {% load static %}
 {% block title %}User Detail{% endblock title %}
 {% block content %}
+<style>
+   .button-group {
+       text-align: right;
+       margin-top: 20px;
+   }
+   .button-group button {
+       margin-left: 10px;
+   }
+   .badge {
+       display: inline-block;
+       padding: 0.25em 0.4em;
+       font-size: 95%;
+       font-weight: 700;
+       line-height: 1;
+       text-align: center;
+       white-space: nowrap;
+       vertical-align: baseline;
+       border-radius: 0.25rem;
+       margin-right: 5px;
+       margin-top: 5px;
+   }
+   .badge-primary {
+       color: #fff;
+       background-color: #007bff;
+   }
+   .container-fluid {
+       margin-top: 20px;
+   }
+</style>
 <div id="content-page" class="content-page">
-   <div class="container-fluid">
-      <div class="row">
-         <div class="col-sm-12">
-            <div class="iq-card">
-               <div class="iq-card-body profile-page p-0">
-                  <div class="profile-header">
-                     <div class="cover-container">
-                        <img style="width: 100%;" src="{% static 'admin_panel/assets/images/page-img/profile-bg.jpg' %}" alt="profile-bg" class="rounded img-fluid">
-                        <ul class="header-nav d-flex flex-wrap justify-end p-0 m-0">
-                           <li><a href="{% url "admin-d:userupdate" %}"><i class="ri-pencil-line"></i></a></li>
-                        </ul>
-                     </div>
-                     <div class="profile-info p-4">
-                        <div class="row">
-                           <div class="col-sm-12 col-md-6">
-                              <div class="user-detail pl-5">
-                                 <div class="d-flex flex-wrap align-items-center">
-                                    <div class="profile-img pr-4">
-                                       <img src="{% static 'admin_panel/assets/images/user/11.png' %}" alt="profile-img" class="avatar-130 img-fluid" />
-                                    </div>
-                                    <div class="profile-detail d-flex align-items-center">
-                                       <h3>Nik Jone</h3>
-                                       <p class="m-0 pl-3"> - Web designer</p>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                           <div class="col-sm-12 col-md-6">
-                              <ul class="nav nav-pills d-flex align-items-end float-right profile-feed-items p-0 m-0">
-                                 <li>
-                                    <a class="nav-link active" href="javascript:void()">Resume</a>
-                                 </li>
-                              </ul>
-                           </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="iq-card">
+                    <div class="iq-card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                            <h4 class="card-title">User Details</h4>
                         </div>
-                     </div>
-                  </div>
-               </div>
+                    </div>
+                    <div class="iq-card-body">
+                        <div class="profile-img mt-1">
+                            <img class="profile-pic img-fluid" src="{% static 'admin_panel/assets/images/user/11.png' %}" alt="profile-pic">
+                        </div>
+                        <div class="user-role mt-3">
+                            <h3>John Doe</h3>
+                            <p>Web Developer</p>
+                        </div>
+                        <div class="social-links mt-3">
+                            <h6>Social Links:</h6>
+                            <p>Facebook:<br><a href="https://facebook.com/user">https://facebook.com/user</a></p>
+                            <p>Twitter:<br><a href="https://twitter.com/user">https://twitter.com/user</a></p>
+                            <p>Instagram:<br><a href="https://instagram.com/user">https://instagram.com/user</a></p>
+                            <p>LinkedIn:<br><a href="https://linkedin.com/in/user">https://linkedin.com/in/user</a></p>
+                        </div>
+                        <div class="skills mt-3">
+                            <h6>Skills:</h6>
+                            <span class="badge badge-primary">HTML</span>
+                            <span class="badge badge-primary">CSS</span>
+                            <span class="badge badge-primary">JavaScript</span>
+                            <span class="badge badge-primary">React</span>
+                            <span class="badge badge-primary">Node.js</span>
+                        </div>
+                        <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#resumeModal">View Resume</button>
+                    </div>
+                </div>
             </div>
-         </div>
-         <div class="col-sm-12">
-            <div class="row">
-               <div class="col-lg-3 profile-left">
-                  <div class="iq-card">
-                     <div class="iq-card-header d-flex justify-content-between">
+            <div class="col-lg-9">
+                <div class="iq-card">
+                    <div class="iq-card-header d-flex justify-content-between">
                         <div class="iq-header-title">
-                           <h4 class="card-title">Skills</h4>
+                            <h4 class="card-title">Personal Information</h4>
                         </div>
-                     </div>
-                     <div class="iq-card-body">
-                        <ul class="pages-lists m-0 p-0">
-                           <li class="d-flex mb-4 align-items-center">
-                              <div class="user-img img-fluid"><img src="{% static 'admin_panel/assets/images/page-img/42.jpg' %}" alt="story-img" class="rounded-circle avatar-40"></div>
-                              <div class="media-support-info ml-3">
-                                 <h6>UI/Ux Designer</h6>
-                                 <p class="mb-0">Creativity Design</p>
+                        <div class="button-group">
+                            <a href="{% url "admin-d:userupdate" %}" class="btn btn-danger">Delete</a>
+                            <a href="{% url "admin-d:userupdate" %}" class="btn btn-warning">Deactivate</a>
+                            <a href="{% url "admin-d:userupdate" %}" class="btn btn-info">Edit</a>
+                        </div>
+                    </div>
+                    <div class="iq-card-body">
+                        <div class="new-user-info">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label>Mobile Number:</label>
+                                    <p>+1 234 567 890</p>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Alternate Contact:</label>
+                                    <p>+1 987 654 321</p>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Email:</label>
+                                    <p>john.doe@example.com</p>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Pin Code:</label>
+                                    <p>12345</p>
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <label>Town/City:</label>
+                                    <p>New York</p>
+                                </div>
+                                
+                                <div class="form-group col-sm-12">
+                                  <label>Country:</label>
+                                  <p>USA</p>
                               </div>
-                           </li>
-                           <li class="d-flex mb-4 align-items-center">
-                              <div class="user-img img-fluid"><img src="{% static 'admin_panel/assets/images/page-img/43.jpg' %}" alt="story-img" class="rounded-circle avatar-40"></div>
-                              <div class="media-support-info ml-3">
-                                 <h6>Marketing</h6>
-                                 <p class="mb-0">Accounting</p>
-                              </div>
-                           </li>
-                           <li class="d-flex mb-4 align-items-center">
-                              <div class="user-img img-fluid"><img src="{% static 'admin_panel/assets/images/page-img/44.jpg' %}" alt="story-img" class="rounded-circle avatar-40"></div>
-                              <div class="media-support-info ml-3">
-                                 <h6>Web Developer</h6>
-                                 <p class="mb-0">uniq Concept</p>
-                              </div>
-                           </li>
-                           <li class="d-flex align-items-center">
-                              <div class="user-img img-fluid"><img src="{% static 'admin_panel/assets/images/page-img/45.jpg' %}" alt="story-img" class="rounded-circle avatar-40"></div>
-                              <div class="media-support-info ml-3">
-                                 <h6>Latest News</h6>
-                                 <p class="mb-0">Line information</p>
-                              </div>
-                           </li>
-                        </ul>
-                     </div>
-                  </div>
-                  <div class="iq-card">
-                     <div class="iq-card-header d-flex justify-content-between">
+                            </div>
+                            <div class="checkbox">
+                                <label>Two-Factor Authentication:</label>
+                                <p>Enabled</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="iq-card mt-3">
+                    <div class="iq-card-header">
                         <div class="iq-header-title">
-                           <h4 class="card-title">Strengths</h4>
+                            <h4 class="card-title">Education</h4>
                         </div>
-                     </div>
-                     <div class="iq-card-body">
-                        <ul class="pages-lists m-0 p-0">
-                           <li class="d-flex mb-4 align-items-center">
-                              <div class="user-img img-fluid"><img src="{% static 'admin_panel/assets/images/page-img/42.jpg' %}" alt="story-img" class="rounded-circle avatar-40"></div>
-                              <div class="media-support-info ml-3">
-                                 <h6>Leader Ship</h6>
-                              </div>
-                           </li>
-                           <li class="d-flex mb-4 align-items-center">
-                              <div class="user-img img-fluid"><img src="{% static 'admin_panel/assets/images/page-img/43.jpg' %}" alt="story-img" class="rounded-circle avatar-40"></div>
-                              <div class="media-support-info ml-3">
-                                 <h6>Problem Solving</h6>
-                              </div>
-                           </li>
-                           <li class="d-flex mb-4 align-items-center">
-                              <div class="user-img img-fluid"><img src="{% static 'admin_panel/assets/images/page-img/44.jpg' %}" alt="story-img" class="rounded-circle avatar-40"></div>
-                              <div class="media-support-info ml-3">
-                                 <h6>Creativity</h6>
-                              </div>
-                           </li>
-                           <li class="d-flex align-items-center">
-                              <div class="user-img img-fluid"><img src="{% static 'admin_panel/assets/images/page-img/45.jpg' %}" alt="story-img" class="rounded-circle avatar-40"></div>
-                              <div class="media-support-info ml-3">
-                                 <h6>Team Work</h6>
-                              </div>
-                           </li>
+                    </div>
+                    <div class="iq-card-body">
+                        <ul>
+                            <li><strong>B.Sc. in Computer Science</strong>, University of Example, 2015-2019</li>
+                            <li><strong>M.Sc. in Software Engineering</strong>, University of Sample, 2019-2021</li>
                         </ul>
-                     </div>
-                  </div>
-               </div>
-               <div class="col-lg-6 profile-center">
-                  <div class="tab-content">
-                     <div class="tab-pane fade active show" id="profile-profile" role="tabpanel">
-                        <div class="iq-card">
-                           <div class="iq-card-header d-flex justify-content-between">
-                              <div class="iq-header-title">
-                                 <h4 class="card-title">Profile</h4>
-                              </div>
-                           </div>
-                           <div class="iq-card-body">
-                              <div class="user-detail text-center">
-                                 <div class="user-profile">
-                                    <img src="{% static 'admin_panel/assets/images/user/11.png' %}" alt="profile-img" class="avatar-130 img-fluid">
-                                 </div>
-                                 <div class="profile-detail mt-3">
-                                    <h3 class="d-inline-block">Nik Jone</h3>
-                                    <p class="d-inline-block pl-3"> - Web designer</p>
-                                    <p class="mb-0">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="iq-card">
-                           <div class="iq-card-header d-flex justify-content-between">
-                              <div class="iq-header-title">
-                                 <h4 class="card-title">About User</h4>
-                              </div>
-                           </div>
-                           <div class="iq-card-body">
-                             <div class="user-bio">
-                                 <p>Tart I love sugar plum I love oat cake. Sweet roll caramels I love jujubes. Topping cake wafer.</p>
-                             </div>
-                             <div class="mt-2">
-                              <h6>Joined:</h6>
-                              <p>November 15, 2012</p>
-                             </div>
-                             <div class="mt-2">
-                              <h6>Lives:</h6>
-                              <p>United States of America</p>
-                             </div>
-                             <div class="mt-2">
-                              <h6>Email:</h6>
-                              <p><a href="mailto:nikjone@gmail.com"> nikjone@gmail.com</a></p>
-                             </div>
-                             <div class="mt-2">
-                              <h6>Url:</h6>
-                              <p><a href="https://getbootstrap.com/docs/4.0/getting-started/introduction/" target="_blank"> www.bootstrap.com </a></p>
-                             </div>
-                             <div class="mt-2">
-                              <h6>Contact:</h6>
-                              <p><a href="#">(001) 4544 565 456</a></p>
-                             </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-               <div class="col-lg-3 profile-right">
-                  <div class="iq-card">
-                     <div class="iq-card-header d-flex justify-content-between">
+                    </div>
+                </div>
+                <div class="iq-card mt-3">
+                    <div class="iq-card-header">
                         <div class="iq-header-title">
-                           <h4 class="card-title">Education</h4>
+                            <h4 class="card-title">Experience</h4>
                         </div>
-                     </div>
-                     <div class="iq-card-body">
-                        <ul class="pages-lists m-0 p-0">
-                           <li class="d-flex mb-4 align-items-center">
-                              <div class="user-img img-fluid"><img src="{% static 'admin_panel/assets/images/page-img/42.jpg' %}" alt="story-img" class="rounded-circle avatar-30"></div>
-                              <div class="media-support-info ml-3">
-                                 <h6 style="font-size: 15px;">UI/Ux Designer</h6>
-                                 <p class="mb-0" style="font-size: 10px;">Creativity Design</p>
-                              </div>
-                              <div>
-                                 <a href="javascript:void();" style="font-size: 13px;" class="text-warning">&nbsp;2023-present</a>
-                              </div>
-                           </li>
-                           <li class="d-flex mb-4 align-items-center">
-                              <div class="user-img img-fluid"><img src="{% static 'admin_panel/assets/images/page-img/42.jpg' %}" alt="story-img" class="rounded-circle avatar-30"></div>
-                              <div class="media-support-info ml-3">
-                                 <h6 style="font-size: 15px;">UI/Ux Designer</h6>
-                                 <p class="mb-0" style="font-size: 10px;">Creativity Design</p>
-                              </div>
-                              <div>
-                                 <a href="javascript:void();" style="font-size: 13px;" class="text-warning">&nbsp;2021-2023</a>
-                              </div>
-                           </li>
-                           <li class="d-flex mb-4 align-items-center">
-                              <div class="user-img img-fluid"><img src="{% static 'admin_panel/assets/images/page-img/42.jpg' %}" alt="story-img" class="rounded-circle avatar-30"></div>
-                              <div class="media-support-info ml-3">
-                                 <h6 style="font-size: 15px;">UI/Ux Designer</h6>
-                                 <p class="mb-0" style="font-size: 10px;">Creativity Design</p>
-                              </div>
-                              <div>
-                                 <a href="javascript:void();" style="font-size: 13px;" class="text-warning">&nbsp;2020-2021</a>
-                              </div>
-                           </li>
+                    </div>
+                    <div class="iq-card-body">
+                        <ul>
+                            <li><strong>Web Developer</strong>, Example Corp, 2021-Present</li>
+                            <li><strong>Junior Developer</strong>, Sample Inc, 2019-2021</li>
                         </ul>
-                     </div>
-                  </div>
-                  <div class="iq-card">
-                     <div class="iq-card-header d-flex justify-content-between">
-                        <div class="iq-header-title">
-                           <h4 class="card-title">Experience</h4>
-                        </div>
-                     </div>
-                     <div class="iq-card-body">
-                        <ul class="pages-lists m-0 p-0">
-                           <li class="d-flex mb-4 align-items-center">
-                              <div class="user-img img-fluid"><img src="{% static 'admin_panel/assets/images/page-img/42.jpg' %}" alt="story-img" class="rounded-circle avatar-30"></div>
-                              <div class="media-support-info ml-3">
-                                 <h6 style="font-size: 15px;">UI/Ux Designer</h6>
-                                 <p class="mb-0" style="font-size: 10px;">Creativity Design</p>
-                              </div>
-                              <div>
-                                 <a href="javascript:void();" style="font-size: 13px;" class="text-warning">&nbsp;2023-present</a>
-                              </div>
-                           </li>
-                           <li class="d-flex mb-4 align-items-center">
-                              <div class="user-img img-fluid"><img src="{% static 'admin_panel/assets/images/page-img/42.jpg' %}" alt="story-img" class="rounded-circle avatar-30"></div>
-                              <div class="media-support-info ml-3">
-                                 <h6 style="font-size: 15px;">UI/Ux Designer</h6>
-                                 <p class="mb-0" style="font-size: 10px;">Creativity Design</p>
-                              </div>
-                              <div>
-                                 <a href="javascript:void();" style="font-size: 13px;" class="text-warning">&nbsp;2021-2023</a>
-                              </div>
-                           </li>
-                           <li class="d-flex mb-4 align-items-center">
-                              <div class="user-img img-fluid"><img src="{% static 'admin_panel/assets/images/page-img/42.jpg' %}" alt="story-img" class="rounded-circle avatar-30"></div>
-                              <div class="media-support-info ml-3">
-                                 <h6 style="font-size: 15px;">UI/Ux Designer</h6>
-                                 <p class="mb-0" style="font-size: 10px;">Creativity Design</p>
-                              </div>
-                              <div>
-                                 <a href="javascript:void();" style="font-size: 13px;" class="text-warning">&nbsp;2020-2021</a>
-                              </div>
-                           </li>
-                        </ul>
-                     </div>
-                  </div>
-               </div>
+                    </div>
+                </div>
             </div>
-         </div>
-      </div>
-   </div>
+        </div>
+    </div>
+</div>
+
+<!-- Resume Modal -->
+<div class="modal fade" id="resumeModal" tabindex="-1" aria-labelledby="resumeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resumeModalLabel">Resume</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe src="{% static "admin_panel/assets/pdf/Profile.pdf" %}" width="100%" height="600px"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock content %}
