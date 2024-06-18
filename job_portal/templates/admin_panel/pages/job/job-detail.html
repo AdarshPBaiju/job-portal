@@ -1,166 +1,23 @@
 {% extends 'admin_panel/layout/base.html' %}
 {% load static %}
-{% block title %}Company Detail{% endblock title %}
+{% block title %}Job Detail{% endblock title %}
 {% block content %}
-
-<style>
-   /* Custom styles for this template */
-   body {
-       font-family: Arial, sans-serif;
-       background-color: #f8f9fa;
-   }
-   .card {
-       margin-top: 20px;
-       border: 1px solid #ddd;
-       border-radius: 8px;
-       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-   }
-   .card-header {
-       background-color: #007bff;
-       color: #fff;
-       border-bottom: 1px solid rgba(0,0,0,0.125);
-   }
-   .card-title {
-       margin-bottom: 0;
-   }
-   .social-links a {
-       color: #8503ff;
-       margin-right: 10px;
-   }
-   .social-links a:hover {
-       color: #00ddff;
-       text-decoration: none;
-   }
-   .card-body {
-       padding: 20px;
-   }
-   .profile-pic {
-       max-width: 150px;
-       height: auto;
-       border-radius: 50%;
-       border: 5px solid #fff;
-       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-   }
-   .overview {
-       margin-bottom: 20px;
-   }
-   .contact-info, .additional-details {
-       margin-bottom: 20px;
-   }
-   .additional-details p {
-       margin-bottom: 5px;
-   }
-   .card .card {
-       margin-top: 0;
-       margin-bottom: 0;
-   }
-   .card .card-header {
-       background-color: #f8f9fa;
-       border-bottom: none;
-   }
-   .card .card-body {
-       padding-top: 10px;
-   }
-   .card .card-body p {
-       margin-bottom: 5px;
-   }
-   .deactivate-btn, .delete-btn {
-      
-      color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-   }
-   .delete-btn {
-      background-color: #ec1a2f;
-   }
-   .delete-btn:hover {
-      background-color: #e01e31;
-   }
-   .deactivate-btn {
-      background-color: #e7bf21;
-   }
-   .deactivate-btn:hover {
-      background-color: #c8a723;
-   }
-   .right-buttons {
-      display: flex;
-      gap: 10px;
-   }
-</style>
 <div id="content-page" class="content-page">
     <div class="container-fluid">
        <div class="row">
-          <div class="col-sm-12 mb-3">
-            <div class="card">
-               <div class="card-header">
-                   <h2 class="card-title">Company Name</h2>
-                   <div class="social-links">
-                       <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
-                       <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
-                       <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-                       <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                   </div>
-                   <div class="right-buttons d-flex justify-content-end">
-                     <button class="deactivate-btn">Deactivate</button>
-                     <button class="delete-btn">Delete</button>
-                 </div>
-               </div>
-               <div class="card-body">
-                   <div class="row">
-                       <div class="col-md-4">
-                           <img src="https://via.placeholder.com/150" alt="Company Logo" class="profile-pic">
-                           <div class="overview">
-                               <h5>Overview</h5>
-                               <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla convallis libero eget nisl convallis, at aliquet lectus mattis. Nullam non massa a libero semper cursus.</p>
-                           </div>
-                       </div>
-                       <div class="col-md-8">
-                           <div class="contact-info">
-                               <h5>Contact Information</h5>
-                               <p><strong>Owner:</strong> John Doe</p>
-                               <p><strong>Location:</strong> New York, USA</p>
-                               <p><strong>Email:</strong> info@example.com</p>
-                               <p><strong>Phone:</strong> +1 123-456-7890</p>
-                           </div>
-                           <div class="additional-details">
-                               <h5>Additional Details</h5>
-                               <p><strong>Sector:</strong> IT Sector</p>
-                               <p><strong>Country:</strong> USA</p>
-                               <p><strong>Founded:</strong> 2000</p>
-                               <p><strong>Status:</strong> Active</p>
-                           </div>
-                           <div class="card">
-                               <div class="card-header">
-                                   <h5>Headquarters Location</h5>
-                               </div>
-                               <div class="card-body">
-                                   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla convallis libero eget nisl convallis, at aliquet lectus mattis. Nullam non massa a libero semper cursus.</p>
-                               </div>
-                           </div>
-                       </div>
-                   </div>
-               </div>
-           </div>
-          </div>
+          {% include "admin_panel/pages/job/partial/detail.html" %}
           <div class="col-lg-12">
             <div class="iq-card">
                <div class="iq-card-body p-0">
                   <div class="iq-edit-list">
                      <ul class="iq-edit-profile d-flex nav nav-pills">
-                        <li class="col-md-4 p-0">
-                           <a class="nav-link" href="{% url "admin-d:companydetail" %}">
-                              Job List
-                           </a>
-                        </li>
-                        <li class="col-md-4 p-0">
-                           <a class="nav-link active" href="javascript:void()">
+                        <li class="col-md-6 p-0">
+                           <a class="nav-link active" href="javascript:void();">
                               Applications
                            </a>
                         </li>
-                        <li class="col-md-4 p-0">
-                           <a class="nav-link" href="{% url "admin-d:company-interview-list" %}">
+                        <li class="col-md-6 p-0">
+                           <a class="nav-link" href="{% url "admin-d:job-detail-interview" %}">
                               Interview Scheduled
                            </a>
                         </li>
@@ -172,7 +29,7 @@
          <div class="col-lg-12">
             <div class="iq-edit-list-data">
                <div class="tab-content">
-                  <div class="tab-pane fade active show" id="chang-pwd" role="tabpanel">
+                  <div class="tab-pane fade active show" role="tabpanel">
                      <div class="iq-card">
                         <div class="iq-card-header d-flex justify-content-between">
                            <div class="iq-header-title">
@@ -210,7 +67,6 @@
                                     <tr>
                                        <th>Profile</th>
                                        <th>Applicant</th>
-                                       <th>Job</th>
                                        <th>Status</th>
                                        <th>Date</th>
                                        <th>Resume</th>
@@ -220,8 +76,7 @@
                                 <tbody>
                                     <tr>
                                        <td class="text-center"><a href="{% url "admin-d:job-detail" %}"><img class="rounded-circle img-fluid avatar-40" src="{% static 'admin_panel/assets/images/user/01.jpg' %}" alt="profile"></a></td>
-                                       <td>Arun</td>\
-                                       <td>python</td>
+                                       <td>Arun</td>
                                        <td><span class="badge dark-icon-light iq-bg-warning">Pending</span></td>
                                        <td>2019/12/01</td>
                                        <td><a href="remuse.pdf" target="_blank" class="btn btn-primary">Resume</a></td>
@@ -235,7 +90,6 @@
                                     <tr>
                                        <td class="text-center"><img class="rounded-circle img-fluid avatar-40" src="{% static 'admin_panel/assets/images/user/02.jpg' %}" alt="profile"></td>
                                        <td>Akash</td>
-                                       <td>Java</td>
                                        <td><span class="badge  dark-icon-light iq-bg-primary">Viewed</span></td>
                                        <td>2019/12/01</td>
                                        <td><a href="remuse.pdf" target="_blank" class="btn btn-primary">Resume</a></td>
@@ -249,7 +103,6 @@
                                     <tr>
                                        <td class="text-center"><img class="rounded-circle img-fluid avatar-40" src="{% static 'admin_panel/assets/images/user/03.jpg' %}" alt="profile"></td>
                                        <td>Dan Druff</td>
-                                       <td>Accountant</td>
                                        <td><span class="badge iq-bg-warning">Pending</span></td>
                                        <td>2019/12/01</td>
                                        <td><a href="remuse.pdf" target="_blank" class="btn btn-primary">Resume</a></td>
@@ -263,7 +116,6 @@
                                     <tr>
                                        <td class="text-center"><img class="rounded-circle img-fluid avatar-40" src="{% static 'admin_panel/assets/images/user/04.jpg' %}" alt="profile"></td>
                                        <td>Hans Olo</td>
-                                       <td>Financer</td>
                                        <td><span class="badge iq-bg-danger">Rejected</span></td>
                                        <td>2019/12/01</td>
                                        <td><a href="remuse.pdf" target="_blank" class="btn btn-primary">Resume</a></td>
@@ -277,7 +129,6 @@
                                     <tr>
                                        <td class="text-center"><img class="rounded-circle img-fluid avatar-40" src="{% static 'admin_panel/assets/images/user/05.jpg' %}" alt="profile"></td>
                                        <td>Lynn Guini</td>
-                                       <td>Django</td>
                                        <td><span class="badge  dark-icon-light iq-bg-primary">Viewed</span></td>
                                        <td>2019/12/01</td>
                                        <td><a href="remuse.pdf" target="_blank" class="btn btn-primary">Resume</a></td>
@@ -291,7 +142,6 @@
                                     <tr>
                                        <td class="text-center"><img class="rounded-circle img-fluid avatar-40" src="{% static 'admin_panel/assets/images/user/06.jpg' %}" alt="profile"></td>
                                        <td>Eric Shun</td>
-                                       <td>React</td>
                                        <td><span class="badge iq-bg-success">Selected</span></td>
                                        <td>2019/12/01</td>
                                        <td><a href="remuse.pdf" target="_blank" class="btn btn-primary">Resume</a></td>
@@ -305,7 +155,6 @@
                                     <tr>
                                        <td class="text-center"><img class="rounded-circle img-fluid avatar-40" src="{% static 'admin_panel/assets/images/user/07.jpg' %}" alt="profile"></td>
                                        <td>aaronottix</td>
-                                       <td>Odoo</td>
                                        <td><span class="badge iq-bg-secondary">Hold</span></td>
                                        <td>2019/12/01</td>
                                        <td><a href="remuse.pdf" target="_blank" class="btn btn-primary">Resume</a></td>
@@ -319,7 +168,6 @@
                                     <tr>
                                        <td class="text-center"><img class="rounded-circle img-fluid avatar-40" src="{% static 'admin_panel/assets/images/user/08.jpg' %}" alt="profile"></td>
                                        <td>Marge Arita</td>
-                                       <td>React</td>
                                        <td><span class="badge iq-bg-success">Selected</span></td>
                                        <td>2019/12/01</td>
                                        <td><a href="remuse.pdf" target="_blank" class="btn btn-primary">Resume</a></td>
@@ -333,7 +181,6 @@
                                     <tr>
                                        <td class="text-center"><img class="rounded-circle img-fluid avatar-40" src="{% static 'admin_panel/assets/images/user/09.jpg' %}" alt="profile"></td>
                                        <td>Bill Dabear</td>
-                                       <td>React</td>
                                        <td><span class="badge  dark-icon-light iq-bg-primary">Schedule Interview</span></td>
                                        <td>2019/12/01</td>
                                        <td><a href="remuse.pdf" target="_blank" class="btn btn-primary">Resume</a></td>
@@ -376,4 +223,5 @@
        </div>
     </div>
  </div>
+
 {% endblock content %}

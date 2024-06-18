@@ -322,16 +322,16 @@ body.sidebar-main .iq-sidebar:hover .iq-sidebar-menu .iq-menu li ul.iq-submenu-d
 .navbar-list li.iq-nav-user span { flex: 1; font-size: 14px; }
 .iq-top-navbar .iq-sidebar-logo .top-logo { display: none; }
 .iq-breadcrumb { display: none; }
-.nav-item span.dots { height: 5px; width: 5px; font-size: 0; text-align: center; padding: 0; position: absolute; top: 25px; right: 10px; animation: shadow-pulse-dots 1s infinite; border-radius: 50%; -webkit-border-radius: 50%; }
-.nav-item span.count-mail { height: 5px; width: 5px; font-size: 10px; text-align: center; line-height: 15px; padding: 0; position: absolute; top: 20px; right: 10px; animation: shadow-pulse 1s infinite; border-radius: 50%; }
-@keyframes shadow-pulse-dots {
+.nav-item span.dots { color: white; height: 15px; width: 15px; font-size: 10px; text-align: center; padding: 0; position: absolute; top: 20px; right: 10px; animation: shadow-pulse-dots 1s infinite; border-radius: 50%; -webkit-border-radius: 50%; }
+.nav-item span.count-mail { height: 15px; width: 15px; font-size: 10px; text-align: center; line-height: 15px; padding: 0; position: absolute; top: 20px; right: 10px; animation: shadow-pulse 1s infinite; border-radius: 50%; }
+/* @keyframes shadow-pulse-dots {
   0% { box-shadow: 0 0 0 0px rgba(230, 65, 65, 0.2); }
   100% { box-shadow: 0 0 0 15px rgba(230, 65, 65, 0); }
 }
 @keyframes shadow-pulse {
   0% { box-shadow: 0 0 0 0px rgba(0, 132, 255, 0.2); }
   100% { box-shadow: 0 0 0 15px rgba(0, 132, 255, 0); }
-}
+} */
 div#lottie-beil, div#lottie-mail, div#lottie-fullscreen { height: 20px; width: 20px; }
 div#lottie-beil svg path, div#lottie-mail svg path, div#lottie-fullscreen svg path { stroke: var(--iq-primary); }
 .navbar-list li .caption { line-height: 16px; }
