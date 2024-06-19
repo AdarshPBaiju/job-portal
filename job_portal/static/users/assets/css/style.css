@@ -1,0 +1,19 @@
+.alert {
+    position: fixed;
+    top: 20px;
+    right: -100%;
+    z-index: 9999;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+    animation: slide-in 0.5s ease-in-out forwards, slide-out 0.5s ease-in-out forwards 4s; /* Animation timing */
+}
+
+@keyframes slide-in {
+    0% { right: -100%; }
+    100% { right: 20px; }
+}
+
+@keyframes slide-out {
+    0% { right: 20px; }
+    100% { right: -100%; }
+}
