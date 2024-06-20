@@ -20,7 +20,7 @@
         <span class="navbar-text ms-3">
           {% if user.is_authenticated %}
           <a class="btn btn-outline-light me-2" href="#">Profile</a>
-          <a class="btn btn-outline-light me-2" href="#" onclick="logout()">Logout</a>
+          <a class="btn btn-outline-light me-2" href="{% url "user:logout" %}"">Logout</a>
           {% else %}
           <a class="btn btn-outline-light me-2" href="{% url "user:login" %}">Login</a>
           <a class="btn btn-outline-light me-2" href="{% url "user:register" %}">Register</a>
