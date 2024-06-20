@@ -1,6 +1,6 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm, LoginForm
 from django.views.generic import FormView
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
@@ -47,21 +47,26 @@ class CustomRegisterView(RedirectAuthenticatedUserMixin, FormView):
 
 class CustomLoginView(RedirectAuthenticatedUserMixin, View):
     template_name = 'user/login.html'
-    
+    form_class = LoginForm
+
     def get(self, request):
-        return render(request, self.template_name)
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request):
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            messages.success(request, f'Welcome, {user.username}! You have successfully logged in.')
-            return redirect('core:home')
-        else:
-            messages.error(request, 'Invalid username or password. Please try again.')
-        return render(request, self.template_name)
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, f'Welcome, {user.username}! You have successfully logged in.')
+                return redirect('core:home')
+            else:
+                messages.error(request, 'Invalid username or password. Please try again.')
+        # If form is invalid or authentication fails, render login form with errors
+        return render(request, self.template_name, {'form': form})
 
 
 class CustomLogoutView(View):

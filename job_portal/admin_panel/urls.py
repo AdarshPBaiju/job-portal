@@ -29,5 +29,4 @@ urlpatterns = [
     path("job/detail/1/scheduled-interview/", JobDetailInterviewListView.as_view(), name="job-detail-interview"),
     path("job/update/1/", JobUpdateView.as_view(), name="job-update"),
     path("job/create/", JobCreateView.as_view(), name="job-create"),
-    path("test/", Test.as_view(), name="test"),
 ]

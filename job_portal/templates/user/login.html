@@ -12,12 +12,18 @@
     <form class="mb-3" method="post">
         {% csrf_token %}
           <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="floatingInput" name="username" placeholder="Username">
+            {{form.username}}
             <label for="floatingInput">Username</label>
+            {% for error in form.username.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}
           </div>
           <div class="form-floating mb-3">
-            <input type="password" class="form-control" name="password" id="floatingInput" placeholder="Password">
+            {{form.password}}
             <label for="floatingInput">Password</label>
+            {% for error in form.password.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}
           </div>
         <button type="submit" class="btn btn-primary col-12 py-3">Login</button>
     </form>

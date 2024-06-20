@@ -723,3 +723,96 @@ Index Of Script
   })
 
 })(jQuery);
+
+// Footer Live 
+
+// Get the current year
+const year = new Date().getFullYear();
+document.getElementById("currentYear").textContent = year;
+
+
+// Number Count Animation
+document.addEventListener("DOMContentLoaded", function() {
+    const counters = document.querySelectorAll('.count');
+
+    counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-target').replace(/,/g, ''));
+        let count = 0;
+        const duration = 9000;
+        const increment = target / (duration / 100);
+
+        function updateCounter() {
+            count += increment;
+            if (count > target) {
+                count = target;
+            }
+
+            // Format the number with compact short notation
+            counter.textContent = formatNumber(Math.floor(count));
+
+            if (count < target) {
+                requestAnimationFrame(updateCounter);
+            }
+        }
+
+        updateCounter();
+    });
+
+    function formatNumber(num) {
+        if (num >= 1000000000000) {
+            return (num / 1000000000000).toFixed(1).replace(/\.0$/, '') + 'T';
+        } else if (num >= 1000000000) {
+            return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
+        } else if (num >= 1000000) {
+            return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+        } else if (num >= 1000) {
+            return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+        } else {
+            return num.toString();
+        }
+    }
+});
+
+
+// Multiselect for Add Job Skill Select
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the search input element
+    const searchInput = document.getElementById('skillSearchInput');
+
+    // Get the select element
+    const selectElement = document.getElementById('exampleFormControlSelect2');
+
+    // Check if select element exists
+    if (selectElement) {
+        // Get all options inside the select
+        const options = selectElement.getElementsByTagName('option');
+
+        // Check if any options were found
+        if (options.length > 0) {
+            // Convert HTMLCollection to array for easier manipulation
+            const optionsArray = Array.from(options);
+
+            // Add event listener for input changes
+            searchInput.addEventListener('input', function() {
+                const searchTerm = searchInput.value.toLowerCase();
+
+                // Loop through each option and hide/show based on the search term
+                optionsArray.forEach(function(option) {
+                    const text = option.textContent.toLowerCase();
+
+                    // Check if the option's text content contains the search term
+                    if (text.includes(searchTerm)) {
+                        option.style.display = ''; // Show the option
+                    } else {
+                        option.style.display = 'none'; // Hide the option
+                    }
+                });
+            });
+        } else {
+            console.error('No options found in the select element.');
+        }
+    } else {
+        console.error('Select element not found.');
+    }
+});

@@ -32,14 +32,15 @@
                         <div class="sign-in-from">
                             <h1 class="mb-0 dark-signin">Sign in</h1>
                             <p>Enter your email address and password to access admin panel.</p>
-                            <form class="mt-4">
+                            <form class="mb-3" method="post" action="{% url "user:login" %}">
+                                {% csrf_token %}
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Email address</label>
-                                    <input type="email" class="form-control mb-0" id="exampleInputEmail1" placeholder="Enter email">
+                                    <input type="text" class="form-control mb-0" name="username" id="exampleInputEmail1" placeholder="Enter email">
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputPassword1">Password</label>
-                                    <input type="password" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password">
+                                    <input type="password" class="form-control mb-0" name="password" id="exampleInputPassword1" placeholder="Password">
                                 </div>
                                 <div class="d-inline-block w-100">
                                     <button type="submit" class="btn btn-primary float-right">Sign in</button>
