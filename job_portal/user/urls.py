@@ -6,6 +6,8 @@ app_name = "user"
 
 urlpatterns = [
     path("login/", CustomLoginView.as_view(), name="login"),
+    path("profile/edit/", ProfileEditView.as_view(), name="profile-edit"),
+    path("profile/change-password/", ChangePasswordView.as_view(), name="change-password"),
     path("register/", CustomRegisterView.as_view(), name="register"),
     path("logout/", CustomLogoutView.as_view(), name="logout"),
     path("logout/", CustomLogoutView.as_view(), name="logout"),

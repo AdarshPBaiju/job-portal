@@ -1,6 +1,6 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
-from .forms import UserRegistrationForm, LoginForm
+from .forms import UserRegistrationForm, LoginForm, ForgotPasswordForm, ResetPasswordForm, ProfileEditForm, ChangePasswordForm
 from django.views.generic import FormView
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
@@ -15,7 +15,8 @@ from django.core.mail import EmailMessage
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
-
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import update_session_auth_hash
 
 
 # Create your views here.
@@ -70,7 +71,6 @@ class CustomLoginView(RedirectAuthenticatedUserMixin, View):
 
 
 class CustomLogoutView(View):
-
     def get(self, request):
         logout(request)
         messages.success(request, 'You have been successfully logged out.')
@@ -78,44 +78,52 @@ class CustomLogoutView(View):
     
     
 
-class CustomForgotPassword(RedirectAuthenticatedUserMixin, View):
+class CustomForgotPassword(View):
     template_name = 'user/forgot_password.html'
+    form_class = ForgotPasswordForm
+    
     def get(self, request):
-        return render(request, self.template_name)
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
     
     def post(self, request):
-        email = request.POST.get('email')
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            user = None
-        
-        if user is not None:
-            current_site = get_current_site(request)
-            mail_subject = 'Reset Your Password'
-            message = render_to_string('user/reset_email.html', {
-                'user': user,
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': default_token_generator.make_token(user)
-            })
-            to_email = email
-            send_email = EmailMessage(mail_subject, message, to=[to_email])
-            send_email.content_subtype = 'html'
-            send_email.send()
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            try:
+                user = User.objects.get(email=email)
+            except User.DoesNotExist:
+                user = None
             
-            context = {
-                'email_sent': True,
-                'email': email,
-            }
-            
-            return render(request, self.template_name, context)
+            if user is not None:
+                current_site = get_current_site(request)
+                mail_subject = 'Reset Your Password'
+                message = render_to_string('user/reset_email.html', {
+                    'user': user,
+                    'domain': current_site.domain,
+                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                    'token': default_token_generator.make_token(user),
+                })
+                to_email = email
+                send_email = EmailMessage(mail_subject, message, to=[to_email])
+                send_email.content_subtype = 'html'
+                send_email.send()
+                
+                context = {
+                    'email_sent': True,
+                    'email': email,
+                }
+                return render(request, self.template_name, context)
+            else:
+                messages.error(request, 'Account does not exist.')
+                return redirect('user:forgot-password')
         else:
-            messages.error(request, 'Account does not exist.')
-            return redirect('user:forgot-password')
+            return render(request, self.template_name, {'form': form})
         
-class ResetPasswordView(RedirectAuthenticatedUserMixin, View):
+class ResetPasswordView(View):
     template_name = "user/reset_password.html"
+    form_class = ResetPasswordForm
+    
     def get_user(self, uidb64):
         try:
             uid = urlsafe_base64_decode(uidb64).decode()
@@ -127,7 +135,8 @@ class ResetPasswordView(RedirectAuthenticatedUserMixin, View):
         user = self.get_user(uidb64)
         
         if user is not None and default_token_generator.check_token(user, token):
-            return render(request, self.template_name)
+            form = self.form_class()
+            return render(request, self.template_name, {'form': form})
         else:
             messages.error(request, 'This link has expired or is invalid.')
             return redirect('user:login')
@@ -136,17 +145,66 @@ class ResetPasswordView(RedirectAuthenticatedUserMixin, View):
         user = self.get_user(uidb64)
         
         if user is not None and default_token_generator.check_token(user, token):
-            password = request.POST.get('password')
-            confirm_password = request.POST.get('confirm_password')
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                password = form.cleaned_data['password']
+                confirm_password = form.cleaned_data['confirm_password']
 
-            if password == confirm_password:
-                user.set_password(password)
-                user.save()
-                messages.success(request, 'Password reset successful. Please login with your new password.')
-                return redirect('user:login')
-            else:
-                messages.error(request, 'Passwords do not match. Please try again.')
-                return render(request, self.template_name)
+                if password == confirm_password:
+                    user.set_password(password)
+                    user.save()
+                    messages.success(request, 'Password reset successful. Please login with your new password.')
+                    return redirect('user:login')
+                else:
+                    messages.error(request, 'Passwords do not match. Please try again.')
+            return render(request, self.template_name, {'form': form})
         else:
             messages.error(request, 'This link has expired or is invalid.')
             return redirect('user:login')
+        
+
+class ProfileEditView(LoginRequiredMixin, FormView):
+    template_name = 'user/profile-edit.html'
+    form_class = ProfileEditForm
+    success_url = reverse_lazy('user:profile')
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['instance'] = self.request.user  # Pass current user instance to form
+        return kwargs
+
+    def form_valid(self, form):
+        user = self.request.user
+        user.first_name = form.cleaned_data['first_name']
+        user.last_name = form.cleaned_data['last_name']
+        user.email = form.cleaned_data['email']
+        user.username = form.cleaned_data['username']
+        user.save()
+
+        messages.success(self.request, 'Profile updated successfully.')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Please correct the errors below.')
+        return self.render_to_response(self.get_context_data(form=form))
+
+
+class ChangePasswordView(LoginRequiredMixin, FormView):
+    template_name = 'user/change-password.html'
+    form_class = ChangePasswordForm
+    success_url = reverse_lazy('user:profile-edit')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        update_session_auth_hash(self.request, form.user)
+        messages.success(self.request, 'Your password has been successfully updated.')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Please correct the errors below.')
+        return super().form_invalid(form)
