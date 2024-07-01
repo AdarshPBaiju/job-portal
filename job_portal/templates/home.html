@@ -1,5 +1,222 @@
-{% extends "layout/base.html" %}
+{% extends "shared/base.html" %}
+{% load static %}
+
 {% block title %}Home{% endblock %}
+
 {% block content %}
-<h1>Home</h1>
+{% include "shared/search_banner.html" %}
+
+<div class="container mt-4 mb-5">
+    <div class="row">
+        <!-- Example job cards -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body position-relative">
+                    <a href="#" class="btn btn-link save-job-btn"><i class="fa-solid fa-bookmark"></i></a> 
+                    <h4 class="card-title">Job Title 1</h4>
+                    <h6 class="card-subtitle mb-2 text-muted">Company Name 1</h6>
+                    <p class="card-text company-location">Location, Location 1</p>
+                    <div class="d-flex align-items-center">
+                        <span class="badge salary-badge">$50k - $70k</span>
+                        <span class="badge salary-badge ms-2">Full-time</span>
+                    </div>
+                    <p class="card-text mt-2">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <p class="card-text position-absolute bottom-0 end-0 pe-3 mb-2">
+                        <small class="text-muted">3 Days Ago</small>
+                    </p>
+                    <a href="#" class="btn btn-apply-now">Apply Now</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body position-relative">
+                    <a href="#" class="btn btn-link save-job-btn"><i class="far fa-bookmark"></i></a> 
+                    <h4 class="card-title">Job Title 2</h4>
+                    <h6 class="card-subtitle mb-2 text-muted">Company Name 2</h6>
+                    <p class="card-text company-location">Location, Location 2</p>
+                    <div class="d-flex align-items-center">
+                        <span class="badge salary-badge">$60k - $80k</span>
+                        <span class="badge salary-badge ms-2">Full-time</span>
+                    </div>
+                    <p class="card-text mt-2">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <p class="card-text position-absolute bottom-0 end-0 pe-3 mb-2">
+                        <small class="text-muted">3 Days Ago</small>
+                    </p>
+                    <a href="#" class="btn btn-apply-now">Apply Now</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body position-relative">
+                    <a href="#" class="btn btn-link save-job-btn"><i class="far fa-bookmark"></i></a> 
+                    <h4 class="card-title">Job Title 2</h4>
+                    <h6 class="card-subtitle mb-2 text-muted">Company Name 2</h6>
+                    <p class="card-text company-location">Location, Location 2</p>
+                    <div class="d-flex align-items-center">
+                        <span class="badge salary-badge">$60k - $80k</span>
+                        <span class="badge salary-badge ms-2">Full-time</span>
+                    </div>
+                    <p class="card-text mt-2">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <p class="card-text position-absolute bottom-0 end-0 pe-3 mb-2">
+                        <small class="text-muted">3 Days Ago</small>
+                    </p>
+                    <a href="#" class="btn btn-apply-now">Apply Now</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body position-relative">
+                    <a href="#" class="btn btn-link save-job-btn"><i class="far fa-bookmark"></i></a> 
+                    <h4 class="card-title">Job Title 2</h4>
+                    <h6 class="card-subtitle mb-2 text-muted">Company Name 2</h6>
+                    <p class="card-text company-location">Location, Location 2</p>
+                    <div class="d-flex align-items-center">
+                        <span class="badge salary-badge">$60k - $80k</span>
+                        <span class="badge salary-badge ms-2">Full-time</span>
+                    </div>
+                    <p class="card-text mt-2">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <p class="card-text position-absolute bottom-0 end-0 pe-3 mb-2">
+                        <small class="text-muted">3 Days Ago</small>
+                    </p>
+                    <a href="#" class="btn btn-apply-now">Apply Now</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body position-relative">
+                    <a href="#" class="btn btn-link save-job-btn"><i class="fa-solid fa-bookmark"></i></a> 
+                    <h4 class="card-title">Job Title 2</h4>
+                    <h6 class="card-subtitle mb-2 text-muted">Company Name 2</h6>
+                    <p class="card-text company-location">Location: Location 2</p>
+                    <div class="d-flex align-items-center">
+                        <span class="badge salary-badge">$60k - $80k</span>
+                        <span class="badge salary-badge ms-2">Full-time</span>
+                    </div>
+                    <p class="card-text mt-2">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <p class="card-text position-absolute bottom-0 end-0 pe-3 mb-2">
+                        <small class="text-muted">3 Days Ago</small>
+                    </p>
+                    <a href="#" class="btn btn-apply-now">Apply Now</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body position-relative">
+                    <a href="#" class="btn btn-link save-job-btn"><i class="fa-solid fa-bookmark"></i></a> 
+                    <h4 class="card-title">Job Title 2</h4>
+                    <h6 class="card-subtitle mb-2 text-muted">Company Name 2</h6>
+                    <p class="card-text company-location">Location, Location 2</p>
+                    <div class="d-flex align-items-center">
+                        <span class="badge salary-badge">$60k - $80k</span>
+                        <span class="badge salary-badge ms-2">Full-time</span>
+                    </div>
+                    <p class="card-text mt-2">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <p class="card-text position-absolute bottom-0 end-0 pe-3 mb-2">
+                        <small class="text-muted">3 Days Ago</small>
+                    </p>
+                    <a href="#" class="btn btn-apply-now">Apply Now</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body position-relative">
+                    <a href="#" class="btn btn-link save-job-btn"><i class="far fa-bookmark"></i></a> 
+                    <h4 class="card-title">Job Title 2</h4>
+                    <h6 class="card-subtitle mb-2 text-muted">Company Name 2</h6>
+                    <p class="card-text company-location">Location, Location 2</p>
+                    <div class="d-flex align-items-center">
+                        <span class="badge salary-badge">$60k - $80k</span>
+                        <span class="badge salary-badge ms-2">Full-time</span>
+                    </div>
+                    <p class="card-text mt-2">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <p class="card-text position-absolute bottom-0 end-0 pe-3 mb-2">
+                        <small class="text-muted">3 Days Ago</small>
+                    </p>
+                    <a href="#" class="btn btn-apply-now">Apply Now</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body position-relative">
+                    <a href="#" class="btn btn-link save-job-btn"><i class="fa-solid fa-bookmark"></i></a> 
+                    <h4 class="card-title">Job Title 2</h4>
+                    <h6 class="card-subtitle mb-2 text-muted">Company Name 2</h6>
+                    <p class="card-text company-location">Location, Location 2</p>
+                    <div class="d-flex align-items-center">
+                        <span class="badge salary-badge">$60000 - $80000</span>
+                        <span class="badge salary-badge ms-2">Full-time</span>
+                    </div>
+                    <p class="card-text mt-2">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <p class="card-text position-absolute bottom-0 end-0 pe-3 mb-2">
+                        <small class="text-muted">3 Days Ago</small>
+                    </p>
+                    <a href="#" class="btn btn-apply-now">Apply Now</a>
+                </div>
+            </div>
+        </div>
+        <!-- Repeat as needed for additional job cards -->
+    </div>
+
+    <!-- Pagination (static example for demonstration) -->
+    <div class="col-12">
+        <div class="text-center">
+            <p>Showing 1 to 5 of 20 jobs</p>
+        </div>
+        <ul class="pagination justify-content-end" id="pagination">
+            <li class="page-item" id="prevPage">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item count-page"><a class="page-link" href="#">1</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">2</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">3</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">4</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">5</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">6</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">7</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">8</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">9</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">10</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">11</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">12</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">13</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">14</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">15</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">16</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">17</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">18</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">19</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">20</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">21</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">22</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">23</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">24</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">25</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">26</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">27</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">28</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">29</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">30</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">31</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">32</a></li>
+            <li class="page-item count-page"><a class="page-link" href="#">33</a></li>
+            <li class="page-item count-page active"><a class="page-link" href="#">34</a></li>
+            <li class="page-item" id="nextPage">
+                <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </div>  
+    <!-- End Pagination -->
+</div>
 {% endblock content %}

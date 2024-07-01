@@ -1,53 +1,177 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
-
+from .models import *
+from django.core.validators import MinLengthValidator
+from django.forms import EmailInput, Select, CheckboxInput,CharField, SelectMultiple
+from django.forms import TextInput, PasswordInput, Textarea, FileInput, DateInput
+from .validators import validate_video_file
 
 # user registration
-class UserRegistrationForm(UserCreationForm):
-    email = forms.EmailField(
-        max_length=254,
-        help_text='Required. Inform a valid email address.',
-        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email address'})
+class UserRegistrationForm(forms.ModelForm):
+    confirm_password = CharField(
+        max_length = 25,
+        min_length = 8,
+        required = True,
+        validators = [
+            MinLengthValidator(8, 'The password is too short.')
+        ],
+        widget = PasswordInput({
+            'class': 'form-control'
+        })
     )
-    first_name = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name'})
-    )
-    last_name = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'})
-    )
-    username = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'})
-    )
-    password1 = forms.CharField(
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'})
-    )
-    password2 = forms.CharField(
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm Password'})
-    )
-
+    
     class Meta:
-        model = User
-        fields = ('first_name', 'last_name', 'username', 'email', 'password1', 'password2')
+        model = CustomUser
+        fields = [
+            'first_name',
+            'last_name',
+            'username',
+            'email',
+            'password',
+            'phone',
+        ]
+        
+        widgets = {
+            'username': TextInput({
+                'class': 'form-control',
+                'placeholder':'Enter Username'
+            }),
+
+            'email': EmailInput({
+                'class': 'form-control'
+            }),
+            
+            'first_name': TextInput({
+                'class': 'form-control',
+                'autocomplete': 'first_name'
+            }),
+
+            'last_name': TextInput({
+                'class': 'form-control'
+            }),
+            
+            'password': PasswordInput({
+                'class': 'form-control'
+            }),
+
+            'phone': TextInput({
+                'class': 'form-control'
+            }),
+        }
 
     def clean(self):
         cleaned_data = super().clean()
-        password1 = cleaned_data.get("password1")
-        password2 = cleaned_data.get("password2")
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
 
-        if password1 != password2:
-            self.add_error('password2', "Passwords do not match. Please enter the same password in both fields.")
+        if password and confirm_password and password != confirm_password:
+            self.add_error('confirm_password', "Passwords do not match. Please enter the same password in both fields.")
+
+        return cleaned_data
+    
+
+# Profile Add
+class ProfileAddForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = [
+            'profile_photo',
+            'dob',
+            'short_bio',
+            'job_title',
+            'qualification',
+            'hobby',
+            'interest',
+            'smoking_habit',
+            'drinking_habit',
+            'gender',
+            'country',
+            'open_to_hiring',
+            'short_reel'
+        ]
+
+        widgets = {
+            'dob': DateInput({
+                'class': 'form-control',
+                'type': 'date'
+            }),
+
+            'short_bio': Textarea({
+                'class': 'form-control',
+                'rows': '3'
+            }),
+
+            'job_title': TextInput({
+                'class': 'form-control'
+            }),
+
+            'qualification': Select({
+                'class': 'form-control'
+            }),
+
+            'hobby': SelectMultiple({
+                'class': 'form-control'
+            }),
+
+            'interest': SelectMultiple({
+                'class': 'form-control'
+            }),
+
+            'smoking_habit': Select({
+                'class': 'form-control'
+            }),
+
+            'drinking_habit': Select({
+                'class': 'form-control'
+            }),
+
+            'gender': Select({
+                'class': 'form-control'
+            }),
+
+            'country': Select({
+                'class': 'form-control'
+            }),
+
+            'open_to_hiring': CheckboxInput({
+                'class': 'form-check-input'
+            }),
+
+            'profile_photo': FileInput({
+                'class': 'form-control'
+            }),
+
+            'short_reel': FileInput({
+                'class': 'form-control',
+                'accept': 'video/mp4, video/avi, video/mkv, video/mov, video/wmv'
+            })
+        }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field_name != 'open_to_hiring':
+                field.required = True
+
+
             
+    def clean_short_reel(self):
+        short_reel = self.cleaned_data.get('short_reel', False)
+        if not short_reel:
+            raise forms.ValidationError("No file chosen!")
+
+        validate_video_file(short_reel)
+        return short_reel
+
 
 # user login
 class LoginForm(forms.Form):
-    username = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
-        min_length=5
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email address'}),
+        max_length=254
     )
     password = forms.CharField(
-        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'})
     )
     
 
@@ -92,26 +216,114 @@ class ResetPasswordForm(forms.Form):
         return cleaned_data
 
 
-# Edit Profile Form
-class ProfileEditForm(forms.ModelForm):
+# Profile Update
+class ProfileUpdateForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ['first_name', 'last_name', 'email', 'username']
-        widgets = {
-            'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter first name'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter last name'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter email'}),
-            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter username'}),
-        }
-    def __init__(self, *args, **kwargs):
-        super(ProfileEditForm, self).__init__(*args, **kwargs)
+        model = CustomUser
+        fields = [
+            'first_name',
+            'last_name',
+            'username',
+            'email',
+            'phone',
+            'profile_photo',
+            'dob',
+            'short_bio',
+            'job_title',
+            'qualification',
+            'hobby',
+            'interest',
+            'smoking_habit',
+            'drinking_habit',
+            'gender',
+            'country',
+            'open_to_hiring',
+            'short_reel'
+        ]
 
-    def clean_username(self):
-        username = self.cleaned_data['username']
-        user_instance = getattr(self, 'instance', None)
-        if User.objects.filter(username=username).exclude(pk=user_instance.pk).exists():
-            raise forms.ValidationError("A user with that username already exists.")
-        return username
+        widgets = {
+            'username': TextInput({
+                'class': 'form-control'
+            }),
+
+            'email': EmailInput({
+                'class': 'form-control'
+            }),
+            
+            'first_name': TextInput({
+                'class': 'form-control'
+            }),
+
+            'last_name': TextInput({
+                'class': 'form-control'
+            }),
+
+            'phone': TextInput({
+                'class': 'form-control'
+            }),
+
+            'dob': DateInput({
+                'class': 'form-control',
+                'type': 'date'
+            }),
+
+            'short_bio': Textarea({
+                'class': 'form-control',
+                'rows': '3'
+            }),
+
+            'job_title': TextInput({
+                'class': 'form-control'
+            }),
+
+            'qualification': Select({
+                'class': 'form-control'
+            }),
+
+            'hobby': SelectMultiple({
+                'class': 'form-control'
+            }),
+
+            'interest': SelectMultiple({
+                'class': 'form-control'
+            }),
+
+            'smoking_habit': Select({
+                'class': 'form-control'
+            }),
+
+            'drinking_habit': Select({
+                'class': 'form-control'
+            }),
+
+            'gender': Select({
+                'class': 'form-control'
+            }),
+
+            'country': Select({
+                'class': 'form-control'
+            }),
+
+            'open_to_hiring': CheckboxInput({
+                'class': 'form-check-input'
+            }),
+
+            'profile_photo': FileInput({
+                'class': 'form-control'
+            }),
+
+            'short_reel': FileInput({
+                'class': 'form-control',
+                'accept': 'video/mp4, video/avi, video/mkv, video/mov, video/wmv'
+            })
+        }
+    def clean_short_reel(self):
+        short_reel = self.cleaned_data.get('short_reel', False)
+        if not short_reel:
+            raise forms.ValidationError("No file chosen!")
+
+        validate_video_file(short_reel)
+        return short_reel
     
     
 # Change Password
@@ -130,5 +342,142 @@ class ChangePasswordForm(PasswordChangeForm):
     )
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['old_password', 'new_password1', 'new_password2']
+
+
+# Address
+class AddressCreateForm(forms.ModelForm):
+    class Meta:
+        model = Address
+        exclude = ['user']
+        widgets = {
+            'name': TextInput({
+                'class': 'form-control',
+                'autocomplete': 'name'
+            }),
+
+            'address_line_1': TextInput({
+                'class': 'form-control',
+                'autocomplete': 'address_line_1'
+            }),
+
+            'address_line_2': TextInput({
+                'class': 'form-control'
+            }),
+
+            'address_line_3': TextInput({
+                'class': 'form-control'
+            }),
+
+            'city': TextInput({
+                'class': 'form-control'
+            }),
+
+            'state': TextInput({
+                'class': 'form-control'
+            }),
+
+            'pincode': TextInput({
+                'class': 'form-control'
+            }),
+
+            'country': Select({
+                'class': 'form-control'
+            }),
+
+            'phone': TextInput({
+                'class': 'form-control'
+            }),
+
+            'is_default': CheckboxInput(),
+        }
+
+
+# Experience
+class ExperienceUpsertForm(forms.ModelForm):
+    class Meta:
+        model = Experience
+        exclude = ['user']
+        widgets = {
+            'title': TextInput({
+                'class': 'form-control',
+                'autocomplete': 'title'
+            }),
+
+            'company': TextInput({
+                'class': 'form-control',
+                'autocomplete': 'company'
+            }),
+
+            'location': TextInput({
+                'class': 'form-control'
+            }),
+
+            'description': Textarea({
+                'class': 'form-control',
+                'rows':'4'
+            }),
+
+            'start_date': DateInput({
+                'class': 'form-control',
+                'type': 'date'
+            }),
+
+            'end_date': DateInput({
+                'class': 'form-control',
+                'required':False,
+                'type': 'date'
+            }),
+        }
+
+
+# Education
+class EducationUpsertForm(forms.ModelForm):
+    class Meta:
+        model = Education
+        exclude = ['user']
+        widgets = {
+            'institution': TextInput({
+                'class' : 'form-control',
+            }),
+
+            'degree': Select({
+                'class': 'form-control',
+            }),
+
+            'field_of_study': TextInput({
+                'class': 'form-control',
+            }),
+
+            'start_date': DateInput({
+                'class': 'form-control',
+                'type': 'date',
+            }),
+
+            'end_date': DateInput({
+                'class': 'form-control',
+                'required':False,
+                'type': 'date'
+            }),
+        }    
+
+
+# UserSkill
+class UserSkillUpsertForm(forms.ModelForm):
+    class Meta:
+        model = UserSkill
+        exclude = ['user']
+        widgets = {
+            'skill': Select({
+                'class' : 'form-control',
+                'autocomplete': 'skill',
+                'placeholder' : 'Skill'
+            }),
+
+            'level': Select({
+                'class': 'form-control',
+                'autocomplete': 'level',
+                'placeholder' : 'level'
+            }),
+        }    

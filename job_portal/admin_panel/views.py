@@ -58,6 +58,3 @@ class JobCreateView(TemplateView):
 
 class JobUpdateView(TemplateView):
     template_name = 'admin_panel/pages/job/job-edit.html'
-
-class Test(TemplateView):
-    template_name = 'admin_panel/arrange.html'

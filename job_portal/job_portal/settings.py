@@ -61,7 +61,7 @@ ROOT_URLCONF = "job_portal.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": ['templates'],
+        "DIRS": ['./templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -130,9 +130,8 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 
 # Default primary key field type
@@ -151,3 +150,10 @@ EMAIL_HOST_USER = "adarshpbaiju2050@gmail.com"
 EMAIL_HOST_PASSWORD = "ovft uvyd hvaq titj"
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = "Job Portal"
+
+AUTH_USER_MODEL = 'user.CustomUser'
+
+AUTHENTICATION_BACKENDS = [
+    'user.auth_backend.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]

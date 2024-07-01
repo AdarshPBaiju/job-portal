@@ -1,0 +1,142 @@
+<nav class="navbar navbar-light p-3" style="background-color: white;">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url "core:home" %}"><h3>Job Portal</h3></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="d-flex align-items-center">
+            <div class="notification-icon-container me-3">
+                {% if user.is_authenticated %}
+                <button class="notification-icon btn btn-link" type="button" data-bs-toggle="modal" data-bs-target="#notificationModal">
+                    <i class="fa-regular fa-bell"></i>
+                </button>            
+                {% endif %}
+            </div>
+
+            <div class="btn-group">
+                {% if user.is_authenticated %}
+                <button class="profile-icon btn btn-link" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-regular fa-user"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end mt-3" aria-labelledby="profileDropdown">
+                    <li><a class="dropdown-item" href="{% url "user:profile_view" %}">Profile</a></li>
+                    <li><a class="dropdown-item" href="#">Messages</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'user:logout' %}">Logout</a></li>
+                </ul>
+                {% else %}
+                <a class="btn btn-outline-custom ms-2" href="{% url 'user:login' %}">Sign In</a>
+                <a class="btn btn-outline-secondary ms-2" href="{% url 'user:register' %}">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-unstyled">
+                    <li class="notification-item d-flex align-items-start">
+                        <div class="me-2 flex-shrink-0">
+                            <img src="https://images.pexels.com/photos/1519088/pexels-photo-1519088.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Notification" class="img-fluid notification-img">
+                        </div>
+                        <div class="notification-content flex-grow-1">
+                            <div class="fw-bold">Notification 1</div>
+                            <small class="text-muted notification-p">This is a short description of Notification 1.</small>
+                        </div>
+                        <button class="btn btn-link text-secondary p-0"><i class="fa-solid fa-times-circle"></i></button>
+                    </li>
+                    <li class="notification-item d-flex align-items-start">
+                        <div class="me-2 flex-shrink-0">
+                            <img src="https://images.pexels.com/photos/1519088/pexels-photo-1519088.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Notification" class="img-fluid notification-img">
+                        </div>
+                        <div class="notification-content flex-grow-1">
+                            <div class="fw-bold">Notification 2</div>
+                            <small class="text-muted notification-p">This is a short description of Notification 2.</small>
+                        </div>
+                        <button class="btn btn-link text-secondary p-0"><i class="fa-solid fa-times-circle"></i></button>
+                    </li>
+                    <li class="notification-item d-flex align-items-start">
+                        <div class="me-2 flex-shrink-0">
+                            <img src="https://images.pexels.com/photos/1519088/pexels-photo-1519088.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Notification" class="img-fluid notification-img">
+                        </div>
+                        <div class="notification-content flex-grow-1">
+                            <div class="fw-bold">Notification 3</div>
+                            <small class="text-muted notification-p">This is a short description of Notification 3.</small>
+                        </div>
+                        <button class="btn btn-link text-secondary p-0"><i class="fa-solid fa-times-circle"></i></button>
+                    </li>
+                    <li class="notification-item d-flex align-items-start">
+                        <div class="me-2 flex-shrink-0">
+                            <img src="https://images.pexels.com/photos/1519088/pexels-photo-1519088.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Notification" class="img-fluid notification-img">
+                        </div>
+                        <div class="notification-content flex-grow-1">
+                            <div class="fw-bold">Notification 4</div>
+                            <small class="text-muted notification-p">This is a short description of Notification 4.</small>
+                        </div>
+                        <button class="btn btn-link text-secondary p-0"><i class="fa-solid fa-times-circle"></i></button>
+                    </li>
+                    <li class="notification-item d-flex align-items-start">
+                        <div class="me-2 flex-shrink-0">
+                            <img src="https://images.pexels.com/photos/1519088/pexels-photo-1519088.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Notification" class="img-fluid notification-img">
+                        </div>
+                        <div class="notification-content flex-grow-1">
+                            <div class="fw-bold">Notification 5</div>
+                            <small class="text-muted notification-p">This is a short description of Notification 5.</small>
+                        </div>
+                        <button class="btn btn-link text-secondary p-0"><i class="fa-solid fa-times-circle"></i></button>
+                    </li>
+                    <li class="notification-item d-flex align-items-start">
+                        <div class="me-2 flex-shrink-0">
+                            <img src="https://images.pexels.com/photos/1519088/pexels-photo-1519088.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Notification" class="img-fluid notification-img">
+                        </div>
+                        <div class="notification-content flex-grow-1">
+                            <div class="fw-bold">Notification 6</div>
+                            <small class="text-muted notification-p">This is a short description of Notification 6.</small>
+                        </div>
+                        <button class="btn btn-link text-secondary p-0"><i class="fa-solid fa-times-circle"></i></button>
+                    </li>
+                    <li class="notification-item d-flex align-items-start">
+                        <div class="me-2 flex-shrink-0">
+                            <img src="https://images.pexels.com/photos/1519088/pexels-photo-1519088.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Notification" class="img-fluid notification-img">
+                        </div>
+                        <div class="notification-content flex-grow-1">
+                            <div class="fw-bold">Notification 7</div>
+                            <small class="text-muted notification-p">This is a short description of Notification 7.</small>
+                        </div>
+                        <button class="btn btn-link text-secondary p-0"><i class="fa-solid fa-times-circle"></i></button>
+                    </li>
+                    <li class="notification-item d-flex align-items-start">
+                        <div class="me-2 flex-shrink-0">
+                            <img src="https://images.pexels.com/photos/1519088/pexels-photo-1519088.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Notification" class="img-fluid notification-img">
+                        </div>
+                        <div class="notification-content flex-grow-1">
+                            <div class="fw-bold">Notification 8</div>
+                            <small class="text-muted notification-p">This is a short description of Notification 8.</small>
+                        </div>
+                        <button class="btn btn-link text-secondary p-0"><i class="fa-solid fa-times-circle"></i></button>
+                    </li>
+                    <li class="notification-item d-flex align-items-start">
+                        <div class="me-2 flex-shrink-0">
+                            <img src="https://images.pexels.com/photos/1519088/pexels-photo-1519088.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Notification" class="img-fluid notification-img">
+                        </div>
+                        <div class="notification-content flex-grow-1">
+                            <div class="fw-bold">Notification 9</div>
+                            <small class="text-muted notification-p">This is a short description of Notification 9.</small>
+                        </div>
+                        <button class="btn btn-link text-secondary p-0"><i class="fa-solid fa-times-circle"></i></button>
+                    </li>
+                </ul>
+            </div>
+            {% comment %} <div class="modal-footer">
+                <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Close</button>
+            </div> {% endcomment %}
+        </div>
+    </div>
+</div>
