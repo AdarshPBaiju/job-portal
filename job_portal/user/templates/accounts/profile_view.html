@@ -3,7 +3,7 @@
 {% block accounts_title %}Profile{% endblock accounts_title %}
 
 {% block accounts_content %}
-<div class="container-fluid ">        
+<div class="container-fluid">
     <div class="card shadow-lg p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="text-center">Your Profile</h1>
@@ -18,140 +18,97 @@
                         <p class="text-muted">No profile picture</p>
                     </div>
                 {% endif %}
+                <h4 class="mt-2">{{ user.first_name }} {{ user.last_name }}</h4>
+                <p class="text-muted">{{ user.username }}</p>
+                {% if user.short_reel %}
+                    <a href="#" class="btn btn-outline-custom btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#shortReelModal">View Reel</a>
+                {% else %}
+                    <p class="text-muted mt-2">No reel uploaded.</p>
+                {% endif %}
             </div>
             <div class="col-md-9">
-                <table class="table table-striped">
-                    <tbody>
-                        <tr>
-                            <th scope="row">Full Name</th>
-                            <td>{{ user.first_name }} {{ user.last_name }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Username</th>
-                            <td>{{ user.username }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Email</th>
-                            <td>{{ user.email }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Age</th>
-                            <td>{{ user.age }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Phone</th>
-                            <td>{{ user.phone }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Country</th>
-                            <td>{{ user.get_country_display }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Gender</th>
-                            <td>{{ user.get_gender_display }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Short Bio</th>
-                            <td>{{ user.short_bio }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Job Title</th>
-                            <td>{{ user.job_title }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Qualification</th>
-                            <td>{{ user.get_qualification_display }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Hobbies</th>
-                            <td>
-                                {% for hobby in user.hobby.all %}
-                                <span class="badge salary-badge mt-1">{{ hobby.name }}</span>
-                                {% endfor %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Interests</th>
-                            <td>
-                                {% for interest in user.interest.all %}
-                                <span class="badge salary-badge mt-1">{{ interest.name }}</span>
-                                {% endfor %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Smoking Habit</th>
-                            <td>{{ user.get_smoking_habit_display }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Drinking Habit</th>
-                            <td>{{ user.get_drinking_habit_display }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Open To Hiring</th>
-                            <td>{{ user.open_to_hiring|yesno:"Yes,No" }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">DOB</th>
-                            <td>{{ user.dob }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Short Reel</th>
-                            <td>
-                                {% if user.short_reel %}
-                                    <a href="#" class="btn btn-outline-custom btn-sm" data-bs-toggle="modal" data-bs-target="#shortReelModal">View Reel</a>
-                                {% else %}
-                                    <p class="text-muted">No reel uploaded.</p>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-{% comment %} <div class="modal fade" id="shortReelModal" tabindex="-1" aria-labelledby="shortReelModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content modal-video">
-            <div class="modal-header">
-                <h5 class="modal-title" id="shortReelModalLabel">Short Reel</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="video-container">
-                    <video id="shortReelVideo" class="custom-video" width="100%" style="max-height: 600px;">
-                        <source src="{{ user.short_reel.url }}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-
-                    <div class="video-controls">
-                        <div class="progress-container">
-                            <div class="progress-bar"></div>
-                        </div>
-
-                        <div class="control-bar">
-                            <div class="play-pause-button" id="playPauseButton">
-                                <i class="fas fa-play-circle"></i>
-                            </div>
-                            <div class="time-display">
-                                <span class="current-time">0:00</span> / <span class="duration">0:00</span>
-                            </div>
-                            <div class="volume-controls">
-                                <button id="volumeDownButton" class="btn btn-sm btn-custom"><i class="fa-solid fa-volume-low"></i></button>
-                                <input type="range" id="volumeSlider" class="form-range" min="0" max="1" step="0.1" value="1" />
-                                <button id="volumeUpButton" class="btn btn-sm btn-custom"><i class="fa-solid fa-volume-high"></i></button>
-                                <span id="volumeIcon"><i class="fa-solid fa-volume-high"></i></span>
-                            </div>
-                            <div class="full-screen-button" id="fullScreenButton">
-                                <i class="fas fa-expand"></i>
-                            </div>
-                        </div>
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <tbody>
+                                <tr>
+                                    <th scope="row" style="width: 200px;">Email</th>
+                                    <td>{{ user.email }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="width: 200px;">Age</th>
+                                    <td>{{ user.age }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="width: 200px;">Phone</th>
+                                    <td>{{ user.phone }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="width: 200px;">Country</th>
+                                    <td>{{ user.get_country_display }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="width: 200px;">Gender</th>
+                                    <td>{{ user.get_gender_display }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="width: 200px;">Job Title</th>
+                                    <td>{{ user.job_title }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="width: 200px;">Qualification</th>
+                                    <td>{{ user.get_qualification_display }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="width: 200px;">Hobbies</th>
+                                    <td>
+                                        {% for hobby in user.hobby.all %}
+                                            <span class="badge salary-badge mt-1">{{ hobby.name }}</span>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="width: 200px;">Interests</th>
+                                    <td>
+                                        {% for interest in user.interest.all %}
+                                            <span class="badge salary-badge mt-1">{{ interest.name }}</span>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="width: 200px;">Smoking Habit</th>
+                                    <td>{{ user.get_smoking_habit_display }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="width: 200px;">Drinking Habit</th>
+                                    <td>{{ user.get_drinking_habit_display }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="width: 200px;">Open To Hiring</th>
+                                    <td>{{ user.open_to_hiring|yesno:"Yes,No" }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="width: 200px;">DOB</th>
+                                    <td>{{ user.dob }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <div class="card mt-3 shadow-sm" style="border-left: 5px solid #007bff;">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Bio</h5>
+                                                <p class="card-text">{{ user.short_bio }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div> {% endcomment %}
+</div>
 
 <div class="modal fade" id="shortReelModal" tabindex="-1" aria-labelledby="shortReelModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
