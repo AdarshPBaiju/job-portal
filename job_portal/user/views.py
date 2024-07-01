@@ -432,8 +432,10 @@ class UserSkillCreateView(LoginRequiredMixin, CreateView):
     form_class = UserSkillUpsertForm
     template_name = 'accounts/skill_upsert.html'
     success_url = reverse_lazy('user:skill_list')
+    
 
     def form_valid(self, form):
+        form.instance.user = self.request.user
         try:
             response = super().form_valid(form)
             messages.success(self.request, f'"{form.instance.skill}" created successfully.')
@@ -441,13 +443,7 @@ class UserSkillCreateView(LoginRequiredMixin, CreateView):
         except IntegrityError:
             messages.error(self.request, f'"{form.instance.skill}" already exists.')
             return self.form_invalid(form)
-    
-    
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        response = super().form_valid(form)
-        messages.success(self.request, f'{form.instance.skill} Updated successfully.')
-        return response
+
 
 
 class UserSkillDeleteView(LoginRequiredMixin, View):
