@@ -572,7 +572,6 @@ class JobDeleteView(LoginRequiredMixin, View):
     
 
 # Job Detail
-
 class JobDetailView(LoginRequiredMixin, DetailView):
     model = Job
     template_name = 'job-detail.html'
