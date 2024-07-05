@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function() {
 document.addEventListener('DOMContentLoaded', function () {
     var player = document.getElementById('player');
     var modal = document.getElementById('shortReelModal');
-    var closeModalBtn = modal ? modal.querySelector('.btn-close') : null;
+    var closeModalBtn = modal ? modal.querySelector('.btn-close-custom') : null;
 
     if (closeModalBtn) {
         closeModalBtn.addEventListener('click', function () {

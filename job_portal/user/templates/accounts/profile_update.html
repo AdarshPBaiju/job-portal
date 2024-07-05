@@ -35,18 +35,10 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        {% include 'components/form_field.html' with field=form.job_title %}
+                        {% include 'components/form_field.html' with field=form.short_reel %}
                     </div>
                     <div class="col-md-6">
                         {% include 'components/form_field.html' with field=form.qualification %}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        {% include 'components/form_field.html' with field=form.hobby %}
-                    </div>
-                    <div class="col-md-6">
-                        {% include 'components/form_field.html' with field=form.interest %}
                     </div>
                 </div>
                 <div class="row">
@@ -57,19 +49,6 @@
                         {% include 'components/form_field.html' with field=form.drinking_habit %}
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        {% include 'components/form_field.html' with field=form.gender %}
-                    </div>
-                    <div class="col-md-4">
-                        {% include 'components/form_field.html' with field=form.country %}
-                    </div>
-                    <div class="col-md-4">
-                        {% include 'components/form_field.html' with field=form.short_reel %}
-                    </div>
-                </div>
-                {% include 'components/form_field.html' with field=form.short_bio %}
-                {% include 'components/form_field.html' with field=form.open_to_hiring %}
                 <div class="d-grid">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-custom mt-4">Save</button>
