@@ -4,7 +4,7 @@ from django.views import View
 # Create your views here.
 class HomeView(View):
     def get(self, request, *args, **kwargs):
-        return render(request, 'home.html')
+        return render(request, 'index.html')
 
 class AboutView(View):
     def get(self, request, *args, **kwargs):

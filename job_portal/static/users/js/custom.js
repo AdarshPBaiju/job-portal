@@ -108,8 +108,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Usage without error messages
-    setupSearchInput('id_interest', 'Search interests');
-    setupSearchInput('id_hobby', 'Search hobbies');
+    setupSearchInput('id_interests', 'Search interests');
+    setupSearchInput('id_hobbies', 'Search hobbies');
 });
 
 
@@ -167,5 +167,71 @@ document.addEventListener('DOMContentLoaded', function () {
                 player.pause();
             }
         });
+    }
+});
+
+
+// Select Job Profile Type
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('jobseekerLink')) {
+        document.getElementById('jobseekerLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!document.getElementById('jobseekerRadio').checked) {
+                document.getElementById('jobseekerRadio').checked = true;
+                toggleButtonStyle('jobseekerLink');
+                deselectOther('employerLink');
+            }
+        });
+    }
+
+    if (document.getElementById('employerLink')) {
+        document.getElementById('employerLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!document.getElementById('employerRadio').checked) {
+                document.getElementById('employerRadio').checked = true;
+                toggleButtonStyle('employerLink');
+                deselectOther('jobseekerLink');
+            }
+        });
+    }
+
+    if (document.getElementById('continueBtn')) {
+        document.getElementById('continueBtn').addEventListener('click', function() {
+            var selectedType = document.querySelector('input[name="type"]:checked');
+            if (selectedType) {
+                document.getElementById('profileForm').submit();
+            } else {
+                alert('Please select a profile type.');
+            }
+        });
+    }
+});
+
+function toggleButtonStyle(linkId) {
+    var link = document.getElementById(linkId);
+    if (link.classList.contains('btn-outline-custom')) {
+        link.classList.remove('btn-outline-custom');
+        link.classList.add('btn-custom');
+    } else {
+        link.classList.remove('btn-custom');
+        link.classList.add('btn-outline-custom');
+    }
+}
+
+function deselectOther(otherLinkId) {
+    var otherLink = document.getElementById(otherLinkId);
+    if (otherLink.classList.contains('btn-custom')) {
+        otherLink.classList.remove('btn-custom');
+        otherLink.classList.add('btn-outline-custom');
+    }
+}
+
+
+
+// Multiple Image input field add class form-control
+document.addEventListener('DOMContentLoaded', function() {
+    var imageInput = document.getElementById('id_image');
+    if (imageInput) {
+        imageInput.classList.add('form-control');
     }
 });

@@ -1,14 +1,15 @@
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import get_object_or_404, render, redirect
-from .forms import ProfileAddForm, UserRegistrationForm, LoginForm, ForgotPasswordForm, ResetPasswordForm, ProfileUpdateForm, ChangePasswordForm, AddressCreateForm, ExperienceUpsertForm, EducationUpsertForm, UserSkillUpsertForm
-from django.views.generic import FormView, TemplateView, View, ListView, CreateView, UpdateView
+from .forms import ImageForm, JobForm, UserDetailAddForm, UserHobbyForm, UserImageForm, UserInterestForm, UserRegistrationForm, LoginForm, ForgotPasswordForm, ResetPasswordForm, ProfileUpdateForm, ChangePasswordForm, AddressCreateForm, ExperienceUpsertForm, EducationUpsertForm, UserSkillUpsertForm
+from django.views.generic import FormView, TemplateView, View, ListView, CreateView, UpdateView, DetailView
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.urls import reverse
 from django.contrib.sites.shortcuts import get_current_site
-from .models import CustomUser, Address, Experience, Education, UserSkill
+from .models import CustomUser, Address, Experience, Education, UserHobby, UserImages, UserInterest, UserSkill
+from jobs.models import Job
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.utils.encoding import force_bytes
@@ -61,32 +62,62 @@ class CustomRegisterView(RedirectAuthenticatedUserMixin, FormView):
         
 
 # Add Profile
-class ProfileAddView(LoginRequiredMixin, FormView):
-    model = CustomUser
-    form_class = ProfileAddForm
-    template_name = 'accounts/addprofile.html'
-    success_url = reverse_lazy("user:select_profile")
+class RegisterCompleteView(LoginRequiredMixin, FormView):
+    template_name = 'accounts/registrationcomplete.html'
+    success_url = reverse_lazy("job:select_profile")
+    form_class = UserDetailAddForm
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['instance'] = self.request.user
-        return kwargs
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['hobby_form'] = UserHobbyForm()
+        context['interest_form'] = UserInterestForm()
+        context['image_form'] = UserImageForm()
+        return context
+    
     def form_valid(self, form):
-        form.save()
-        messages.success(self.request, 'Details Added successfully.')
-        return super().form_valid(form)
+        # Initialize forms with POST data
+        hobby_form = UserHobbyForm(self.request.POST)
+        interest_form = UserInterestForm(self.request.POST)
+        image_form = UserImageForm(self.request.POST, self.request.FILES)
+        
+        # Validate all forms
+        if hobby_form.is_valid() and interest_form.is_valid() and image_form.is_valid() and form.is_valid():
+            hobbies = hobby_form.cleaned_data['hobbies']
+            for hobby in hobbies:
+                UserHobby.objects.get_or_create(user=self.request.user, hobby=hobby)
+            
+            interests = interest_form.cleaned_data['interests']
+            for interest in interests:
+                UserInterest.objects.get_or_create(user=self.request.user, interest=interest)
+                
+            images = self.request.FILES.getlist('image')
+            for image in images:
+                UserImages.objects.create(user=self.request.user, image=image)
+            
+            user = self.request.user
+            user.profile_photo = form.cleaned_data['profile_photo']
+            user.dob = form.cleaned_data['dob']
+            user.qualification = form.cleaned_data['qualification']
+            user.smoking_habit = form.cleaned_data['smoking_habit']
+            user.drinking_habit = form.cleaned_data['drinking_habit']
+            user.short_reel = form.cleaned_data['short_reel']
+            
+            user.save()
+            
+            return super().form_valid(form)
+        
+        return self.form_invalid(form, hobby_form=hobby_form, interest_form=interest_form, image_form=image_form)
 
-    def form_invalid(self, form):
-        # Handle form validation errors
-        return self.render_to_response(self.get_context_data(form=form))
+    def form_invalid(self, form, hobby_form=None, interest_form=None, image_form=None):
+        context = self.get_context_data(
+            form=form,
+            hobby_form=hobby_form or UserHobbyForm(),
+            interest_form=interest_form or UserInterestForm(),
+            image_form=image_form or UserImageForm(),
+        )
+        return self.render_to_response(context)
     
     
-# Job Profile Select View
-class JobProfileSelectView(LoginRequiredMixin, TemplateView):
-    template_name = 'accounts/select_jobprofile.html'
-    
-
 # Login
 class CustomLoginView(RedirectAuthenticatedUserMixin, View):
     template_name = 'accounts/login.html'
@@ -211,6 +242,25 @@ class ResetPasswordView(RedirectAuthenticatedUserMixin, View):
 # Profile View
 class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/profile_view.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['image_form'] = ImageForm()
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        form = ImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            user_image = form.save(commit=False)
+            user_image.user = request.user
+            user_image.save()
+            messages.success(request, 'Image updated successfully.')
+            return redirect(reverse_lazy('user:profile_view'))
+        else:
+            context = self.get_context_data()
+            context['image_form'] = form
+            context['form_errors'] = True
+            return self.render_to_response(context)
         
 
 # Profile Update
@@ -453,3 +503,77 @@ class UserSkillDeleteView(LoginRequiredMixin, View):
         education.delete()
         messages.success(self.request, f'{education.skill} deleted successfully.')
         return redirect('user:skill_list')
+
+
+# Job List
+class JobListView(LoginRequiredMixin, ListView):
+    model = Job
+    template_name = 'accounts/job_list.html'
+    context_object_name = 'data'
+    
+    def get_queryset(self):
+        return Job.objects.filter(user=self.request.user.jobportalprofile)
+
+
+# Job Create
+class JobCreateView(LoginRequiredMixin, CreateView):
+    form_class = JobForm
+    template_name = 'accounts/job_upsert.html'
+    success_url = reverse_lazy('user:job-list')
+    
+    def form_valid(self, form):
+        form.instance.user = self.request.user.jobportalprofile
+        response = super().form_valid(form)
+        messages.success(self.request, f'Job created successfully.')
+        return response
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Job creation failed.')
+        return super().form_invalid(form)
+
+
+# Job Update
+class JobUpdateView(LoginRequiredMixin, UpdateView):
+    form_class = JobForm
+    model = Job
+    template_name = 'accounts/job_upsert.html'
+    success_url = reverse_lazy('user:job-list')
+    pk_url_kwarg = 'id'
+    
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user.jobportalprofile)
+    
+    def form_valid(self, form):
+        form.instance.user = self.request.user.jobportalprofile
+        response = super().form_valid(form)
+        messages.success(self.request, f'Job updated successfully.')
+        return response
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Job update failed.')
+        return super().form_invalid(form)
+    
+
+# Job Delete
+class JobDeleteView(LoginRequiredMixin, View):
+    model = Job
+    template_name = 'accounts/job_delete.html'
+    success_url = reverse_lazy('user:job-list')
+    
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user.jobportalprofile)
+    
+    def get(self, request, *args, **kwargs):
+        job_id = kwargs.get('id')
+        job = get_object_or_404(Job, id=job_id, user=self.request.user.jobportalprofile)
+        job.delete()
+        messages.success(self.request, f'Job deleted successfully.')
+        return redirect('user:job-list')
+    
+
+# Job Detail
+
+class JobDetailView(LoginRequiredMixin, DetailView):
+    model = Job
+    template_name = 'job-detail.html'
+    context_object_name = 'job'

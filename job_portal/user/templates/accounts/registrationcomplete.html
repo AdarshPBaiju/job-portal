@@ -12,9 +12,7 @@
                     <form method="post" enctype="multipart/form-data">
                         {% include 'components/form_field.html' with field=form.profile_photo %}
                         <div class="row">
-                            <div class="col-md-6">
-                                {% include 'components/form_field.html' with field=form.job_title %}
-                            </div>
+                            
                             <div class="col-md-6">
                                 {% include 'components/form_field.html' with field=form.qualification %}
                             </div>
@@ -24,10 +22,10 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                {% include 'components/form_field.html' with field=form.hobby %}
+                                {% include 'components/form_field.html' with field=hobby_form.hobbies %}
                             </div>
                             <div class="col-md-6">
-                                {% include 'components/form_field.html' with field=form.interest %}
+                                {% include 'components/form_field.html' with field=interest_form.interests %}
                             </div>
                         </div>
                         <div class="row">
@@ -39,18 +37,13 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4">
-                                {% include 'components/form_field.html' with field=form.gender %}
+                            <div class="col-md-6">
+                                {% include 'components/form_field.html' with field=image_form.image %}
                             </div>
-                            <div class="col-md-4">
-                                {% include 'components/form_field.html' with field=form.country %}
-                            </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 {% include 'components/form_field.html' with field=form.short_reel %}
                             </div>
                         </div>
-                        {% include 'components/form_field.html' with field=form.short_bio %}
-                        {% include 'components/form_field.html' with field=form.open_to_hiring %}
                         <div class="d-grid">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-custom mt-4">Save</button>

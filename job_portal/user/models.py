@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from datetime import date
+from django.db.models.signals import pre_delete, pre_save
+from django.dispatch import receiver
 import os
 
 # Create your models here.
@@ -14,6 +16,21 @@ COUNTRY_CHOICES = (
     ('Afghanistan', 'Afghanistan')
 )
 
+PLACE_CHOICES = (
+    ('Thiruvananthapuram', 'Thiruvananthapuram'),
+    ('Kochi', 'Kochi'),
+    ('Kozhikode', 'Kozhikode'),
+    ('Thrissur', 'Thrissur'),
+    ('Kollam', 'Kollam'),
+    ('Alappuzha', 'Alappuzha'),
+    ('Kannur', 'Kannur'),
+    ('Palakkad', 'Palakkad'),
+    ('Kottayam', 'Kottayam'),
+    ('Malappuram', 'Malappuram'),
+    ('Pathanamthitta', 'Pathanamthitta'),
+    ('Idukki', 'Idukki'),
+    ('Wayanad', 'Wayanad'),
+)
 
 QUALIFICATION_CHOICES = (
     ("High School", "High School"),
@@ -61,41 +78,21 @@ LEVEL_CHOICES = (
 )
 
 
-class Hobby(models.Model):
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
-
-class Interest(models.Model):
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
-
-
 class Skill(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
-    
+        
 
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15, blank=True, null=True)
     profile_photo = models.ImageField(upload_to='user_photos/', blank=True, null=True)
     dob = models.DateField(blank=True, null=True)
-    short_bio = models.TextField(max_length=500, blank=True, null=True)
-    job_title = models.CharField(max_length=50, blank=True, null=True)
     qualification = models.CharField(max_length=255, blank=True, null=True, choices=QUALIFICATION_CHOICES)
-    hobby = models.ManyToManyField(Hobby)
-    interest = models.ManyToManyField(Interest)
     smoking_habit = models.CharField(max_length=20, choices=SMOKING_CHOICES, default='Non-smoker')
     drinking_habit = models.CharField(max_length=20, choices=DRINKING_CHOICES, default='Non-drinker')
-    gender = models.CharField(max_length=1, default='M', choices=GENDER_CHOICES)
-    country = models.CharField(max_length=50, default='India', choices=COUNTRY_CHOICES)
-    open_to_hiring = models.BooleanField(default=False)
     short_reel = models.FileField(upload_to='short_reel/', blank=True, null=True)
 
     USERNAME_FIELD = 'email'
@@ -138,7 +135,75 @@ class CustomUser(AbstractUser):
                 os.remove(self.short_reel.path)
             self.short_reel.delete()
         
+
         super().delete(*args, **kwargs)
+
+
+class Hobby(models.Model):
+    hobby = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.hobby
+
+
+class Interest(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+        
+
+class UserHobby(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    hobby = models.ForeignKey(Hobby, on_delete=models.CASCADE)
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'hobby')
+        
+    def __str__(self):
+        return f"{self.user.username} - {self.hobby.hobby}"
+    
+    
+class UserInterest(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    interest = models.ForeignKey(Interest, on_delete=models.CASCADE)
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'interest')
+        
+    def __str__(self):
+        return f"{self.user.username} - {self.interest.name}"
+    
+        
+
+class UserImages(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='user_images/', blank=True, null=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.user.email
+    
+@receiver(pre_delete, sender=UserImages)
+def user_images_delete(sender, instance, **kwargs):
+    if instance.image:
+        if os.path.isfile(instance.image.path):
+            os.remove(instance.image.path)
+
+@receiver(pre_save, sender=UserImages)
+def user_images_update(sender, instance, **kwargs):
+    if instance.pk:
+        try:
+            old_instance = UserImages.objects.get(pk=instance.pk)
+            if old_instance.image:
+                if old_instance.image != instance.image:
+                    if os.path.isfile(old_instance.image.path):
+                        os.remove(old_instance.image.path)
+        except UserImages.DoesNotExist:
+            pass
+
 
 
 class Address(models.Model):
@@ -202,4 +267,4 @@ class UserSkill(models.Model):
         unique_together = ['user', 'skill']
     
     def __str__(self):
-        return f"{self.skill} - {self.level}"
+        return f"{self.skill}"

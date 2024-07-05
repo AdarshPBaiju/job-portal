@@ -1,11 +1,51 @@
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm
+from jobs.models import Job
 from .models import *
 from django.core.validators import MinLengthValidator
-from django.forms import EmailInput, Select, CheckboxInput,CharField, SelectMultiple
+from django.forms import EmailInput, Select, CheckboxInput,CharField
 from django.forms import TextInput, PasswordInput, Textarea, FileInput, DateInput
 from .validators import validate_video_file
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
+
+
+class MultipleImageInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+class MultipleImageField(forms.FileField):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("widget", MultipleImageInput())
+        super().__init__(*args, **kwargs)
+
+    def clean(self, data, initial=None):
+        single_file_clean = super().clean
+        if isinstance(data, (list, tuple)):
+            result = [single_file_clean(d, initial) for d in data]
+        else:
+            result = [single_file_clean(data, initial)]
+        return result
+
+    def to_python(self, data):
+        if data in self.empty_values:
+            return None
+
+        if isinstance(data, list):
+            return [self.check_and_store_image(d) for d in data]
+        else:
+            return self.check_and_store_image(data)
+
+    def check_and_store_image(self, data):
+        file = super().to_python(data)
+        if file is None:
+            return None
+        if not file.content_type.startswith('image'):
+            raise ValidationError(_('File type is not supported.'), code='invalid')
+        return file
+
+    
+    
 # user registration
 class UserRegistrationForm(forms.ModelForm):
     confirm_password = CharField(
@@ -71,22 +111,15 @@ class UserRegistrationForm(forms.ModelForm):
     
 
 # Profile Add
-class ProfileAddForm(forms.ModelForm):
+class UserDetailAddForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = [
             'profile_photo',
             'dob',
-            'short_bio',
-            'job_title',
             'qualification',
-            'hobby',
-            'interest',
             'smoking_habit',
             'drinking_habit',
-            'gender',
-            'country',
-            'open_to_hiring',
             'short_reel'
         ]
 
@@ -95,28 +128,9 @@ class ProfileAddForm(forms.ModelForm):
                 'class': 'form-control',
                 'type': 'date'
             }),
-
-            'short_bio': Textarea({
-                'class': 'form-control',
-                'rows': '3'
-            }),
-
-            'job_title': TextInput({
-                'class': 'form-control'
-            }),
-
             'qualification': Select({
                 'class': 'form-control'
             }),
-
-            'hobby': SelectMultiple({
-                'class': 'form-control'
-            }),
-
-            'interest': SelectMultiple({
-                'class': 'form-control'
-            }),
-
             'smoking_habit': Select({
                 'class': 'form-control'
             }),
@@ -124,19 +138,6 @@ class ProfileAddForm(forms.ModelForm):
             'drinking_habit': Select({
                 'class': 'form-control'
             }),
-
-            'gender': Select({
-                'class': 'form-control'
-            }),
-
-            'country': Select({
-                'class': 'form-control'
-            }),
-
-            'open_to_hiring': CheckboxInput({
-                'class': 'form-check-input'
-            }),
-
             'profile_photo': FileInput({
                 'class': 'form-control'
             }),
@@ -149,12 +150,9 @@ class ProfileAddForm(forms.ModelForm):
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            if field_name != 'open_to_hiring':
-                field.required = True
-
-
-            
+        for field_name, field_instance in self.fields.items():
+            field_instance.required = True
+   
     def clean_short_reel(self):
         short_reel = self.cleaned_data.get('short_reel', False)
         if not short_reel:
@@ -163,6 +161,26 @@ class ProfileAddForm(forms.ModelForm):
         validate_video_file(short_reel)
         return short_reel
 
+
+class UserImageForm(forms.ModelForm):
+    image = MultipleImageField(label='Image Files')
+
+    class Meta:
+        model = UserImages
+        fields = ['image']
+        widgets = {
+            'image': MultipleImageInput(attrs={'class': 'form-control', 'multiple': True,'accept': 'image/*'}),
+        }
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.user = self.user
+        if commit:
+            instance.save()
+        return instance
+
+
+# Job Seeker Form
+             
 
 # user login
 class LoginForm(forms.Form):
@@ -228,16 +246,9 @@ class ProfileUpdateForm(forms.ModelForm):
             'phone',
             'profile_photo',
             'dob',
-            'short_bio',
-            'job_title',
             'qualification',
-            'hobby',
-            'interest',
             'smoking_habit',
             'drinking_habit',
-            'gender',
-            'country',
-            'open_to_hiring',
             'short_reel'
         ]
 
@@ -267,24 +278,7 @@ class ProfileUpdateForm(forms.ModelForm):
                 'type': 'date'
             }),
 
-            'short_bio': Textarea({
-                'class': 'form-control',
-                'rows': '3'
-            }),
-
-            'job_title': TextInput({
-                'class': 'form-control'
-            }),
-
             'qualification': Select({
-                'class': 'form-control'
-            }),
-
-            'hobby': SelectMultiple({
-                'class': 'form-control'
-            }),
-
-            'interest': SelectMultiple({
                 'class': 'form-control'
             }),
 
@@ -294,18 +288,6 @@ class ProfileUpdateForm(forms.ModelForm):
 
             'drinking_habit': Select({
                 'class': 'form-control'
-            }),
-
-            'gender': Select({
-                'class': 'form-control'
-            }),
-
-            'country': Select({
-                'class': 'form-control'
-            }),
-
-            'open_to_hiring': CheckboxInput({
-                'class': 'form-check-input'
             }),
 
             'profile_photo': FileInput({
@@ -483,3 +465,61 @@ class UserSkillUpsertForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
+        
+
+
+class UserHobbyForm(forms.ModelForm):
+    hobbies = forms.ModelMultipleChoiceField(
+        queryset=Hobby.objects.all(),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
+        required=True
+    )
+
+    class Meta:
+        model = UserHobby
+        fields = []
+
+class UserInterestForm(forms.ModelForm):
+    interests = forms.ModelMultipleChoiceField(
+        queryset=Interest.objects.all(),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
+        required=True
+    )
+
+    class Meta:
+        model = UserInterest
+        fields = []
+
+
+class ImageForm(forms.ModelForm):
+    
+    class Meta:
+        model = UserImages
+        fields = ['image']
+        
+        widgets = {
+            'image': forms.FileInput(attrs={'class': 'form-control', 'required':True}),
+        }
+        
+    def clean_image(self):
+        image = self.cleaned_data.get('image', False)
+        if not image:
+            raise forms.ValidationError("File is required.")
+        return image
+
+
+ 
+# Jobs
+class JobForm(forms.ModelForm):
+    class Meta:
+        model = Job
+        fields = ['job_title', 'job_description', 'salary_from', 'salary_to', 'location', 'expected_joining_date']
+        
+        widgets = {
+            'job_title': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Enter job title', 'required':True}),
+            'job_description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Enter job description', 'rows': '5', 'required':True}),
+            'location': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Enter job location', 'required':True}),
+            'expected_joining_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'placeholder': 'Enter expected joining date', 'required':True}),
+            'salary_from': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter job salary', 'required':True}),
+            'salary_to': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter job salary', 'required':False})
+        }

@@ -9,13 +9,19 @@ urlpatterns = [
     # Auth
     path("login/", CustomLoginView.as_view(), name="login"),
     path("register/", CustomRegisterView.as_view(), name="register"),
-    path('add-detail/', ProfileAddView.as_view(), name='profile_add'),
-    path('select-profile/', JobProfileSelectView.as_view(), name='select_profile'),
+    path('complete-registration/', RegisterCompleteView.as_view(), name='profile_add'),
     path("logout/", CustomLogoutView.as_view(), name="logout"),
     
     # Profile
     path('profile/', ProfileView.as_view(), name='profile_view'),
     path('profile/update/', ProfileUpdateView.as_view(), name='profile_update'),
+    
+    # Job
+    path('job/', JobListView.as_view(), name='job-list'),
+    path('job/<int:pk>/', JobDetailView.as_view(), name='job-detail'),
+    path('job/create/', JobCreateView.as_view(), name='job-create'),
+    path('job/update/<id>', JobUpdateView.as_view(), name='job-update'),
+    path('job/delete/<id>/', JobDeleteView.as_view(), name='job-delete'),
     
     # Address
     path('address/', AddressListVew.as_view(), name='address_list'),

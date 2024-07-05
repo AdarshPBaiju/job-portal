@@ -1,5 +1,5 @@
 {% extends 'accounts/shared/accounts_base.html' %}
-
+{% load static %}
 {% block accounts_title %}Profile{% endblock accounts_title %}
 
 {% block accounts_content %}
@@ -7,16 +7,16 @@
     <div class="card shadow-lg p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="text-center">Your Profile</h1>
-            <a href="{% url 'user:profile_update' %}" class="btn btn-custom ms-auto">Edit</a>
+            <div class="ms-auto">
+                <a href="{% url 'user:profile_update' %}" class="btn btn-custom">Edit</a>
+            </div>
         </div>
         <div class="row g-0">
-            <div class="col-md-3 text-center mb-3">
+            <div class="col-md-12 d-flex flex-column align-items-center mb-3">
                 {% if user.profile_photo %}
-                    <img src="{{ user.profile_photo.url }}" class="img-fluid rounded-circle profile-picture shadow-sm" style="width: 150px; height: 150px;" alt="Profile Picture">
+                    <img src="{{ user.profile_photo.url }}" class="img-fluid rounded-circle profile-picture shadow-sm" style="max-height: 200px;" alt="Profile Picture">
                 {% else %}
-                    <div class="d-flex align-items-center justify-content-center" style="width: 150px; height: 150px; background-color: #f8f9fa; border-radius: 50%;">
-                        <p class="text-muted">No profile picture</p>
-                    </div>
+                    <img src="{% static 'users/images/default-avatar.jpg' %}" class="img-fluid rounded-circle profile-picture shadow-sm" style="max-height: 200px;" alt="Profile Picture">
                 {% endif %}
                 <h4 class="mt-2">{{ user.first_name }} {{ user.last_name }}</h4>
                 <p class="text-muted">{{ user.username }}</p>
@@ -26,92 +26,201 @@
                     <p class="text-muted mt-2">No reel uploaded.</p>
                 {% endif %}
             </div>
-            <div class="col-md-9">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <table class="table table-striped">
-                            <tbody>
-                                <tr>
-                                    <th scope="row" style="width: 200px;">Email</th>
-                                    <td>{{ user.email }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" style="width: 200px;">Age</th>
-                                    <td>{{ user.age }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" style="width: 200px;">Phone</th>
-                                    <td>{{ user.phone }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" style="width: 200px;">Country</th>
-                                    <td>{{ user.get_country_display }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" style="width: 200px;">Gender</th>
-                                    <td>{{ user.get_gender_display }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" style="width: 200px;">Job Title</th>
-                                    <td>{{ user.job_title }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" style="width: 200px;">Qualification</th>
-                                    <td>{{ user.get_qualification_display }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" style="width: 200px;">Hobbies</th>
-                                    <td>
-                                        {% for hobby in user.hobby.all %}
-                                            <span class="badge salary-badge mt-1">{{ hobby.name }}</span>
-                                        {% endfor %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" style="width: 200px;">Interests</th>
-                                    <td>
-                                        {% for interest in user.interest.all %}
-                                            <span class="badge salary-badge mt-1">{{ interest.name }}</span>
-                                        {% endfor %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" style="width: 200px;">Smoking Habit</th>
-                                    <td>{{ user.get_smoking_habit_display }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" style="width: 200px;">Drinking Habit</th>
-                                    <td>{{ user.get_drinking_habit_display }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" style="width: 200px;">Open To Hiring</th>
-                                    <td>{{ user.open_to_hiring|yesno:"Yes,No" }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" style="width: 200px;">DOB</th>
-                                    <td>{{ user.dob }}</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">
-                                        <div class="card mt-3 shadow-sm" style="border-left: 5px solid #007bff;">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Bio</h5>
-                                                <p class="card-text">{{ user.short_bio }}</p>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 mb-3 d-flex">
+                                <div class="card w-100">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">Email</h5>
+                                        <p class="card-text flex-grow-1">{{ user.email }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-3 d-flex">
+                                <div class="card w-100">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">Age</h5>
+                                        <p class="card-text flex-grow-1">{{ user.age }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-3 d-flex">
+                                <div class="card w-100">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">Phone</h5>
+                                        <p class="card-text flex-grow-1">{{ user.phone }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-3 d-flex">
+                                <div class="card w-100">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">Qualification</h5>
+                                        <p class="card-text flex-grow-1">{{ user.get_qualification_display }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-3 d-flex">
+                                <div class="card w-100">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">Smoking Habit</h5>
+                                        <p class="card-text flex-grow-1">{{ user.get_smoking_habit_display }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-3 d-flex">
+                                <div class="card w-100">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">Drinking Habit</h5>
+                                        <p class="card-text flex-grow-1">{{ user.get_drinking_habit_display }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-3 d-flex">
+                                <div class="card w-100">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">DOB</h5>
+                                        <p class="card-text flex-grow-1">{{ user.dob }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">Hobbies</h5>
+                                        <p class="card-text">
+                                            {% for hobby in request.user.userhobby_set.all %}
+                                                <span class="badge align-items-center p-2 pe-3 text-success-emphasis bg-success-subtle border border-success-subtle rounded-pill mt-2" style="font-size: medium;">
+                                                    <span class="px-1">{{ hobby.hobby }}</span>
+                                                    <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
+                                                </span>
+                                            {% endfor %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">Interests</h5>
+                                        <p class="card-text">
+                                            {% for interest in request.user.userinterest_set.all %}
+                                                <span class="badge align-items-center p-2 pe-3 text-success-emphasis bg-success-subtle border border-success-subtle rounded-pill mt-2" style="font-size: medium;">
+                                                    <span class="px-1">{{ interest.interest }}</span>
+                                                    <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
+                                                </span>
+                                            {% endfor %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h1 class="display-5 text-center">Uploaded Images</h1>
+                                <div class="ms-auto">
+                                    <button type="button" class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#uploadImageModal" id='openimageuploadmodel'>
+                                        <i class="fa-solid fa-upload"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                {% if user.userimages_set.count > 4 %}
+                                    {% for image in user.userimages_set.all|dictsortreversed:"created_date"|slice:":3" %}
+                                        <div class="col-sm-6 col-md-4 col-lg-3 mb-3">
+                                            <div class="card">
+                                                <img src="{{ image.image.url }}" class="img-fluid rounded uploaded-image shadow-sm" alt="Uploaded Image">
                                             </div>
                                         </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                    {% endfor %}
+                                    <div class="col-sm-6 col-md-4 col-lg-3 mb-3">
+                                        <div class="card">
+                                            <a href="#" class="d-block img-fluid rounded shadow-sm" data-bs-toggle="modal" data-bs-target="#imagesModal">
+                                                <img src="{% static 'users/images/ViewAll.png' %}" class="img-fluid uploaded-image rounded shadow-sm" alt="Placeholder Image">
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    {% for image in user.userimages_set.all %}
+                                        <div class="col-sm-6 col-md-4 col-lg-3 mb-3">
+                                            <div class="card">
+                                                <img src="{{ image.image.url }}" class="img-fluid rounded uploaded-image shadow-sm" alt="Uploaded Image">
+                                            </div>
+                                        </div>
+                                    {% empty %}
+                                        <div class="col">
+                                            <p class="text-muted">No images uploaded.</p>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+<!-- Modal Structure -->
+<div class="modal fade" id="imagesModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">All Images</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    {% for image in user.userimages_set.all|dictsortreversed:"created_date" %}
+                        {% if image.image %}
+                        <div class="col-sm-6 col-md-4 col-lg-3 mb-3 modal-img-container">
+                            <div class="card">
+                                <img src="{{ image.image.url }}" class="img-fluid rounded uploaded-image shadow-sm" alt="Uploaded Image">
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% empty %}
+                        <div class="col">
+                            <p class="text-muted">No additional images.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="uploadImageModal" tabindex="-1" role="dialog" aria-labelledby="uploadImageModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadImageModalLabel">Upload Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    {% include 'components/form_field.html' with field=image_form.image %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-black" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-custom">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="shortReelModal" tabindex="-1" aria-labelledby="shortReelModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="shortReelModalLabel">Short Reel</h5>
@@ -130,5 +239,16 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if ({{ form_errors|yesno:"true,false" }}) {
+            var modalElement = document.getElementById('uploadImageModal');
+            var modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        }
+    });
+</script>
 
 {% endblock accounts_content %}
