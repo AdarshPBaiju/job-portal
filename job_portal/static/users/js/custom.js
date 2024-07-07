@@ -126,30 +126,25 @@ document.addEventListener("DOMContentLoaded", function() {
         skillSearchInput.classList.add("mb-2");
         skillSearchInput.placeholder = "Search skill...";
 
-        // Insert the search input before the select element
         skillSelect.parentNode.insertBefore(skillSearchInput, skillSelect);
 
-        // Options array to store original options for reset
         const originalOptions = Array.from(skillSelect.options);
 
-        // Function to filter options based on search text
         function filterOptions(searchText) {
-            skillSelect.innerHTML = ''; // Clear all options
+            skillSelect.innerHTML = '';
             originalOptions.forEach(function(option) {
                 const optionText = option.textContent.toLowerCase();
                 if (optionText.startsWith(searchText.toLowerCase())) {
-                    skillSelect.appendChild(option.cloneNode(true)); // Append filtered options
+                    skillSelect.appendChild(option.cloneNode(true));
                 }
             });
         }
 
-        // Event listener for filtering options based on search input
         skillSearchInput.addEventListener("input", function() {
-            const searchText = skillSearchInput.value.trim(); // Trim whitespace
+            const searchText = skillSearchInput.value.trim();
             filterOptions(searchText);
         });
 
-        // Initial load: Show all options
         filterOptions('');
     }
 });

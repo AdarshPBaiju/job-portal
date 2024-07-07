@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import View
+from django.views.generic import DetailView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, View, CreateView
@@ -9,18 +10,7 @@ from .models import Job, JobPortalProfile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
-# Create your views here.
-class JobListView(LoginRequiredMixin, View):
-    template_name = 'jobs/job.html'
-    
-    def get(self, request, *args, **kwargs):
-        job_list = Job.objects.exclude(user=request.user.jobportalprofile).order_by('-created_at')
-        context = {
-            'jobs': job_list,
-        }
-        return render(request, self.template_name, context)
-    
-    
+# Create your views here.    
 # Job Profile Select View
 class JobProfileSelectView(LoginRequiredMixin, TemplateView):
     template_name = 'jobs/select_jobprofile.html'
@@ -43,7 +33,7 @@ class JobProfileSelectView(LoginRequiredMixin, TemplateView):
 
 
 # job Seeker create view
-class JobSeekerProfileCreateView(CreateView):
+class JobSeekerProfileCreateView(LoginRequiredMixin ,CreateView):
     model = JobPortalProfile
     form_class = JobSeekerForm
     template_name = "jobs/job_seeker_create.html"
@@ -77,3 +67,21 @@ class EmployeeProfileCreateView(LoginRequiredMixin, CreateView):
         print(form.errors)
         return super().form_invalid(form)
 
+
+# Job List View
+class JobListView(LoginRequiredMixin, View):
+    template_name = 'jobs/job.html'
+    
+    def get(self, request, *args, **kwargs):
+        job_list = Job.objects.exclude(user=request.user.jobportalprofile).order_by('-created_at')
+        context = {
+            'jobs': job_list,
+        }
+        return render(request, self.template_name, context)
+    
+
+# Job Detail View
+class JobDetailView(LoginRequiredMixin, DetailView):
+    model = Job
+    template_name = 'jobs/job-detail.html'
+    context_object_name = 'job'

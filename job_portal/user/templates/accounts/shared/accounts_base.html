@@ -8,7 +8,7 @@
             <div class="card rounded border">
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item nav-text">
+                        <li class="list-group-item nav-text {% if request.path == '/accounts/profile/' %}active{% endif %}">
                             <a href="{% url 'user:profile_view' %}" class="text-decoration-none {% if request.path == '/accounts/profile/' %}text-color{% endif %}">
                                 <div class="d-flex align-items-center">
                                     <i class="fa-regular fa-user me-2"></i>
@@ -33,7 +33,7 @@
                             </a>
                             {% endif %}
                         </li>
-                        <li class="list-group-item nav-text">
+                        <li class="list-group-item nav-text {% if request.path == '/accounts/skill/' %}active{% endif %}">
                             <a href="{% url "user:skill_list" %}" class="text-decoration-none {% if request.path == '/accounts/skill/' %}text-color{% endif %}">
                                 <div class="d-flex align-items-center">
                                     <i class="fas fa-laptop-code me-2"></i>
@@ -41,7 +41,7 @@
                                 </div>
                             </a>
                         </li>
-                        <li class="list-group-item nav-text">
+                        <li class="list-group-item nav-text {% if request.path == '/accounts/job/' %}active{% endif %}">
                             <a href="{% url "user:job-list" %}" class="text-decoration-none {% if request.path == '/accounts/job/' %}text-color{% endif %}">
                                 <div class="d-flex align-items-center">
                                     <i class="fas fa-laptop-code me-2"></i>
@@ -49,7 +49,7 @@
                                 </div>
                             </a>
                         </li>
-                        <li class="list-group-item nav-text">
+                        <li class="list-group-item nav-text {% if request.path == '/accounts/experience/' %}active{% endif %}">
                             <a href="{% url 'user:experience_list' %}" class="text-decoration-none {% if request.path == '/accounts/experience/' %}text-color{% endif %}">
                                 <div class="d-flex align-items-center">
                                     <i class="fa-solid fa-briefcase me-2"></i>
@@ -57,7 +57,7 @@
                                 </div>
                             </a>
                         </li>
-                        <li class="list-group-item nav-text">
+                        <li class="list-group-item nav-text {% if request.path == '/accounts/education/' %}active{% endif %}">
                             <a href="{% url 'user:education_list' %}" class="text-decoration-none {% if request.path == '/accounts/education/' %}text-color{% endif %}">
                                 <div class="d-flex align-items-center">
                                     <i class="fa-solid fa-building-columns me-2"></i>
@@ -65,7 +65,7 @@
                                 </div>
                             </a>
                         </li>
-                        <li class="list-group-item nav-text">
+                        <li class="list-group-item nav-text {% if request.path == '/accounts/address/' %}active{% endif %}">
                             <a href="{% url 'user:address_list' %}" class="text-decoration-none {% if request.path == '/accounts/address/' %}text-color{% endif %}">
                                 <div class="d-flex align-items-center">
                                     <i class="fa-solid fa-address-book me-2"></i>
@@ -73,7 +73,7 @@
                                 </div>
                             </a>
                         </li>
-                        <li class="list-group-item nav-text">
+                        <li class="list-group-item nav-text {% if request.path == '/accounts/change-password/' %}active{% endif %}">
                             <a href="{% url "user:change_password" %}" class="text-decoration-none {% if request.path == '/accounts/change-password/' %}text-color{% endif %}">
                                 <div class="d-flex align-items-center">
                                     <i class="fa-solid fa-gears me-2"></i>

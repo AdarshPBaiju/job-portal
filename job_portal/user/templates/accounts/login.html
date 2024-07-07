@@ -6,9 +6,10 @@
 <div class="modal modal-sheet position-static d-block p-4 py-md-5" tabindex="-1" role="dialog" id="modalSignin">
     <div class="modal-dialog" role="document">
       <div class="modal-content rounded-4 shadow">
-        <div class="modal-header p-5 pb-4 justify-content-center border-bottom-0">
+        <div class="modal-header bg-white p-5 pb-4 justify-content-center border-bottom-0">
           <h1 class="fw-bold mb-0 fs-2 auth-text">Sign In</h1>
         </div>
+        <p class="text-center p-3">Welcome back! Log in to manage your profile and job applications.</p>
         <div class="modal-body p-5 pt-0">
           <form method="post">
             {% csrf_token %}
@@ -36,16 +37,19 @@
                 <p class="mb-0">Don't have an account? <a href="{% url 'user:register' %}" class="text-color text-decoration-none">Sign Up</a></p>
             </div>
             <hr class="my-4">
-            <h2 class="fs-5 fw-bold mb-3">Or use a third-party</h2>
-            <button class="w-100 py-2 mb-2 btn btn-outline-secondary rounded-3" type="submit">
+            <div class="text-center mt-4 mb-4">
+              <h2 class="fs-5 fw-bold mb-3">Or</h2>
+              <h2 class="fs-5 fw-bold mb-3">Social Login</h2>
+          </div>
+            <button class="w-100 py-2 mb-2 btn btn-outline-custom rounded-3" type="submit">
               <svg class="bi me-1" width="16" height="16"><use xlink:href="#twitter"/></svg>
               Sign up with Twitter
             </button>
-            <button class="w-100 py-2 mb-2 btn btn-outline-primary rounded-3" type="submit">
+            <button class="w-100 py-2 mb-2 btn btn-outline-custom rounded-3" type="submit">
               <svg class="bi me-1" width="16" height="16"><use xlink:href="#facebook"/></svg>
               Sign up with Facebook
             </button>
-            <button class="w-100 py-2 mb-2 btn btn-outline-secondary rounded-3" type="submit">
+            <button class="w-100 py-2 mb-2 btn btn-outline-custom rounded-3" type="submit">
               <svg class="bi me-1" width="16" height="16"><use xlink:href="#github"/></svg>
               Sign up with GitHub
             </button>

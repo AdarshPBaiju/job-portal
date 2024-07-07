@@ -9,5 +9,6 @@ urlpatterns = [
     path("job/", include("jobs.urls", namespace="job")),
     path("accounts/", include("user.urls", namespace="user")),
     path("administrator/", include("admin_panel.urls", namespace="admin-d")),
+    path('tinymce/', include('tinymce.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

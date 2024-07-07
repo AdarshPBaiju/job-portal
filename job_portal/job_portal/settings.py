@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.humanize",
     
     # third party app
-    
+    'tinymce',
 
     # custom app
     'core',
@@ -163,3 +163,41 @@ AUTHENTICATION_BACKENDS = [
     'user.auth_backend.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+TINYMCE_DEFAULT_CONFIG = {
+    'height': 360,
+    'width': 900,
+    'cleanup_on_startup': True,
+    'custom_undo_redo_levels': 20,
+    'selector': 'textarea',
+    'theme': 'modern',
+    'plugins': "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table powerpaste advcode help wordcount spellchecker typography autosave directionality",
+    'toolbar':
+    "undo redo | formatselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | link image | removeformat | code",
+    'toolbar_items_size': 'small',
+    'image_advtab': True,
+    'content_css': [
+        '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+        '//www.tinymce.com/css/codepen.min.css'
+    ],
+    'font_formats': 'Andale Mono=andale mono,times;' +
+                    'Arial=arial,helvetica,sans-serif;' +
+                    'Arial Black=arial black,avant garde;' +
+                    'Book Antiqua=book antiqua,palatino;' +
+                    'Comic Sans MS=comic sans ms,sans-serif;' +
+                    'Courier New=courier new,courier;' +
+                    'Georgia=georgia,palatino;' +
+                    'Helvetica=helvetica;' +
+                    'Impact=impact,chicago;' +
+                    'Symbol=symbol;' +
+                    'Tahoma=tahoma,arial,helvetica,sans-serif;' +
+                    'Terminal=terminal,monaco;' +
+                    'Times New Roman=times new roman,times;' +
+                    'Trebuchet MS=trebuchet ms,geneva;' +
+                    'Verdana=verdana,geneva;' +
+                    'Webdings=webdings;' +
+                    'Wingdings=wingdings,zapf dingbats',
+    'contextmenu': 'formats | link image',
+    'menubar': True,
+    'statusbar': True,
+}

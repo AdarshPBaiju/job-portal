@@ -139,14 +139,14 @@
                                         </div>
                                     {% endfor %}
                                     <div class="col-sm-6 col-md-4 col-lg-3 mb-3">
-                                        <div class="card">
-                                            <a href="#" class="d-block img-fluid rounded shadow-sm" data-bs-toggle="modal" data-bs-target="#imagesModal">
+                                        <a href="#" class="d-block img-fluid rounded shadow-sm" data-bs-toggle="modal" data-bs-target="#imagesModal">
+                                            <div class="card">
                                                 <img src="{% static 'users/images/ViewAll.png' %}" class="img-fluid uploaded-image rounded shadow-sm" alt="Placeholder Image">
-                                            </a>
-                                        </div>
+                                            </div>
+                                        </a>
                                     </div>
                                 {% else %}
-                                    {% for image in user.userimages_set.all %}
+                                    {% for image in user.userimages_set.all|dictsortreversed:"created_date" %}
                                         <div class="col-sm-6 col-md-4 col-lg-3 mb-3">
                                             <div class="card">
                                                 <img src="{{ image.image.url }}" class="img-fluid rounded uploaded-image shadow-sm" alt="Uploaded Image">

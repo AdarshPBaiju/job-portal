@@ -1,4 +1,5 @@
 from django.contrib.auth.hashers import make_password
+from django.http import Http404
 from django.shortcuts import get_object_or_404, render, redirect
 from .forms import ImageForm, JobForm, UserDetailAddForm, UserHobbyForm, UserImageForm, UserInterestForm, UserRegistrationForm, LoginForm, ForgotPasswordForm, ResetPasswordForm, ProfileUpdateForm, ChangePasswordForm, AddressCreateForm, ExperienceUpsertForm, EducationUpsertForm, UserSkillUpsertForm
 from django.views.generic import FormView, TemplateView, View, ListView, CreateView, UpdateView, DetailView
@@ -9,7 +10,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.contrib.sites.shortcuts import get_current_site
 from .models import CustomUser, Address, Experience, Education, UserHobby, UserImages, UserInterest, UserSkill
-from jobs.models import Job
+from jobs.models import Job, JobPortalProfile
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.utils.encoding import force_bytes
@@ -28,7 +29,7 @@ class RedirectAuthenticatedUserMixin:
 
 
 class CustomRegisterView(RedirectAuthenticatedUserMixin, FormView):
-    template_name = "accounts/register.html"
+    template_name = "accounts/signup.html"
     form_class = UserRegistrationForm
     success_url = reverse_lazy("user:profile_add")
 
@@ -576,3 +577,17 @@ class JobDetailView(LoginRequiredMixin, DetailView):
     model = Job
     template_name = 'job-detail.html'
     context_object_name = 'job'
+    
+    
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset=queryset)
+
+        try:
+            jobportal_profile = self.request.user.jobportalprofile  # Adjust according to your actual attribute name
+        except JobPortalProfile.DoesNotExist:
+            raise Http404("You must have a JobPortalProfile to view job details.")
+
+        if obj.user != jobportal_profile:
+            raise Http404("You are not authorized to view this job.")
+
+        return obj

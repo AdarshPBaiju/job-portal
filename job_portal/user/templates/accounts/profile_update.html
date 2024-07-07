@@ -10,7 +10,18 @@
                 <a href="{% url 'user:profile_view' %}" class="btn btn-custom ms-auto">Back</a>
             </div>
             <form method="post" enctype="multipart/form-data">
-                {% include 'components/form_field.html' with field=form.profile_photo %}
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="profile_photo">Profile Photo</label>
+                    <div>
+                        <img id="profile-photo-preview" src="{{ user.profile_photo.url }}" alt="Profile Photo" class="img-fluid img-thumbnail" style="max-width: 200px;">
+                    </div>
+                    <div class="d-none">
+                        {% include 'components/form_field.html' with field=form.profile_photo %}
+                    </div>
+                    <button type="button" class="btn btn-custom mt-2" id="change-photo-btn">Change Photo</button>
+                    <button type="button" class="btn btn-danger mt-2 d-none" id="remove-photo-btn"><i class="fa-solid fa-delete-left"></i></button>
+                </div>
                 <div class="row">
                     <div class="col-md-4">
                         {% include 'components/form_field.html' with field=form.first_name %}
@@ -50,10 +61,32 @@
                     </div>
                 </div>
                 <div class="d-grid">
-                    {% csrf_token %}
                     <button type="submit" class="btn btn-custom mt-4">Save</button>
                 </div>
             </form>
         </div>
     </div>
+    <script>
+        document.getElementById('change-photo-btn').addEventListener('click', function() {
+            const input = document.getElementById('id_profile_photo');
+            input.classList.remove('d-none');
+            input.click();
+            input.addEventListener('change', function(event) {
+                const [file] = this.files;
+                if (file) {
+                    document.getElementById('profile-photo-preview').src = URL.createObjectURL(file);
+                    document.getElementById('remove-photo-btn').classList.remove('d-none');
+                }
+                input.classList.add('d-none');
+            });
+        });
+
+        document.getElementById('remove-photo-btn').addEventListener('click', function() {
+            const input = document.getElementById('id_profile_photo');
+            const preview = document.getElementById('profile-photo-preview');
+            input.value = '';
+            preview.src = "{{ user.profile_photo.url }}";
+            document.getElementById('remove-photo-btn').classList.add('d-none');
+        });
+    </script>
 {% endblock accounts_content %}

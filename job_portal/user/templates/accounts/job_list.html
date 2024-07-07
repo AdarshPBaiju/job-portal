@@ -39,7 +39,6 @@
                             <span class="badge salary-badge">{{ job.salary_from|intcomma }}{% if job.salary_to %} - {{ job.salary_to|intcomma }}{% endif %}</span>
                         </div>
                         {% endif %}
-                        <p class="card-text mt-2">{{ job.job_description|truncatewords:10 }}</p>
                         <p class="card-text position-absolute bottom-0 end-0 pe-3 mb-2">
                             <small class="text-muted">{{ job.created_at|naturaltime }}</small>
                         </p>
