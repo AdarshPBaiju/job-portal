@@ -1,7 +1,7 @@
 {% extends "shared/base.html" %}
 {% load static %}
 {% load humanize %}
-{% block title %}Home{% endblock %}
+{% block title %}Job Portal{% endblock %}
 {% block content %}
 {% include "shared/search_banner.html" %}
 <div class="card-container bg-white mt-4 mb-5">
@@ -9,7 +9,7 @@
    <!-- job cards Start -->
    {% for job in jobs %}
    <div class="col-md-6 mb-4">
-      <div class="card h-100">
+      <div class="card job-card h-100">
          <div class="card-body position-relative">
             <a href="#" class="btn btn-link save-job-btn"><i class="fa-solid fa-bookmark"></i></a> 
             <h4 class="card-title mb-3">{{ job.job_title }}</h4>

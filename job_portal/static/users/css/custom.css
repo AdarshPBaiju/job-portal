@@ -154,11 +154,11 @@ nav {
 
 .banner .search-input {
   margin: 0 auto;
-  padding: 20px;
+  padding: 10px;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.242);
   background-color: #fff;
-  border: 1px solid #ced4da;
+  border: 1px solid #e0e0e0;
 }
 
 .banner .form-control {
@@ -169,7 +169,7 @@ nav {
   background-color: transparent;
   padding-left: 0;
   height: 48px;
-  font-size: 1em;
+  font-size: 1.3em;
 }
 
 .banner .form-control::placeholder {
@@ -207,19 +207,20 @@ nav {
   background-color: #0056b3;
   color: white;
   font-size: 1.2em;
+  z-index: 2;
   transition: background-color 0.3s, transform 0.3s;
 }
 
 .banner .btn-custom:hover {
   background-color: #0056b3;
-  transform: scale(1.02);
+  transform: scale(1.04);
 }
 
 #search-results {
   background-color: #ffffff;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.267);
   margin-top: 20px;
 }
 #search-results p {
@@ -239,6 +240,11 @@ nav {
   right: 10px;
   font-size: 25px;
   color: #6c757d;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.save-job-btn:hover {
+  transform: scale(1.10);
 }
 
 .salary-badge {
@@ -587,6 +593,16 @@ a:hover {
   .card-item .card-image {
       height: 200px;
   }
+}
+
+.job-card {
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.job-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 

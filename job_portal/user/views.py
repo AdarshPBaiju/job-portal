@@ -138,7 +138,8 @@ class CustomLoginView(RedirectAuthenticatedUserMixin, View):
             if user is not None:
                 login(request, user)
                 messages.success(request, f'Welcome, {user.first_name} {user.last_name}! You have successfully logged in.')
-                return redirect(self.success_url)
+                next_url = request.GET.get('next', self.success_url)
+                return redirect(next_url)
             else:
                 messages.error(request, 'Invalid username or password. Please try again.')
         return render(request, self.template_name, {'form': form})
