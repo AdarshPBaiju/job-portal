@@ -41,6 +41,7 @@
                                 </div>
                             </a>
                         </li>
+                        {% if user.jobportalprofile.is_employee %}
                         <li class="list-group-item nav-text {% if request.path == '/accounts/job/' %}active{% endif %}">
                             <a href="{% url "user:job-list" %}" class="text-decoration-none {% if request.path == '/accounts/job/' %}text-color{% endif %}">
                                 <div class="d-flex align-items-center">
@@ -49,6 +50,7 @@
                                 </div>
                             </a>
                         </li>
+                        {% endif %}
                         <li class="list-group-item nav-text {% if request.path == '/accounts/experience/' %}active{% endif %}">
                             <a href="{% url 'user:experience_list' %}" class="text-decoration-none {% if request.path == '/accounts/experience/' %}text-color{% endif %}">
                                 <div class="d-flex align-items-center">

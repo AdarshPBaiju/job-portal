@@ -524,3 +524,23 @@ class JobForm(forms.ModelForm):
             'salary_from': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter job salary', 'required':True}),
             'salary_to': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter job salary', 'required':False})
         }
+        
+
+class UserHobbyAddForm(forms.ModelForm):
+    class Meta:
+        model = UserHobby
+        fields = ['hobby']
+        
+        widgets = {
+            'hobby': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Enter hobby', 'required':True}),
+        }
+        
+
+class UserInterestAddForm(forms.ModelForm):
+    class Meta:
+        model = UserInterest
+        fields = ['interest']
+        
+        widgets = {
+            'interest': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Enter interest', 'required':True}),
+        }

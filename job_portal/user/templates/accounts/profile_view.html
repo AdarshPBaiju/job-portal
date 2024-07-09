@@ -92,12 +92,15 @@
                             <div class="col-lg-6 mb-3">
                                 <div class="card h-100">
                                     <div class="card-body d-flex flex-column">
-                                        <h5 class="card-title">Hobbies</h5>
+                                        <h5 class="card-title d-flex justify-content-between align-items-center">
+                                            Hobbies
+                                            <a href="{% url "user:add_hobby" %}" class="btn btn-sm btn-outline-custom">Add</a>
+                                        </h5>
                                         <p class="card-text">
                                             {% for hobby in request.user.userhobby_set.all %}
                                                 <span class="badge align-items-center p-2 pe-3 text-success-emphasis bg-success-subtle border border-success-subtle rounded-pill mt-2" style="font-size: medium;">
                                                     <span class="px-1">{{ hobby.hobby }}</span>
-                                                    <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
+                                                    <a href="{% url "user:delete_hobby" hobby.id %}" onclick="return confirm('Are you sure you want to delete this hobby?');"><i class="fa-regular fa-circle-xmark"></i></a>
                                                 </span>
                                             {% endfor %}
                                         </p>
@@ -107,12 +110,15 @@
                             <div class="col-lg-6 mb-3">
                                 <div class="card h-100">
                                     <div class="card-body d-flex flex-column">
-                                        <h5 class="card-title">Interests</h5>
+                                        <h5 class="card-title d-flex justify-content-between align-items-center">
+                                            Interests
+                                            <a href="{% url "user:add_interest" %}" class="btn btn-sm btn-outline-custom">Add</a>
+                                        </h5>
                                         <p class="card-text">
                                             {% for interest in request.user.userinterest_set.all %}
                                                 <span class="badge align-items-center p-2 pe-3 text-success-emphasis bg-success-subtle border border-success-subtle rounded-pill mt-2" style="font-size: medium;">
                                                     <span class="px-1">{{ interest.interest }}</span>
-                                                    <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
+                                                    <a href="{% url "user:delete_interest" interest.id %}" onclick="return confirm('Are you sure you want to delete this interest?');"><i class="fa-regular fa-circle-xmark"></i></a>
                                                 </span>
                                             {% endfor %}
                                         </p>
@@ -120,6 +126,7 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="mt-4">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h1 class="display-5 text-center">Uploaded Images</h1>
@@ -135,6 +142,9 @@
                                         <div class="col-sm-6 col-md-4 col-lg-3 mb-3">
                                             <div class="card">
                                                 <img src="{{ image.image.url }}" class="img-fluid rounded uploaded-image shadow-sm" alt="Uploaded Image">
+                                                <a href="{% url 'user:delete_image' image.pk %}" class="position-absolute top-0 start-0 m-3 text-decoration-none btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this image?');">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </a>
                                             </div>
                                         </div>
                                     {% endfor %}
@@ -150,6 +160,9 @@
                                         <div class="col-sm-6 col-md-4 col-lg-3 mb-3">
                                             <div class="card">
                                                 <img src="{{ image.image.url }}" class="img-fluid rounded uploaded-image shadow-sm" alt="Uploaded Image">
+                                                <a href="{% url 'user:delete_image' image.pk %}" class="position-absolute top-0 start-0 m-3 text-decoration-none btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this image?');">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </a>
                                             </div>
                                         </div>
                                     {% empty %}
@@ -181,6 +194,9 @@
                         <div class="col-sm-6 col-md-4 col-lg-3 mb-3 modal-img-container">
                             <div class="card">
                                 <img src="{{ image.image.url }}" class="img-fluid rounded uploaded-image shadow-sm" alt="Uploaded Image">
+                                <a href="{% url 'user:delete_image' image.pk %}" class="position-absolute top-0 start-0 m-3 text-decoration-none btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this image?');">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
                             </div>
                         </div>
                         {% endif %}

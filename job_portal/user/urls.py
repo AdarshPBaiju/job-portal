@@ -15,6 +15,11 @@ urlpatterns = [
     # Profile
     path('profile/', ProfileView.as_view(), name='profile_view'),
     path('profile/update/', ProfileUpdateView.as_view(), name='profile_update'),
+    path('add_hobby/', AddHobbyView.as_view(), name='add_hobby'),
+    path('delete_hobby/<id>/', DeleteHobbyView.as_view(), name='delete_hobby'),
+    path('add_interest/', AddInterestView.as_view(), name='add_interest'),
+    path('delete_interest/<id>/', DeleteInterestView.as_view(), name='delete_interest'),
+    path('delete_image/<int:pk>/', DeleteImageView.as_view(), name='delete_image'),
     
     # Job
     path('job/', JobListView.as_view(), name='job-list'),

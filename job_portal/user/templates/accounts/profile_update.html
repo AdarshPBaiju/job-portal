@@ -1,5 +1,5 @@
 {% extends 'accounts/shared/accounts_base.html' %}
-
+{% load static %}
 {% block accounts_title %}Edit Profile{% endblock accounts_title %}
 
 {% block accounts_content %}
@@ -14,7 +14,11 @@
                 <div class="mb-3">
                     <label for="profile_photo">Profile Photo</label>
                     <div>
+                        {% if user.profile_photo %}
                         <img id="profile-photo-preview" src="{{ user.profile_photo.url }}" alt="Profile Photo" class="img-fluid img-thumbnail" style="max-width: 200px;">
+                        {% else %}
+                        <img id="profile-photo-preview" src="{% static 'users/images/default-avatar.jpg' %}" alt="Profile Photo" class="img-fluid img-thumbnail" style="max-width: 200px;">
+                        {% endif %}
                     </div>
                     <div class="d-none">
                         {% include 'components/form_field.html' with field=form.profile_photo %}
@@ -85,7 +89,12 @@
             const input = document.getElementById('id_profile_photo');
             const preview = document.getElementById('profile-photo-preview');
             input.value = '';
+            {% if user.profile_photo %}
             preview.src = "{{ user.profile_photo.url }}";
+            {% else %}
+            preview.src = "{% static 'users/images/default-avatar.jpg' %}";
+            {% endif %}
+            
             document.getElementById('remove-photo-btn').classList.add('d-none');
         });
     </script>

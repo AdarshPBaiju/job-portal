@@ -1,7 +1,7 @@
 from django.contrib.auth.hashers import make_password
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render, redirect
-from .forms import ImageForm, JobForm, UserDetailAddForm, UserHobbyForm, UserImageForm, UserInterestForm, UserRegistrationForm, LoginForm, ForgotPasswordForm, ResetPasswordForm, ProfileUpdateForm, ChangePasswordForm, AddressCreateForm, ExperienceUpsertForm, EducationUpsertForm, UserSkillUpsertForm
+from .forms import ImageForm, JobForm, UserDetailAddForm, UserHobbyAddForm, UserHobbyForm, UserImageForm, UserInterestAddForm, UserInterestForm, UserRegistrationForm, LoginForm, ForgotPasswordForm, ResetPasswordForm, ProfileUpdateForm, ChangePasswordForm, AddressCreateForm, ExperienceUpsertForm, EducationUpsertForm, UserSkillUpsertForm
 from django.views.generic import FormView, TemplateView, View, ListView, CreateView, UpdateView, DetailView
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
@@ -19,6 +19,10 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import update_session_auth_hash
 from django.db import IntegrityError
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import UserImages
 
 # Create your views here.
 class RedirectAuthenticatedUserMixin:
@@ -584,7 +588,7 @@ class JobDetailView(LoginRequiredMixin, DetailView):
         obj = super().get_object(queryset=queryset)
 
         try:
-            jobportal_profile = self.request.user.jobportalprofile  # Adjust according to your actual attribute name
+            jobportal_profile = self.request.user.jobportalprofile
         except JobPortalProfile.DoesNotExist:
             raise Http404("You must have a JobPortalProfile to view job details.")
 
@@ -592,3 +596,80 @@ class JobDetailView(LoginRequiredMixin, DetailView):
             raise Http404("You are not authorized to view this job.")
 
         return obj
+    
+
+class DeleteImageView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        image = get_object_or_404(UserImages, pk=pk)
+        
+        if image.user == request.user:
+            image.delete()
+            messages.success(request, 'Image deleted successfully.')
+        else:
+            messages.error(request, 'You are not authorized to delete this image.')
+        
+        return redirect(reverse_lazy('user:profile_view'))
+    
+
+# Add Hobby To User
+class AddHobbyView(LoginRequiredMixin, CreateView):
+    model = UserHobby
+    form_class = UserHobbyAddForm
+    template_name = 'accounts/hobby-add.html'
+    success_url = reverse_lazy('user:profile_view')
+    
+    def form_valid(self, form):
+        try:
+            form.instance.user = self.request.user
+            return super().form_valid(form)
+        except IntegrityError:
+            messages.error(self.request, 'Hobby already exists in your profile.')
+            return self.form_invalid(form)
+        
+
+# Delete Hobby of user
+class DeleteHobbyView(LoginRequiredMixin, View):
+    model = UserHobby
+    success_url = reverse_lazy('user:profile_view')
+    
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
+    
+    def get(self, request, *args, **kwargs):
+        hobby_id = kwargs.get('id')
+        hobby = get_object_or_404(UserHobby, id=hobby_id, user=self.request.user)
+        hobby.delete()
+        messages.success(request, 'Hobby deleted successfully.')
+        return redirect('user:profile_view')
+    
+
+# Add Interest to User
+class AddInterestView(LoginRequiredMixin, CreateView):
+    model = UserInterest
+    form_class = UserInterestAddForm
+    template_name = 'accounts/interest-add.html'
+    success_url = reverse_lazy('user:profile_view')
+    
+    def form_valid(self, form):
+        try:
+            form.instance.user = self.request.user
+            return super().form_valid(form)
+        except IntegrityError:
+            messages.error(self.request, 'Interest already exists in your profile.')
+            return self.form_invalid(form)
+
+
+# Delete Interst from User
+class DeleteInterestView(LoginRequiredMixin, View):
+    model = UserInterest
+    success_url = reverse_lazy('user:profile_view')
+    
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
+    
+    def get(self, request, *args, **kwargs):
+        interest_id = kwargs.get('id')
+        interest = get_object_or_404(UserInterest, id=interest_id, user=self.request.user)
+        interest.delete()
+        messages.success(request, 'Interest deleted successfully.')
+        return redirect('user:profile_view')
