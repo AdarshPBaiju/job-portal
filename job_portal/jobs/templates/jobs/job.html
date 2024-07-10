@@ -4,67 +4,72 @@
 {% block title %}Job Portal{% endblock %}
 {% block content %}
 {% include "shared/search_banner.html" %}
+{% if jobs %}
 <div class="card-container bg-white mt-4 mb-5">
-<div class="row">
-   <!-- job cards Start -->
-   {% for job in jobs %}
-   <div class="col-md-6 mb-4">
-      <div class="card job-card h-100">
-         <div class="card-body position-relative">
-            <a href="#" class="btn btn-link save-job-btn"><i class="fa-solid fa-bookmark"></i></a> 
-            <h4 class="card-title mb-3">{{ job.job_title }}</h4>
-            <h6 class="card-subtitle mb-3 text-muted"><i class="fa-solid fa-map-marker-alt me-2"></i>{{ job.location }}</h6>
-            {% if job.salary_from %}
-            <div class="d-flex align-items-center mb-4">
-               <span class="badge salary-badge">₹{{ job.salary_from|intcomma }}{% if job.salary_to %} - ₹{{ job.salary_to|intcomma }}{% endif %}</span>
+   <div class="row">
+      <!-- job cards Start -->
+      {% for job in jobs %}
+      <div class="col-md-6 mb-4">
+         <div class="card job-card h-100">
+            <div class="card-body position-relative">
+               <a href="#" class="btn btn-link save-job-btn"><i class="fa-solid fa-bookmark"></i></a> 
+               <h4 class="card-title mb-3">{{ job.job_title }}</h4>
+               <h6 class="card-subtitle mb-3 text-muted"><i class="fa-solid fa-map-marker-alt me-2"></i>{{ job.location }}</h6>
+               {% if job.salary_from %}
+               <div class="d-flex align-items-center mb-4">
+                  <span class="badge salary-badge">₹{{ job.salary_from|intcomma }}{% if job.salary_to %} - ₹{{ job.salary_to|intcomma }}{% endif %}</span>
+               </div>
+               {% endif %}
+               <p class="card-text position-absolute bottom-0 end-0 pe-3 mb-2">
+                  <small class="text-muted">{{ job.created_at|naturaltime }}</small>
+               </p>
+               <a href="{% url "job:job-detail" job.id %}" target="blank" class="btn btn-apply-now">View Job</a>
             </div>
-            {% endif %}
-            <p class="card-text position-absolute bottom-0 end-0 pe-3 mb-2">
-               <small class="text-muted">{{ job.created_at|naturaltime }}</small>
-            </p>
-            <a href="{% url "job:job-detail" job.id %}" target="blank" class="btn btn-apply-now">View Job</a>
          </div>
       </div>
-   </div>
-   {% endfor %}
-   <!-- job card End -->
-</div>
-<!-- Pagination (static example for demonstration) -->
-<div class="col-12">
-   <div class="text-center">
-      <p>Showing {{jobs.start_index}} to {{ jobs.end_index }} of {{ jobs.paginator.count }} jobs</p>
-   </div>
-   <ul class="pagination justify-content-end" id="pagination">
-      {% if jobs.has_previous %}
-      <li class="page-item" id="prevPage">
-         <a class="page-link" href="?page={{ jobs.previous_page_number }}" aria-label="Previous">
-         <span aria-hidden="true">&laquo;</span>
-         </a>
-      </li>
-      {% else %}
-      <li class="page-item d-none" id="prevPage">
-         <a class="page-link" href="javascript:void(0)" aria-label="Previous">
-         <span aria-hidden="true">&laquo;</span>
-         </a>
-      </li>
-      {% endif %}
-      {% for page_num in jobs.paginator.page_range %}
-      <li class="page-item count-page {% if jobs.number == page_num %}active{% endif %}"><a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a></li>
       {% endfor %}
-      {% if jobs.has_next %}
-      <li class="page-item" id="nextPage">
-         <a class="page-link" href="?page={{ jobs.next_page_number }}" aria-label="Next">
-         <span aria-hidden="true">&raquo;</span>
-         </a>
-      </li>
-      {% else %}
-      <li class="page-item d-none" id="nextPage">
-         <a class="page-link" href="javascript:void(0)" aria-label="Next">
-         <span aria-hidden="true">&raquo;</span>
-         </a>
-      </li>
-      {% endif %}
-   </ul>
+      <!-- job card End -->
+   </div>
+   {% if jobs.has_other_pages %}
+   <!-- Pagination (static example for demonstration) -->
+   <div class="col-12">
+      <div class="text-center">
+         <p>Showing {{jobs.start_index}} to {{ jobs.end_index }} of {{ jobs.paginator.count }} jobs</p>
+      </div>
+      <ul class="pagination justify-content-end" id="pagination">
+         {% if jobs.has_previous %}
+         <li class="page-item" id="prevPage">
+            <a class="page-link" href="?page={{ jobs.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+            </a>
+         </li>
+         {% else %}
+         <li class="page-item d-none" id="prevPage">
+            <a class="page-link" href="javascript:void(0)" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+            </a>
+         </li>
+         {% endif %}
+         {% for page_num in jobs.paginator.page_range %}
+         <li class="page-item count-page {% if jobs.number == page_num %}active{% endif %}"><a class="page-link" href="?page={{ page_num }}{% if search_query %}&q={{ search_query }}{% endif %}">{{ page_num }}</a></li>
+         {% endfor %}
+         {% if jobs.has_next %}
+         <li class="page-item" id="nextPage">
+            <a class="page-link" href="?page={{ jobs.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+            </a>
+         </li>
+         {% else %}
+         <li class="page-item d-none" id="nextPage">
+            <a class="page-link" href="javascript:void(0)" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+            </a>
+         </li>
+         {% endif %}
+      </ul>
+   </div>
+   <!-- End Pagination -->
+   {% endif %}
 </div>
-<!-- End Pagination -->
+{% endif %}
 {% endblock content %}

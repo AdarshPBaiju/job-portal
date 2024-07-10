@@ -72,17 +72,24 @@ class EmployeeProfileCreateView(LoginRequiredMixin, CreateView):
 # Job List View
 class JobListView(LoginRequiredMixin, View):
     template_name = 'jobs/job.html'
+    paginate_by = 2
     
     def get(self, request, *args, **kwargs):
-        job_list = Job.objects.exclude(user=request.user.jobportalprofile).order_by('-created_at')
+        search_query = request.GET.get('q', '')
         
-        # Set up pagination
-        paginator = Paginator(job_list, 2)
+        job_list = Job.objects.filter(
+            job_title__title__icontains=search_query
+        ).exclude(
+            user=request.user.jobportalprofile
+        ).order_by('-created_at')
+        
+        paginator = Paginator(job_list, self.paginate_by)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         
         context = {
             'jobs': page_obj,
+            'search_query': search_query,
         }
         return render(request, self.template_name, context)
     
