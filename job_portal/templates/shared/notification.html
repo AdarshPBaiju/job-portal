@@ -10,7 +10,7 @@
             <div class="modal-body">
                 <div class="d-flex flex-column flex-md-row gap-4 align-items-center justify-content-center">
                     <div class="list-group w-100">
-                        {% for job in jobs_notification %}
+                        {% for job in jobs_notification|dictsortreversed:"created_at" %}
                         <a href="{% url "job:job-detail" job.id %}" target="blank" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
                             <img src="{% static "users/images/bannericons/job.png" %}" alt="twbs" width="32" height="32" class="flex-shrink-0">
                             <div class="d-flex gap-2 w-100 justify-content-between">

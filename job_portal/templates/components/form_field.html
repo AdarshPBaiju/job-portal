@@ -1,5 +1,5 @@
 <div class="form-group mb-3">
-    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+    <label class="mb-2" for="{{ field.id_for_label }}">{{ field.label }}</label>
     {{ field }}
     {% if field.errors %}
         {% for e in field.errors %}

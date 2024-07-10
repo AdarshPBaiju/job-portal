@@ -1,5 +1,5 @@
 from django import forms
-from .models import Job, JobPortalProfile
+from .models import Job, JobApplication, JobPortalProfile
 
 
 class JobSeekerForm(forms.ModelForm):
@@ -48,3 +48,32 @@ class EmployeeForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+    
+
+class JobApplicationForm(forms.ModelForm):
+    class Meta:
+        model = JobApplication
+        exclude = ['job', 'applicant','status']
+        
+        widgets = {
+            'company_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'autocomplete': 'company'
+            }),
+            'designation':forms.TextInput(attrs={
+                'class': 'form-control',
+                'autocomplete': 'designation'
+            }),
+            'salary': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'autocomplete':'salary'
+            }),
+            'last_working_date': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+            'quit_reason': forms.Textarea(attrs={
+                'class': 'form-control',
+                'style': 'height: 150px;'
+            }),
+        }

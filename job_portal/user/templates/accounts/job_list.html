@@ -27,6 +27,7 @@
                     <div class="card-body position-relative">
                         <div class="d-flex justify-content-end">
                             <div class="btn-group">
+                                <a href="{% url "user:job-detail" job.id %}" class="btn btn-outline-custom btn-sm" title="View"><i class="fa-solid fa-eye"></i></a>
                                 <a href="{% url 'user:job-update' job.id %}" class="btn btn-outline-custom btn-sm" title="Edit"><i class="fa-solid fa-edit"></i></a>
                                 <a href="{% url 'user:job-delete' job.id %}" class="btn btn-outline-danger btn-sm" title="Delete" onclick="return confirm('Are you sure you want to delete this Job?');"><i class="fa-solid fa-trash"></i></a>
                             </div>
@@ -42,7 +43,7 @@
                         <p class="card-text position-absolute bottom-0 end-0 pe-3 mb-2">
                             <small class="text-muted">{{ job.created_at|naturaltime }}</small>
                         </p>
-                        <a href="{% url "user:job-detail" job.id %}" target="_blank" class="btn btn-apply-now">View Job</a>
+                        <a href="{% url "job:application-list" job.id %}" target="_blank" class="btn btn-apply-now">View Application</a>
                     </div>
                 </div>
             </div>

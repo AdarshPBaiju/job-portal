@@ -230,3 +230,43 @@ document.addEventListener('DOMContentLoaded', function() {
         imageInput.classList.add('form-control');
     }
 });
+
+
+
+
+// video player
+document.addEventListener('DOMContentLoaded', function() {
+    var video = document.getElementById('player');
+    var playpauseBtn = document.getElementById('playpause-btn');
+    var volumeBar = document.getElementById('volume-bar');
+    var progressBar = document.getElementById('progress-bar');
+
+    video.addEventListener('loadedmetadata', function() {
+        // Set initial volume and progress bar width
+        volumeBar.value = video.volume;
+        progressBar.style.width = '0%';
+    });
+
+    playpauseBtn.addEventListener('click', function() {
+        if (video.paused || video.ended) {
+            video.play();
+            playpauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+        } else {
+            video.pause();
+            playpauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        }
+    });
+
+    volumeBar.addEventListener('input', function() {
+        video.volume = volumeBar.value;
+    });
+
+    video.addEventListener('timeupdate', function() {
+        var percent = (video.currentTime / video.duration) * 100;
+        progressBar.style.width = percent + '%';
+    });
+
+    video.addEventListener('ended', function() {
+        playpauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+    });
+});

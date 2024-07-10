@@ -19,9 +19,6 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import update_session_auth_hash
 from django.db import IntegrityError
-import json
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from .models import UserImages
 
 # Create your views here.

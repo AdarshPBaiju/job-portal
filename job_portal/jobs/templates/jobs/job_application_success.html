@@ -1,0 +1,46 @@
+{% extends 'shared/base.html' %}
+
+{% block title %}Application Submitted{% endblock title %}
+
+{% block content %}
+<div class="modal modal-sheet position-static d-block p-4 py-md-5" tabindex="-1" role="dialog" id="modalSignin">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content rounded-4 shadow">
+        <div class="modal-header bg-white p-5 pb-4 justify-content-center border-bottom-0">
+          <h1 class="fw-bold mb-0 fs-2 auth-text">Application Submitted</h1>
+        </div>
+        <p class="text-center p-3">Job Title: {{ application.job.job_title }}</p>
+        <div class="modal-body p-5 pt-0">
+          <form>
+            <div class="form-floating mb-3">
+              <input type="text" id="id_company_name" class="form-control" value="{{ application.company_name }}" readonly>
+              <label for="id_company_name">Company Name</label>
+            </div>
+            
+            <div class="form-floating mb-3">
+              <input type="text" id="id_designation" class="form-control" value="{{ application.designation }}" readonly>
+              <label for="id_designation">Designation</label>
+            </div>
+            
+            <div class="form-floating mb-3">
+              <input type="text" id="id_salary" class="form-control" value="{{ application.salary }}" readonly>
+              <label for="id_salary">Salary</label>
+            </div>
+            
+            <div class="form-floating mb-3">
+              <input type="text" id="id_last_working_date" class="form-control" value="{{ application.last_working_date }}" readonly>
+              <label for="id_last_working_date">Last Working Date</label>
+            </div>
+            
+            <div class="form-floating mb-3">
+              <textarea id="id_quit_reason" class="form-control" readonly>{{ application.quit_reason }}</textarea>
+              <label for="id_quit_reason">Quit Reason</label>
+            </div>
+
+            <a href="{% url 'job:home' %}" class="w-100 mb-2 btn btn-lg rounded-3 btn-custom">Back to Job List</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

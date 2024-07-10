@@ -64,3 +64,22 @@ class Job(models.Model):
     
     def __str__(self):
         return f"{self.job_title}"
+
+
+class JobApplication(models.Model):
+    STATUS = [
+        ('Applied', 'Applied'),
+        ('Selected', 'Selected'),
+        ('Rejected', 'Rejected'),
+    ]
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    applicant = models.ForeignKey(JobPortalProfile, on_delete=models.CASCADE)
+    company_name = models.CharField(max_length=100, null=True, blank=True)
+    designation = models.CharField(max_length=100, null=True, blank=True)
+    last_working_date = models.DateField(null=True, blank=True)
+    salary = models.PositiveIntegerField(null=True, blank=True)
+    quit_reason = models.TextField()
+    status = models.CharField(max_length=10, choices=STATUS, default='Applied')
+    
+    def __str__(self):
+        return f"{self.applicant.username} applied for {self.job.job_title}"

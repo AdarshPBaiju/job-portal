@@ -32,7 +32,7 @@
 <!-- Pagination (static example for demonstration) -->
 <div class="col-12">
    <div class="text-center">
-      <p>Showing 1 to 5 of 20 jobs</p>
+      <p>Showing {{jobs.start_index}} to {{ jobs.end_index }} of {{ jobs.paginator.count }} jobs</p>
    </div>
    <ul class="pagination justify-content-end" id="pagination">
       {% if jobs.has_previous %}
