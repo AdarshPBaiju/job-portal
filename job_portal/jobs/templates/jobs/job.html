@@ -32,8 +32,8 @@
    </div>
    {% if jobs.has_other_pages %}
    <!-- Pagination (static example for demonstration) -->
-   <div class="col-12">
-      <div class="text-center">
+   <div class="d-flex justify-content-between align-items-center mt-4">
+      <div>
          <p>Showing {{jobs.start_index}} to {{ jobs.end_index }} of {{ jobs.paginator.count }} jobs</p>
       </div>
       <ul class="pagination justify-content-end" id="pagination">
@@ -44,7 +44,7 @@
             </a>
          </li>
          {% else %}
-         <li class="page-item d-none" id="prevPage">
+         <li class="page-item" id="prevPage">
             <a class="page-link" href="javascript:void(0)" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
             </a>
@@ -60,7 +60,7 @@
             </a>
          </li>
          {% else %}
-         <li class="page-item d-none" id="nextPage">
+         <li class="page-item" id="nextPage">
             <a class="page-link" href="javascript:void(0)" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
             </a>

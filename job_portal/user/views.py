@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.contrib.sites.shortcuts import get_current_site
 from .models import CustomUser, Address, Experience, Education, UserHobby, UserImages, UserInterest, UserSkill
-from jobs.models import Job, JobPortalProfile
+from jobs.models import Job, JobApplication, JobPortalProfile
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.utils.encoding import force_bytes
@@ -20,6 +20,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import update_session_auth_hash
 from django.db import IntegrityError
 from .models import UserImages
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
 
 # Create your views here.
 class RedirectAuthenticatedUserMixin:
@@ -670,3 +672,88 @@ class DeleteInterestView(LoginRequiredMixin, View):
         interest.delete()
         messages.success(request, 'Interest deleted successfully.')
         return redirect('user:profile_view')
+    
+
+# Job Application List View with status change for job creator
+class JobApplicationListView(LoginRequiredMixin, View):
+    template_name = 'jobs/job_applications.html'
+    paginate_by = 1
+
+    def get(self, request, *args, **kwargs):
+        job_id = kwargs.get('job_id')
+        job = get_object_or_404(Job, id=job_id)
+
+        if job.user != request.user.jobportalprofile:
+            messages.error(request, "You do not have permission to view this job's applications.")
+            return redirect('user:job-list')
+
+        status_filter = request.GET.get('status', '')
+        applications = JobApplication.objects.filter(job=job)
+
+        if status_filter:
+            applications = applications.filter(status=status_filter)
+
+        # Pagination
+        paginator = Paginator(applications, self.paginate_by)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            'applications': page_obj,
+            'job': job,
+            'selected_status': status_filter,
+            'STATUS_CHOICES': JobApplication.STATUS,
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        job_id = kwargs.get('job_id')
+        job = get_object_or_404(Job, id=job_id)
+
+        if job.user != request.user.jobportalprofile:
+            messages.error(request, "You do not have permission to modify this job's applications.")
+            return redirect('user:job-list')
+
+        action = request.POST.get('action')
+        application_id = request.POST.get('application_id')
+        application = get_object_or_404(JobApplication, id=application_id, job=job)
+
+        if action == 'select':
+            application.status = 'Selected'
+        elif action == 'reject':
+            application.status = 'Rejected'
+        elif action == 'undo':
+            application.status = 'Applied'
+
+        application.save()
+        messages.success(request, f"Application status updated to {application.status}.")
+        return redirect('user:application-list', job_id=job_id)
+
+
+# Job Application List View for Applicants
+class JobApplicationListForApplicantsView(LoginRequiredMixin, View):
+    template_name = 'jobs/job_applications_for_applicants.html'
+    paginate_by = 1
+
+    def get(self, request, *args, **kwargs):
+        applicant = request.user.jobportalprofile
+        status_filter = request.GET.get('status', '')
+        
+        # Get all applications for the current user (applicant)
+        applications = JobApplication.objects.filter(applicant=applicant)
+        
+        # Filter by status if provided
+        if status_filter:
+            applications = applications.filter(status=status_filter)
+        
+        # Pagination of applications
+        paginator = Paginator(applications, self.paginate_by)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        
+        context = {
+            'applications': page_obj,
+            'selected_status': status_filter,
+            'STATUS_CHOICES': JobApplication.STATUS,
+        }
+        return render(request, self.template_name, context)

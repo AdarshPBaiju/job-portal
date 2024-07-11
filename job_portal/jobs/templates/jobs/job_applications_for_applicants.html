@@ -1,4 +1,5 @@
 {% extends 'accounts/shared/accounts_base.html' %}
+{% load humanize %}
 
 {% block accounts_title %}Application List{% endblock accounts_title %}
 
@@ -6,7 +7,7 @@
 <div class="container-fluid">
     <div class="card shadow-lg p-4">
         <div class="d-flex align-items-center mb-4">
-            <h4 class="flex-grow-1">Application List for {{ job.job_title }}</h4>
+            <h4 class="flex-grow-1">Application List</h4>
             <form method="get" class="ms-auto">
                 <div class="input-group">
                     <select class="form-select" id="status-filter" name="status">
@@ -32,38 +33,11 @@
             {% for application in applications %}
             <div class="col-md-12">
                 <div class="card h-100 border-custom shadow">
-                    <div class="card-header bg-custom text-white">
-                        <h5 class="mb-0">{{ application.applicant.user.full_name }}</h5>
-                    </div>
                     <div class="card-body">
-                        <p><strong>Company:</strong> {{ application.company_name }}</p>
-                        <p><strong>Designation:</strong> {{ application.designation }}</p>
-                        <p><strong>Salary:</strong> {{ application.salary }}</p>
-                        <p><strong>Last Working Date:</strong> {{ application.last_working_date }}</p>
-                        <p><strong>Quit Reason:</strong> {{ application.quit_reason }}</p>
+                        <p><strong>Job Title:</strong> {{ application.job }}</p>
+                        <p><strong>Salary:</strong> <span class="badge salary-badge">₹{{ application.job.salary_from|intcomma }}{% if application.job.salary_to %} - ₹{{ application.job.salary_to|intcomma }}{% endif %}</span></p>
+                        <p><strong>Location:</strong> {{ application.job.location }}</p>
                         <p><strong>Status:</strong> {{ application.status }}</p>
-                    </div>
-                    <div class="card-footer bg-light d-flex justify-content-between">
-                        {% if application.status != 'Selected' and application.status != 'Rejected' %}
-                        <form method="post" class="ms-auto">
-                            {% csrf_token %}
-                            <input type="hidden" name="application_id" value="{{ application.id }}">
-                            <button type="submit" name="action" value="select" class="btn btn-success btn-sm" title="Select">
-                                <i class="fa-solid fa-check"></i> Select
-                            </button>
-                            <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm" title="Reject">
-                                <i class="fa-solid fa-times"></i> Reject
-                            </button>
-                        </form>
-                        {% elif application.status == 'Selected' or application.status == 'Rejected' %}
-                        <form method="post" class="ms-auto">
-                            {% csrf_token %}
-                            <input type="hidden" name="application_id" value="{{ application.id }}">
-                            <button type="submit" name="action" value="undo" class="btn btn-warning btn-sm" title="Undo">
-                                <i class="fa-solid fa-undo"></i> Undo
-                            </button>
-                        </form>
-                        {% endif %}
                     </div>
                 </div>
             </div>

@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, View, CreateView, ListView
 from .forms import EmployeeForm, JobApplicationForm, JobSeekerForm
 from .models import Job, JobApplication, JobPortalProfile
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib import messages
 
 
@@ -72,16 +72,23 @@ class EmployeeProfileCreateView(LoginRequiredMixin, CreateView):
 # Job List View
 class JobListView(LoginRequiredMixin, View):
     template_name = 'jobs/job.html'
-    paginate_by = 2
+    paginate_by = 1
     
     def get(self, request, *args, **kwargs):
         search_query = request.GET.get('q', '')
         
-        job_list = Job.objects.filter(
-            job_title__title__icontains=search_query
-        ).exclude(
-            user=request.user.jobportalprofile
-        ).order_by('-created_at')
+        if search_query:
+            job_list = Job.objects.filter(
+                job_title__title__icontains=search_query
+            ).exclude(
+                user=request.user.jobportalprofile
+            ).order_by('-created_at')
+        else:
+            job_list = Job.objects.filter(
+                job_title__title__icontains=request.user.jobportalprofile.title
+            ).exclude(
+                user=request.user.jobportalprofile
+            ).order_by('-created_at')
         
         paginator = Paginator(job_list, self.paginate_by)
         page_number = request.GET.get('page')
@@ -158,52 +165,3 @@ class JobApplicationSuccessView(DetailView):
 
     def get_object(self):
         return self.model.objects.get(pk=self.kwargs['pk'])
-
-
-class JobApplicationListView(LoginRequiredMixin, View):
-    template_name = 'jobs/job_applications.html'
-
-    def get(self, request, *args, **kwargs):
-        job_id = kwargs.get('job_id')
-        job = get_object_or_404(Job, id=job_id)
-
-        if job.user != request.user.jobportalprofile:
-            messages.error(request, "You do not have permission to view this job's applications.")
-            return redirect('user:job-list')
-
-        status_filter = request.GET.get('status', '')
-        applications = JobApplication.objects.filter(job=job)
-        
-        if status_filter:
-            applications = applications.filter(status=status_filter)
-
-        context = {
-            'applications': applications,
-            'job': job,
-            'selected_status': status_filter,
-            'STATUS_CHOICES': JobApplication.STATUS,
-        }
-        return render(request, self.template_name, context)
-
-    def post(self, request, *args, **kwargs):
-        job_id = kwargs.get('job_id')
-        job = get_object_or_404(Job, id=job_id)
-
-        if job.user != request.user.jobportalprofile:
-            messages.error(request, "You do not have permission to modify this job's applications.")
-            return redirect('user:job-list')
-
-        action = request.POST.get('action')
-        application_id = request.POST.get('application_id')
-        application = get_object_or_404(JobApplication, id=application_id, job=job)
-
-        if action == 'select':
-            application.status = 'Selected'
-        elif action == 'reject':
-            application.status = 'Rejected'
-        elif action == 'undo':
-            application.status = 'Applied'
-
-        application.save()
-        messages.success(request, f"Application status updated to {application.status}.")
-        return redirect('job:application-list', job_id=job_id)

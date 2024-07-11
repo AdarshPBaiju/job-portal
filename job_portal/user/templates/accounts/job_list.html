@@ -43,7 +43,7 @@
                         <p class="card-text position-absolute bottom-0 end-0 pe-3 mb-2">
                             <small class="text-muted">{{ job.created_at|naturaltime }}</small>
                         </p>
-                        <a href="{% url "job:application-list" job.id %}" target="_blank" class="btn btn-apply-now">View Application</a>
+                        <a href="{% url "user:application-list" job.id %}" target="_blank" class="btn btn-apply-now">View Application</a>
                     </div>
                 </div>
             </div>

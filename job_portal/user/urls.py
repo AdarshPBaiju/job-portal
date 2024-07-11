@@ -52,6 +52,10 @@ urlpatterns = [
     path('skill/create/', UserSkillCreateView.as_view(), name='skill_create'),
     path('skill/delete/<id>/', UserSkillDeleteView.as_view(), name='skill_delete'),
     
+    # Job Application
+    path('<int:job_id>/applications/', JobApplicationListView.as_view(), name='application-list'),
+    path('applications/', JobApplicationListForApplicantsView.as_view(), name='job_applications_for_applicants'),
+    
     # Reset Password
     path("change-password/", ChangePasswordView.as_view(), name="change_password"),
     path("forgot-password/", ForgotPasswordView.as_view(), name="forgot-password"),
