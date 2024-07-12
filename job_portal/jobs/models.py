@@ -47,9 +47,9 @@ class JobPortalProfile(models.Model):
     
     def is_employee(self):
         return self.job_profile == 'Employee'
-
+    
     def __str__(self):
-        return f"{self.user.username}'s Profile"
+        return f"{self.user}'s Profile"
     
 
 class Job(models.Model):    
@@ -82,4 +82,4 @@ class JobApplication(models.Model):
     status = models.CharField(max_length=10, choices=STATUS, default='Applied')
     
     def __str__(self):
-        return f"{self.applicant.username} applied for {self.job.job_title}"
+        return f"{self.applicant} applied for {self.job.job_title}"
