@@ -266,6 +266,11 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             context['image_form'] = form
             context['form_errors'] = True
             return self.render_to_response(context)
+
+
+# job profile
+class JobProfileView(LoginRequiredMixin, TemplateView):
+    template_name = 'accounts/job_profile.html'
         
 
 # Profile Update
@@ -725,9 +730,13 @@ class JobApplicationListView(LoginRequiredMixin, View):
         elif action == 'undo':
             application.status = 'Applied'
 
-        application.save()
-        messages.success(request, f"Application status updated to {application.status}.")
-        return redirect('user:application-list', job_id=job_id)
+        application.save()       
+        page_number = request.GET.get('page', 1)
+        status_filter = request.GET.get('status', '')
+
+        # Redirect to the same page with the same status filter
+        redirect_url = f"{request.path}?page={page_number}&status={status_filter}"
+        return redirect(redirect_url)
 
 
 # Job Application List View for Applicants

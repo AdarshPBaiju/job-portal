@@ -20,6 +20,7 @@ urlpatterns = [
     path('add_interest/', AddInterestView.as_view(), name='add_interest'),
     path('delete_interest/<id>/', DeleteInterestView.as_view(), name='delete_interest'),
     path('delete_image/<int:pk>/', DeleteImageView.as_view(), name='delete_image'),
+    path('job_profile/', JobProfileView.as_view(), name='job_profile'),
     
     # Job
     path('job/', JobListView.as_view(), name='job-list'),

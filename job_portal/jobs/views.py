@@ -34,39 +34,75 @@ class JobProfileSelectView(LoginRequiredMixin, TemplateView):
 
 
 # job Seeker create view
-class JobSeekerProfileCreateView(LoginRequiredMixin ,CreateView):
-    model = JobPortalProfile
-    form_class = JobSeekerForm
+class JobSeekerProfileUpsertView(LoginRequiredMixin, View):
     template_name = "jobs/job_seeker_create.html"
-    success_url = reverse_lazy('user:profile_view')
+    success_url = reverse_lazy('user:job_profile')
+
+    def get(self, request, *args, **kwargs):
+        profile = self.get_profile(request)
+        form = JobSeekerForm(instance=profile)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        profile = self.get_profile(request)
+        form = JobSeekerForm(request.POST, instance=profile)
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def get_profile(self, request):
+        try:
+            return JobPortalProfile.objects.get(user=request.user)
+        except JobPortalProfile.DoesNotExist:
+            return None
+
     def form_valid(self, form):
         profile = form.save(commit=False)
         profile.user = self.request.user
         profile.job_profile = 'Job Seeker'
         profile.company = None
         profile.location = None
-        return super().form_valid(form)
-    
+        profile.save()
+        return redirect(self.success_url)
+
     def form_invalid(self, form):
-        return super().form_invalid(form)
+        return render(self.request, self.template_name, {'form': form})
 
 
-class EmployeeProfileCreateView(LoginRequiredMixin, CreateView):
-    model = JobPortalProfile
-    form_class = EmployeeForm
+class EmployeeProfileUpsertView(LoginRequiredMixin, View):
     template_name = "jobs/employee_create.html"
-    success_url = reverse_lazy('user:profile_view')
+    success_url = reverse_lazy('user:job_profile')
+
+    def get(self, request, *args, **kwargs):
+        profile = self.get_profile(request)
+        form = EmployeeForm(instance=profile)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        profile = self.get_profile(request)
+        form = EmployeeForm(request.POST, instance=profile)
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def get_profile(self, request):
+        try:
+            return JobPortalProfile.objects.get(user=request.user)
+        except JobPortalProfile.DoesNotExist:
+            return None
 
     def form_valid(self, form):
         profile = form.save(commit=False)
         profile.user = self.request.user
         profile.job_profile = 'Employee'
         profile.expertise_level = None
-        return super().form_valid(form)
-    
+        profile.save()
+        return redirect(self.success_url)
+
     def form_invalid(self, form):
-        print(form.errors)
-        return super().form_invalid(form)
+        return render(self.request, self.template_name, {'form': form})
 
 
 # Job List View

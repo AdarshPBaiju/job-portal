@@ -16,6 +16,14 @@
                                 </div>
                             </a>
                         </li>
+                        <li class="list-group-item nav-text {% if request.path == '/accounts/job_profile/' %}active{% endif %}">
+                            <a href="{% url 'user:job_profile' %}" class="text-decoration-none {% if request.path == '/accounts/job_profile/' %}text-color{% endif %}">
+                                <div class="d-flex align-items-center">
+                                    <i class="fa-regular fa-user me-2 {% if request.path == '/accounts/job_profile/' %}text-color{% endif %}"></i>
+                                    <span>Job Profile</span>
+                                </div>
+                            </a>
+                        </li>
                         <li class="list-group-item nav-text">
                             {% if user.jobportalprofile.is_jobseeker %}
                             <a href="{% url 'job:create_employee_profile' %}" class="text-decoration-none">
