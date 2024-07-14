@@ -242,20 +242,26 @@ document.addEventListener('DOMContentLoaded', function() {
     var progressBar = document.getElementById('progress-bar');
     var backwardBtn = document.getElementById('backward-btn');
     var forwardBtn = document.getElementById('forward-btn');
+    var currentTimeDisplay = document.getElementById('current-time');
+    var totalDurationDisplay = document.getElementById('total-duration');
 
     video.addEventListener('loadedmetadata', function() {
         // Set initial volume and progress bar width
         volumeBar.value = video.volume;
         progressBar.style.width = '0%';
+
+        // Display total duration
+        var totalDuration = formatTime(video.duration);
+        totalDurationDisplay.textContent = totalDuration;
     });
 
     playpauseBtn.addEventListener('click', function() {
         if (video.paused || video.ended) {
             video.play();
-            playpauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            playpauseBtn.innerHTML = '<i class="fa-regular fa-circle-pause"></i>';
         } else {
             video.pause();
-            playpauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+            playpauseBtn.innerHTML = '<i class="fa-regular fa-circle-play"></i>';
         }
     });
 
@@ -266,17 +272,27 @@ document.addEventListener('DOMContentLoaded', function() {
     video.addEventListener('timeupdate', function() {
         var percent = (video.currentTime / video.duration) * 100;
         progressBar.style.width = percent + '%';
+
+        // Display current time
+        var currentTime = formatTime(video.currentTime);
+        currentTimeDisplay.textContent = currentTime;
     });
 
     video.addEventListener('ended', function() {
-        playpauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        playpauseBtn.innerHTML = '<i class="fa-regular fa-circle-play"></i>';
     });
 
     backwardBtn.addEventListener('click', function() {
-        video.currentTime -= 10;
+        video.currentTime -= 10; // Jump backward 10 seconds
     });
 
     forwardBtn.addEventListener('click', function() {
-        video.currentTime += 10;
+        video.currentTime += 10; // Jump forward 10 seconds
     });
+
+    function formatTime(seconds) {
+        var minutes = Math.floor(seconds / 60);
+        var secs = Math.floor(seconds % 60);
+        return (minutes < 10 ? '0' : '') + minutes + ':' + (secs < 10 ? '0' : '') + secs;
+    }
 });
