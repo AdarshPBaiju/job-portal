@@ -222,7 +222,6 @@ function deselectOther(otherLinkId) {
 }
 
 
-
 // Multiple Image input field add class form-control
 document.addEventListener('DOMContentLoaded', function() {
     var imageInput = document.getElementById('id_image');
@@ -230,7 +229,6 @@ document.addEventListener('DOMContentLoaded', function() {
         imageInput.classList.add('form-control');
     }
 });
-
 
 
 
@@ -302,6 +300,11 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('mousemove', function(e) {
         if (isDragging) {
             seek(e);
+            var rect = progressContainer.getBoundingClientRect();
+            var offsetX = e.clientX - rect.left;
+            var percent = Math.max(0, Math.min(1, offsetX / rect.width));
+            var newTime = percent * video.duration;
+            currentTimeDisplay.textContent = formatTime(newTime);
         }
     });
 
@@ -323,6 +326,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function formatTime(seconds) {
         var minutes = Math.floor(seconds / 60);
         var secs = Math.floor(seconds % 60);
-        return (minutes < 10 ? '0' : '') + minutes + ':' + (secs < 10 ? '0' : '') + secs;
+        var millis = Math.floor((seconds % 1) * 1000);
+        return (minutes < 10 ? '0' : '') + minutes + ':' + 
+               (secs < 10 ? '0' : '') + secs + ':' + 
+               (millis < 100 ? '0' : '') + (millis < 10 ? '0' : '') + millis;
     }
 });
