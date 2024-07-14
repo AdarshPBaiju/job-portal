@@ -74,7 +74,7 @@
             <div class="text-center">
                 <p>Showing {{ applications.start_index }} to {{ applications.end_index }} of {{ applications.paginator.count }} applications</p>
             </div>
-            <ul class="pagination justify-content-end" id="pagination">
+            <ul class="pagination justify-content-center" id="pagination">
                 {% if applications.has_previous %}
                 <li class="page-item" id="prevPage">
                     <a class="page-link" href="?page={{ applications.previous_page_number }}{% if selected_status %}&status={{ selected_status }}{% endif %}" aria-label="Previous">
