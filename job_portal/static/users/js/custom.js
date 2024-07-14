@@ -240,10 +240,12 @@ document.addEventListener('DOMContentLoaded', function() {
     var playpauseBtn = document.getElementById('playpause-btn');
     var volumeBar = document.getElementById('volume-bar');
     var progressBar = document.getElementById('progress-bar');
+    var progressContainer = document.getElementById('progress-container');
     var backwardBtn = document.getElementById('backward-btn');
     var forwardBtn = document.getElementById('forward-btn');
     var currentTimeDisplay = document.getElementById('current-time');
     var totalDurationDisplay = document.getElementById('total-duration');
+    var isDragging = false;
 
     video.addEventListener('loadedmetadata', function() {
         // Set initial volume and progress bar width
@@ -270,8 +272,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     video.addEventListener('timeupdate', function() {
-        var percent = (video.currentTime / video.duration) * 100;
-        progressBar.style.width = percent + '%';
+        if (!isDragging) {
+            var percent = (video.currentTime / video.duration) * 100;
+            progressBar.style.width = percent + '%';
+        }
 
         // Display current time
         var currentTime = formatTime(video.currentTime);
@@ -289,6 +293,32 @@ document.addEventListener('DOMContentLoaded', function() {
     forwardBtn.addEventListener('click', function() {
         video.currentTime += 10; // Jump forward 10 seconds
     });
+
+    progressContainer.addEventListener('mousedown', function(e) {
+        isDragging = true;
+        seek(e);
+    });
+
+    document.addEventListener('mousemove', function(e) {
+        if (isDragging) {
+            seek(e);
+        }
+    });
+
+    document.addEventListener('mouseup', function(e) {
+        if (isDragging) {
+            isDragging = false;
+            seek(e);
+        }
+    });
+
+    function seek(e) {
+        var rect = progressContainer.getBoundingClientRect();
+        var offsetX = e.clientX - rect.left;
+        var percent = Math.max(0, Math.min(1, offsetX / rect.width));
+        video.currentTime = percent * video.duration;
+        progressBar.style.width = percent * 100 + '%';
+    }
 
     function formatTime(seconds) {
         var minutes = Math.floor(seconds / 60);
