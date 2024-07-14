@@ -245,17 +245,51 @@ document.addEventListener('DOMContentLoaded', function() {
     var totalDurationDisplay = document.getElementById('total-duration');
     var isDragging = false;
 
-    video.addEventListener('loadedmetadata', function() {
-        // Set initial volume and progress bar width
-        volumeBar.value = video.volume;
-        progressBar.style.width = '0%';
+    // Function to safely add event listeners
+    function addListener(element, event, handler) {
+        if (element) {
+            element.addEventListener(event, handler);
+        }
+    }
 
-        // Display total duration
-        var totalDuration = formatTime(video.duration);
-        totalDurationDisplay.textContent = totalDuration;
-    });
+    if (video) {
+        video.addEventListener('loadedmetadata', function() {
+            // Set initial volume and progress bar width
+            if (volumeBar) {
+                volumeBar.value = video.volume;
+            }
+            if (progressBar) {
+                progressBar.style.width = '0%';
+            }
 
-    playpauseBtn.addEventListener('click', function() {
+            // Display total duration
+            if (totalDurationDisplay) {
+                var totalDuration = formatTime(video.duration);
+                totalDurationDisplay.textContent = totalDuration;
+            }
+        });
+
+        video.addEventListener('timeupdate', function() {
+            if (!isDragging && progressBar) {
+                var percent = (video.currentTime / video.duration) * 100;
+                progressBar.style.width = percent + '%';
+            }
+
+            // Display current time
+            if (currentTimeDisplay) {
+                var currentTime = formatTime(video.currentTime);
+                currentTimeDisplay.textContent = currentTime;
+            }
+        });
+
+        video.addEventListener('ended', function() {
+            if (playpauseBtn) {
+                playpauseBtn.innerHTML = '<i class="fa-regular fa-circle-play"></i>';
+            }
+        });
+    }
+
+    addListener(playpauseBtn, 'click', function() {
         if (video.paused || video.ended) {
             video.play();
             playpauseBtn.innerHTML = '<i class="fa-regular fa-circle-pause"></i>';
@@ -265,50 +299,37 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    volumeBar.addEventListener('input', function() {
+    addListener(volumeBar, 'input', function() {
         video.volume = volumeBar.value;
     });
 
-    video.addEventListener('timeupdate', function() {
-        if (!isDragging) {
-            var percent = (video.currentTime / video.duration) * 100;
-            progressBar.style.width = percent + '%';
-        }
-
-        // Display current time
-        var currentTime = formatTime(video.currentTime);
-        currentTimeDisplay.textContent = currentTime;
-    });
-
-    video.addEventListener('ended', function() {
-        playpauseBtn.innerHTML = '<i class="fa-regular fa-circle-play"></i>';
-    });
-
-    backwardBtn.addEventListener('click', function() {
+    addListener(backwardBtn, 'click', function() {
         video.currentTime -= 10; // Jump backward 10 seconds
     });
 
-    forwardBtn.addEventListener('click', function() {
+    addListener(forwardBtn, 'click', function() {
         video.currentTime += 10; // Jump forward 10 seconds
     });
 
-    progressContainer.addEventListener('mousedown', function(e) {
+    addListener(progressContainer, 'mousedown', function(e) {
         isDragging = true;
         seek(e);
     });
 
-    document.addEventListener('mousemove', function(e) {
+    addListener(document, 'mousemove', function(e) {
         if (isDragging) {
             seek(e);
-            var rect = progressContainer.getBoundingClientRect();
-            var offsetX = e.clientX - rect.left;
-            var percent = Math.max(0, Math.min(1, offsetX / rect.width));
-            var newTime = percent * video.duration;
-            currentTimeDisplay.textContent = formatTime(newTime);
+            if (progressContainer && currentTimeDisplay) {
+                var rect = progressContainer.getBoundingClientRect();
+                var offsetX = e.clientX - rect.left;
+                var percent = Math.max(0, Math.min(1, offsetX / rect.width));
+                var newTime = percent * video.duration;
+                currentTimeDisplay.textContent = formatTime(newTime);
+            }
         }
     });
 
-    document.addEventListener('mouseup', function(e) {
+    addListener(document, 'mouseup', function(e) {
         if (isDragging) {
             isDragging = false;
             seek(e);
@@ -316,11 +337,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function seek(e) {
-        var rect = progressContainer.getBoundingClientRect();
-        var offsetX = e.clientX - rect.left;
-        var percent = Math.max(0, Math.min(1, offsetX / rect.width));
-        video.currentTime = percent * video.duration;
-        progressBar.style.width = percent * 100 + '%';
+        if (progressContainer && progressBar) {
+            var rect = progressContainer.getBoundingClientRect();
+            var offsetX = e.clientX - rect.left;
+            var percent = Math.max(0, Math.min(1, offsetX / rect.width));
+            video.currentTime = percent * video.duration;
+            progressBar.style.width = percent * 100 + '%';
+        }
     }
 
     function formatTime(seconds) {
