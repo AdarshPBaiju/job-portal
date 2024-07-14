@@ -240,6 +240,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var playpauseBtn = document.getElementById('playpause-btn');
     var volumeBar = document.getElementById('volume-bar');
     var progressBar = document.getElementById('progress-bar');
+    var backwardBtn = document.getElementById('backward-btn');
+    var forwardBtn = document.getElementById('forward-btn');
 
     video.addEventListener('loadedmetadata', function() {
         // Set initial volume and progress bar width
@@ -268,5 +270,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     video.addEventListener('ended', function() {
         playpauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+    });
+
+    backwardBtn.addEventListener('click', function() {
+        video.currentTime -= 10;
+    });
+
+    forwardBtn.addEventListener('click', function() {
+        video.currentTime += 10;
     });
 });

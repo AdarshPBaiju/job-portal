@@ -245,7 +245,7 @@
             <div class="modal-body">
                 {% if user.short_reel %}
                     <video id="player" width="100%" style="max-height: 600px;">
-                        <source src="{{ user.short_reel.url }}" id="videoSource" type="video/mp4">
+                        <source src="{{ user.short_reel.url }}" id="videoSource" type="video/webm">
                         Your browser does not support the video tag.
                     </video>
                     <div class="custom-video-controls">
@@ -253,7 +253,9 @@
                             <div class="progress-bar" id="progress-bar"></div>
                         </div>
                         <div class="controls">
+                            <button id="backward-btn"><i class="fa-solid fa-backward"></i></button>
                             <button id="playpause-btn"><i class="fa-solid fa-play"></i></button>
+                            <button id="forward-btn"><i class="fa-solid fa-forward"></i></button>
                             <input type="range" id="volume-bar" min="0" max="1" step="0.01" value="1">
                         </div>
                     </div>
