@@ -148,6 +148,43 @@ nav {
   position: relative;
 }
 
+.notification-icon .badge {
+  left: 70%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+@media (max-width: 344px) {
+  .navbar-brand h3 {
+      font-size: 1.25rem;
+  }
+  .fa-bell {
+      font-size: 1.25rem;
+  }
+
+  .profile-icon {
+      font-size: 1.25rem;
+  }
+
+  .notification-icon-container,
+  .profile-icon,
+  .btn-outline-custom {
+      margin: 0.5rem 0;
+  }
+
+  .navbar .d-flex {
+      flex-direction: row;
+      align-items: flex-start;
+  }
+
+  .notification-icon-container {
+      order: 1;
+  }
+
+  .btn-group {
+      order: 2;
+  }
+}
+
 .banner {
   padding: 50px 0;
   text-align: center;
