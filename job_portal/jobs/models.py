@@ -1,8 +1,14 @@
 from django.db import models
 
-from user.models import LEVEL_CHOICES, PLACE_CHOICES, CustomUser
+from user.models import LEVEL_CHOICES, CustomUser
 
 # Create your models here.
+class Location(models.Model):
+    location = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.location
+
 
 class JobTitle(models.Model):
     title = models.CharField(max_length=100, unique=True)
@@ -38,7 +44,7 @@ class JobPortalProfile(models.Model):
     
     # Employer
     company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True)
-    location = models.CharField(max_length=100, null=True, blank=True, choices=PLACE_CHOICES)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True)
     
     job_profile = models.CharField(max_length=12, choices=JOBPROFILE_CHOICES, default='Job Seeker')
     
@@ -58,7 +64,7 @@ class Job(models.Model):
     job_description = models.TextField(null=True, blank=True)
     salary_from = models.PositiveIntegerField(null=True, blank=True)
     salary_to = models.PositiveIntegerField(null=True, blank=True)
-    location = models.CharField(max_length=100, choices=PLACE_CHOICES)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
     expected_joining_date = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     

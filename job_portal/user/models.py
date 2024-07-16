@@ -16,22 +16,6 @@ COUNTRY_CHOICES = (
     ('Afghanistan', 'Afghanistan')
 )
 
-PLACE_CHOICES = (
-    ('Thiruvananthapuram', 'Thiruvananthapuram'),
-    ('Kochi', 'Kochi'),
-    ('Kozhikode', 'Kozhikode'),
-    ('Thrissur', 'Thrissur'),
-    ('Kollam', 'Kollam'),
-    ('Alappuzha', 'Alappuzha'),
-    ('Kannur', 'Kannur'),
-    ('Palakkad', 'Palakkad'),
-    ('Kottayam', 'Kottayam'),
-    ('Malappuram', 'Malappuram'),
-    ('Pathanamthitta', 'Pathanamthitta'),
-    ('Idukki', 'Idukki'),
-    ('Wayanad', 'Wayanad'),
-)
-
 QUALIFICATION_CHOICES = (
     ("High School", "High School"),
     ("Associate's Degree", "Associate's Degree"),
