@@ -881,6 +881,7 @@ a:hover {
   background: transparent;
   border: none;
   box-shadow: none;
+  z-index: 1000;
 }
 
 .transparent-modal .modal-image-container {
@@ -906,7 +907,7 @@ a:hover {
 }
 
 .transparent-modal .btn-close-custom:hover {
-  color: #ccc;
+  color: #0056b3;
 }
 
 @media (max-width: 768px) {
