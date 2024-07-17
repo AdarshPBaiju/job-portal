@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views import View
@@ -191,6 +192,7 @@ class JobApplicationCreateView(LoginRequiredMixin, CreateView):
         applicant = self.request.user.jobportalprofile
         form.instance.applicant = applicant
         form.instance.job = job
+        messages.success(self.request, f'You have successfully applied for the job: {job.job_title.title}')
         return super().form_valid(form)
 
 
@@ -200,4 +202,7 @@ class JobApplicationSuccessView(DetailView):
     context_object_name = 'application'
 
     def get_object(self):
-        return self.model.objects.get(pk=self.kwargs['pk'])
+        try:
+            return JobApplication.objects.get(pk=self.kwargs['pk'], applicant=self.request.user.jobportalprofile)
+        except self.model.DoesNotExist:
+            raise Http404('Job application not found.')

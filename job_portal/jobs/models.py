@@ -84,7 +84,7 @@ class JobApplication(models.Model):
     designation = models.CharField(max_length=100, null=True, blank=True)
     last_working_date = models.DateField(null=True, blank=True)
     salary = models.PositiveIntegerField(null=True, blank=True)
-    quit_reason = models.TextField()
+    quit_reason = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=10, choices=STATUS, default='Applied')
     
     def __str__(self):

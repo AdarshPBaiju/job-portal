@@ -745,6 +745,21 @@ class JobApplicationListForApplicantsView(LoginRequiredMixin, View):
     paginate_by = 1
 
     def get(self, request, *args, **kwargs):
+        return self.render_list(request)
+
+    def post(self, request, *args, **kwargs):
+        application_id = request.POST.get('application_id')
+        application = get_object_or_404(JobApplication, pk=application_id, applicant=request.user.jobportalprofile)
+        
+        if application:
+            application.delete()
+            messages.success(request, "Job application deleted successfully.")
+        else:
+            messages.error(request, "Job application not found.")
+        
+        return self.render_list(request)
+
+    def render_list(self, request):
         applicant = request.user.jobportalprofile
         status_filter = request.GET.get('status', '')
         
