@@ -131,8 +131,18 @@ class JobListView(LoginRequiredMixin, View):
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         
+        jobs_with_status = []
+        applicant = request.user.jobportalprofile
+        
+        for job in page_obj:
+            already_applied = JobApplication.objects.filter(job=job, applicant=applicant).exists()
+            jobs_with_status.append({
+                'job': job,
+                'already_applied': already_applied
+            })
+        
         context = {
-            'jobs': page_obj,
+            'jobs': jobs_with_status,
             'search_query': search_query,
         }
         return render(request, self.template_name, context)

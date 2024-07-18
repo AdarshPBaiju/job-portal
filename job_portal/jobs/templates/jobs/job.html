@@ -8,26 +8,39 @@
 <div class="card-container bg-white mt-4 mb-5">
    <div class="row">
       <!-- job cards Start -->
-      {% for job in jobs %}
+      {% for job_item in jobs %}
       <div class="col-md-6 mb-4">
-         <div class="card job-card h-100">
+         <div class="card job-card h-100" onclick="window.open('{% url 'job:job-detail' job_item.job.id %}', '_blank')">
             <div class="card-body position-relative">
-               <a href="#" class="btn btn-link save-job-btn"><i class="fa-solid fa-bookmark"></i></a> 
-               <h4 class="card-title mb-3">{{ job.job_title }}</h4>
-               <h6 class="card-subtitle mb-3 text-muted"><i class="fa-solid fa-map-marker-alt me-2"></i>{{ job.location }}</h6>
-               {% if job.salary_from %}
+               <a href="#" class="btn btn-link save-job-btn" aria-label="Save Job" onclick="event.stopPropagation();">
+                  <i class="fa-solid fa-bookmark"></i>
+               </a>
+               <h4 class="card-title mb-3">{{ job_item.job.job_title }}</h4>
+               <h6 class="card-subtitle mb-3 text-muted">
+                  <i class="fa-solid fa-map-marker-alt me-2"></i>{{ job_item.job.location }}
+               </h6>
+               {% if job_item.job.salary_from %}
                <div class="d-flex align-items-center mb-4">
-                  <span class="badge salary-badge">₹{{ job.salary_from|intcomma }}{% if job.salary_to %} - ₹{{ job.salary_to|intcomma }}{% endif %}</span>
+                  <span class="badge salary-badge">
+                     ₹{{ job_item.job.salary_from|intcomma }}{% if job_item.job.salary_to %} - ₹{{ job_item.job.salary_to|intcomma }}{% endif %}
+                  </span>
                </div>
                {% endif %}
                <p class="card-text position-absolute bottom-0 end-0 pe-3 mb-2">
-                  <small class="text-muted">{{ job.created_at|naturaltime }}</small>
+                  <small class="text-muted">{{ job_item.job.created_at|naturaltime }}</small>
                </p>
-               <a href="{% url "job:job-detail" job.id %}" target="blank" class="btn btn-apply-now">View Job</a>
+               {% if job_item.already_applied %}
+               <a onclick="event.stopPropagation(); alert('You have already applied for the job {{ job_item.job.job_title }}.');" class="btn btn-apply-now ms-3">Applied</a>
+               {% else %}
+               <a href="{% url 'job:job-detail' job_item.job.id %}" target="_blank" class="btn btn-apply-now" onclick="event.stopPropagation();">View Job</a>
+               {% endif %}
             </div>
          </div>
       </div>
-      {% endfor %}
+  {% endfor %}
+  
+
+
       <!-- job card End -->
    </div>
    {% if jobs.has_other_pages %}
