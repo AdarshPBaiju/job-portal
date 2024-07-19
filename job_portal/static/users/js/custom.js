@@ -287,6 +287,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 playpauseBtn.innerHTML = '<i class="fa-regular fa-circle-play"></i>';
             }
         });
+        // Disable right-click context menu on the video player
+        video.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
     }
 
     addListener(playpauseBtn, 'click', function() {
