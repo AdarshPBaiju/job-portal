@@ -1,13 +1,13 @@
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import DetailView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, View, CreateView, ListView
 from .forms import EmployeeForm, JobApplicationForm, JobSeekerForm
-from .models import Job, JobApplication, JobPortalProfile
+from .models import Job, JobApplication, JobPortalProfile, NotificationList
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib import messages
 
@@ -209,3 +209,39 @@ class JobApplicationSuccessView(DetailView):
             return JobApplication.objects.get(pk=self.kwargs['pk'], applicant=self.request.user.jobportalprofile)
         except self.model.DoesNotExist:
             raise Http404('Job application not found.')
+
+
+# Notification
+class GetNotificationsView(View):
+    def get(self, request, *args, **kwargs):
+        user = request.user.jobportalprofile  # Adjust based on your user profile model
+        notifications = NotificationList.objects.filter(user=user).select_related('notification')
+
+        data = []
+        for notification in notifications:
+            notification_data = {
+                'id': notification.id,
+                'subject': notification.notification.subject,
+                'content': notification.notification.content,
+                'created': notification.notification.created,
+                'is_read': notification.is_read,
+                'url': reverse('job:job-detail', args=[notification.notification.job.id]) if notification.notification.job else reverse('user:job_applications_for_applicants')
+            }
+            
+            data.append(notification_data)
+
+        return JsonResponse(data, safe=False)
+    
+class NotificationDataView(View):
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            # Get unread notifications count
+            user = request.user.jobportalprofile
+            unread_count = NotificationList.objects.filter(user=user, is_read=False).count()
+            
+            # Mark all unread notifications as read
+            NotificationList.objects.filter(user=user, is_read=False).update(is_read=True)
+            
+            return JsonResponse({'unread_count': unread_count})
+
+        return JsonResponse({'error': 'Unauthorized'}, status=401)

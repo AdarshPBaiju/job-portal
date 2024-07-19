@@ -89,3 +89,20 @@ class JobApplication(models.Model):
     
     def __str__(self):
         return f"{self.applicant} applied for {self.job.job_title}"
+    
+
+class Notification(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, null=True, blank=True)
+    job_application = models.ForeignKey(JobApplication, on_delete=models.CASCADE, null=True, blank=True)
+    subject = models.CharField(max_length=100, null=True, blank=True)
+    content = models.CharField(max_length=250, null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.subject} for {self.job.job_title}"
+
+
+class NotificationList(models.Model):
+    user = models.ForeignKey(JobPortalProfile, on_delete=models.CASCADE)
+    notification = models.ForeignKey(Notification, on_delete=models.CASCADE)
+    is_read = models.BooleanField(default=False)

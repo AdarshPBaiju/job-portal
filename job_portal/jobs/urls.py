@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import EmployeeProfileUpsertView, JobApplicationCreateView, JobApplicationSuccessView, JobListView, JobProfileSelectView, JobSeekerProfileUpsertView, JobDetailView
+from .views import EmployeeProfileUpsertView, GetNotificationsView, JobApplicationCreateView, JobApplicationSuccessView, JobListView, JobProfileSelectView, JobSeekerProfileUpsertView, JobDetailView, NotificationDataView
 
 app_name = 'jobs'
 
@@ -9,6 +9,10 @@ urlpatterns = [
     path('<int:pk>', JobDetailView.as_view(), name='job-detail'),
     path('apply/<int:job_id>/', JobApplicationCreateView.as_view(), name='job_application_create'),
     path('success/<int:pk>/', JobApplicationSuccessView.as_view(), name='job_application_success'),
+    
+    # Notification
+    path('notifications/', GetNotificationsView.as_view(), name='get_notifications'),
+    path('notification-data/', NotificationDataView.as_view(), name='notification_data'),
     
     # JobProfile
     path('select-profile/', JobProfileSelectView.as_view(), name='select_profile'),

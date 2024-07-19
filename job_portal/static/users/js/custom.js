@@ -355,3 +355,74 @@ document.addEventListener('DOMContentLoaded', function() {
                (millis < 100 ? '0' : '') + (millis < 10 ? '0' : '') + millis;
     }
 });
+
+// Notification Count and mark as read
+document.addEventListener('DOMContentLoaded', function() {
+    function updateNotificationCount() {
+        fetch(notificationcountUrl, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('notificationCount').textContent = data.unread_count;
+        })
+    }
+
+    document.getElementById('notificationButton').addEventListener('click', function() {
+        fetch(notificationcountUrl, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            updateNotificationCount();
+        })
+    });
+
+    // Initialize notification count on page load
+    updateNotificationCount();
+
+    // Auto-reload notification count every 30 seconds
+    setInterval(updateNotificationCount, 10000); // 30000 milliseconds = 30 seconds
+});
+
+
+// Load Notification
+$(document).ready(function() {
+    function loadNotifications() {
+        $.ajax({
+            url: notificationsUrl,
+            method: 'GET',
+            success: function(data) {
+                data.sort(function(a, b) {
+                    return new Date(b.created) - new Date(a.created);
+                });
+                let notificationsHtml = '';
+                data.forEach(notification => {
+                    notificationsHtml += `
+                        <a href="${notification.url}" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                            <img src="${notificationImage}" alt="notification" width="32" height="32" class="flex-shrink-0">
+                            <div class="d-flex gap-2 w-100 justify-content-between">
+                                <div>
+                                    <h6 class="mb-0">${notification.subject}</h6>
+                                    <p class="mb-0 opacity-75">${notification.content}</p>
+                                </div>
+                                <small class="opacity-50 text-nowrap">${moment(notification.created).fromNow()}</small>
+                            </div>
+                        </a>
+                    `;
+                });
+                $('#notificationList').html(notificationsHtml);
+            },
+        });
+    }
+
+    $('#notificationModal').on('show.bs.modal', function () {
+        loadNotifications();
+    });
+});
