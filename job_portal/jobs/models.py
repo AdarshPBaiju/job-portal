@@ -99,7 +99,7 @@ class Notification(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f"{self.subject} for {self.job.job_title}"
+        return f"{self.subject}"
 
 
 class NotificationList(models.Model):

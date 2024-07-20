@@ -225,12 +225,26 @@ class GetNotificationsView(View):
                 'content': notification.notification.content,
                 'created': notification.notification.created,
                 'is_read': notification.is_read,
-                'url': reverse('job:job-detail', args=[notification.notification.job.id]) if notification.notification.job else reverse('user:job_applications_for_applicants')
+                'url': self.get_notification_url(notification, request)
             }
-            
             data.append(notification_data)
 
         return JsonResponse(data, safe=False)
+
+    def get_notification_url(self, notification, request):
+        if notification.notification.job:
+            return reverse_lazy('job:job-detail', args=[notification.notification.job.id])
+        elif notification.notification.job_application:
+            # If the notification is related to a job application
+            if request.user.jobportalprofile.job_profile == 'Employee':
+                # Return the URL for the employee's application list
+                return reverse_lazy('user:application-list', args=[notification.notification.job_application.job.id])
+            else:
+                # Return the URL for the applicant's application list
+                return reverse_lazy('user:job_applications_for_applicants')
+        else:
+            # Handle case where no URL is applicable
+            return reverse_lazy('core:home')
     
 class NotificationDataView(View):
     def get(self, request, *args, **kwargs):
