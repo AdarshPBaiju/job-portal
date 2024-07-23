@@ -214,7 +214,7 @@ class JobApplicationSuccessView(DetailView):
 # Notification
 class GetNotificationsView(View):
     def get(self, request, *args, **kwargs):
-        user = request.user.jobportalprofile  # Adjust based on your user profile model
+        user = request.user.jobportalprofile
         notifications = NotificationList.objects.filter(user=user).select_related('notification')
 
         data = []
