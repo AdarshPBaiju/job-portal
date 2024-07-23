@@ -23,7 +23,7 @@ def create_job_notifications(sender, instance, created, **kwargs):
         jobseekers = JobPortalProfile.objects.filter(title=instance.job_title, job_profile='Job Seeker').exclude(user=instance.user)
         for jobseeker in jobseekers:
             NotificationList.objects.get_or_create(
-                user=jobseeker.user,
+                user=jobseeker,
                 notification=notification
             )
 
