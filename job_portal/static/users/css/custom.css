@@ -216,6 +216,7 @@ nav {
 
 .banner .form-control::placeholder {
   color: #6c757d;
+  font-size: 1rem;
 }
 
 .banner .form-control:focus {
@@ -265,16 +266,46 @@ nav {
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.267);
   margin-top: 20px;
 }
+
 #search-results p {
   margin: 10px 0;
   font-size: 1.2rem;
 }
 
 @media (max-width: 768px) {
+  .banner .input-group {
+    flex-direction: column;
+  }
+
   .banner .form-control {
-    border-right: 1px solid #ced4da;
+    border-radius: 25px;
+    border-right: none;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 0;
+  }
+
+  #search-icon {
+    display: none;
+  }
+
+  .btn-banner{
+    border-radius: 25px;
+  }
+
+  .banner .btn-custom {
+    border-radius: 25px !important;
+    width: 100%;
   }
 }
+
+@media (max-width: 270px) {
+  .banner .search-input {
+    padding: 5px;
+    font-size: 1.1rem;
+  }
+}
+
 
 .save-job-btn {
   position: absolute;
