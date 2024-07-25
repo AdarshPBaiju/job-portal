@@ -1,18 +1,21 @@
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DetailView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView, View, CreateView, ListView
+from django.views.generic import TemplateView, View, CreateView
+from django.core.paginator import Paginator
+from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 from .forms import EmployeeForm, JobApplicationForm, JobSeekerForm
 from .models import Job, JobApplication, JobPortalProfile, NotificationList
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.contrib import messages
+from job_portal.mixin import JobPortalProfileRequiredMixin
 
 
-# Create your views here.    
+# Create your views here.
+
 # Job Profile Select View
 class JobProfileSelectView(LoginRequiredMixin, TemplateView):
     template_name = 'jobs/select_jobprofile.html'
@@ -107,7 +110,7 @@ class EmployeeProfileUpsertView(LoginRequiredMixin, View):
 
 
 # Job List View
-class JobListView(LoginRequiredMixin, View):
+class JobListView(LoginRequiredMixin, JobPortalProfileRequiredMixin, View):
     template_name = 'jobs/job.html'
     paginate_by = 1
     
@@ -142,7 +145,7 @@ class JobListView(LoginRequiredMixin, View):
     
 
 # Job Detail View
-class JobDetailView(LoginRequiredMixin, DetailView):
+class JobDetailView(LoginRequiredMixin, JobPortalProfileRequiredMixin, DetailView):
     model = Job
     template_name = 'jobs/job-detail.html'
     context_object_name = 'job'
@@ -156,7 +159,7 @@ class JobDetailView(LoginRequiredMixin, DetailView):
     
  
 # Job Application   
-class JobApplicationCreateView(LoginRequiredMixin, CreateView):
+class JobApplicationCreateView(LoginRequiredMixin, JobPortalProfileRequiredMixin, CreateView):
     model = JobApplication
     form_class = JobApplicationForm
     template_name = 'jobs/job_apply.html'
@@ -199,7 +202,7 @@ class JobApplicationCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class JobApplicationSuccessView(DetailView):
+class JobApplicationSuccessView(LoginRequiredMixin, JobPortalProfileRequiredMixin, DetailView):
     model = JobApplication
     template_name = 'jobs/job_application_success.html'
     context_object_name = 'application'
@@ -214,22 +217,27 @@ class JobApplicationSuccessView(DetailView):
 # Notification
 class GetNotificationsView(View):
     def get(self, request, *args, **kwargs):
-        user = request.user.jobportalprofile
-        notifications = NotificationList.objects.filter(user=user).select_related('notification')
+        try:
+            user = request.user.jobportalprofile
+            notifications = NotificationList.objects.filter(user=user).select_related('notification')
 
-        data = []
-        for notification in notifications:
-            notification_data = {
-                'id': notification.id,
-                'subject': notification.notification.subject,
-                'content': notification.notification.content,
-                'created': notification.notification.created,
-                'is_read': notification.is_read,
-                'url': self.get_notification_url(notification, request)
-            }
-            data.append(notification_data)
+            data = []
+            for notification in notifications:
+                notification_data = {
+                    'id': notification.id,
+                    'subject': notification.notification.subject,
+                    'content': notification.notification.content,
+                    'created': notification.notification.created,
+                    'is_read': notification.is_read,
+                    'url': self.get_notification_url(notification, request)
+                }
+                data.append(notification_data)
 
-        return JsonResponse(data, safe=False)
+            return JsonResponse(data, safe=False)
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'User profile not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
 
     def get_notification_url(self, notification, request):
         if notification.notification.job:
@@ -246,16 +254,16 @@ class GetNotificationsView(View):
             # Handle case where no URL is applicable
             return reverse_lazy('core:home')
     
-class NotificationDataView(View):
+class NotificationDataView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
+        try:
             # Get unread notifications count
-            user = request.user.jobportalprofile
-            unread_count = NotificationList.objects.filter(user=user, is_read=False).count()
-            
-            # Mark all unread notifications as read
-            NotificationList.objects.filter(user=user, is_read=False).update(is_read=True)
-            
-            return JsonResponse({'unread_count': unread_count})
+            user_profile = request.user.jobportalprofile
+            unread_count = NotificationList.objects.filter(user=user_profile, is_read=False).count()
 
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
+            # Mark all unread notifications as read
+            NotificationList.objects.filter(user=user_profile, is_read=False).update(is_read=True)
+
+            return JsonResponse({'unread_count': unread_count})
+        except JobPortalProfile.DoesNotExist:
+            return JsonResponse({'error': 'Profile not found'}, status=404)

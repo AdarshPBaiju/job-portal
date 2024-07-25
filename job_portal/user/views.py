@@ -20,15 +20,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import update_session_auth_hash
 from django.db import IntegrityError
 from .models import UserImages
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.paginator import Paginator
+from job_portal.mixin import JobPortalProfileRequiredMixin, RedirectAuthenticatedUserMixin
 
 
 # Create your views here.
-class RedirectAuthenticatedUserMixin:
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return redirect("core:home")
-        return super().dispatch(request, *args, **kwargs)
 
 
 class CustomRegisterView(RedirectAuthenticatedUserMixin, FormView):
@@ -269,7 +265,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
 
 # job profile
-class JobProfileView(LoginRequiredMixin, TemplateView):
+class JobProfileView(LoginRequiredMixin, JobPortalProfileRequiredMixin, TemplateView):
     template_name = 'accounts/job_profile.html'
         
 
@@ -516,7 +512,7 @@ class UserSkillDeleteView(LoginRequiredMixin, View):
 
 
 # Job List
-class JobListView(LoginRequiredMixin, ListView):
+class JobListView(LoginRequiredMixin, JobPortalProfileRequiredMixin, ListView):
     model = Job
     template_name = 'accounts/job_list.html'
     context_object_name = 'data'
@@ -526,7 +522,7 @@ class JobListView(LoginRequiredMixin, ListView):
 
 
 # Job Create
-class JobCreateView(LoginRequiredMixin, CreateView):
+class JobCreateView(LoginRequiredMixin, JobPortalProfileRequiredMixin, CreateView):
     form_class = JobForm
     template_name = 'accounts/job_upsert.html'
     success_url = reverse_lazy('user:job-list')
@@ -543,7 +539,7 @@ class JobCreateView(LoginRequiredMixin, CreateView):
 
 
 # Job Update
-class JobUpdateView(LoginRequiredMixin, UpdateView):
+class JobUpdateView(LoginRequiredMixin, JobPortalProfileRequiredMixin, UpdateView):
     form_class = JobForm
     model = Job
     template_name = 'accounts/job_upsert.html'
@@ -565,7 +561,7 @@ class JobUpdateView(LoginRequiredMixin, UpdateView):
     
 
 # Job Delete
-class JobDeleteView(LoginRequiredMixin, View):
+class JobDeleteView(LoginRequiredMixin, JobPortalProfileRequiredMixin, View):
     model = Job
     template_name = 'accounts/job_delete.html'
     success_url = reverse_lazy('user:job-list')
@@ -582,7 +578,7 @@ class JobDeleteView(LoginRequiredMixin, View):
     
 
 # Job Detail
-class JobDetailView(LoginRequiredMixin, DetailView):
+class JobDetailView(LoginRequiredMixin, JobPortalProfileRequiredMixin, DetailView):
     model = Job
     template_name = 'job-detail.html'
     context_object_name = 'job'
@@ -680,7 +676,7 @@ class DeleteInterestView(LoginRequiredMixin, View):
     
 
 # Job Application List View with status change for job creator
-class JobApplicationListView(LoginRequiredMixin, View):
+class JobApplicationListView(LoginRequiredMixin, JobPortalProfileRequiredMixin, View):
     template_name = 'jobs/job_applications.html'
     paginate_by = 1
 
@@ -740,7 +736,7 @@ class JobApplicationListView(LoginRequiredMixin, View):
 
 
 # Job Application List View for Applicants
-class JobApplicationListForApplicantsView(LoginRequiredMixin, View):
+class JobApplicationListForApplicantsView(LoginRequiredMixin, JobPortalProfileRequiredMixin, View):
     template_name = 'jobs/job_applications_for_applicants.html'
     paginate_by = 1
 

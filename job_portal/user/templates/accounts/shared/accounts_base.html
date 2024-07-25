@@ -43,11 +43,18 @@
                                     <span>Become An Employee</span>
                                 </div>
                             </a>
-                            {% else %}
+                            {% elif user.jobportalprofile.is_employee %}
                             <a href="{% url 'job:create_job_seeker_profile' %}" class="text-decoration-none">
                                 <div class="d-flex align-items-center">
                                     <i class="fa-regular fa-user me-2"></i>
                                     <span>Become a Job Seeker</span>
+                                </div>
+                            </a>
+                            {% else %}
+                            <a href="{% url 'job:select_profile' %}" class="text-decoration-none">
+                                <div class="d-flex align-items-center">
+                                    <i class="fa-regular fa-user me-2"></i>
+                                    <span>Create Job Profile</span>
                                 </div>
                             </a>
                             {% endif %}
