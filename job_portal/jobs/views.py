@@ -283,10 +283,10 @@ class GetNotificationsView(View):
             # If the notification is related to a job application
             if request.user.jobportalprofile.job_profile == 'Employee':
                 # Return the URL for the employee's application list
-                return reverse_lazy('user:application-list', args=[notification.notification.job_application.job.id])
+                return reverse_lazy('job_profile:application-list', args=[notification.notification.job_application.job.id])
             else:
                 # Return the URL for the applicant's application list
-                return reverse_lazy('user:job_applications_for_applicants')
+                return reverse_lazy('job_profile:job_applications_for_applicants')
         else:
             # Handle case where no URL is applicable
             return reverse_lazy('core:home')
