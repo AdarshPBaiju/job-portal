@@ -1,7 +1,5 @@
 from django.contrib.auth.hashers import make_password
-from django.http import Http404
 from django.shortcuts import get_object_or_404, render, redirect
-from .forms import ImageForm, JobForm, UserDetailAddForm, UserHobbyAddForm, UserHobbyForm, UserImageForm, UserInterestAddForm, UserInterestForm, UserRegistrationForm, LoginForm, ForgotPasswordForm, ResetPasswordForm, ProfileUpdateForm, ChangePasswordForm, AddressCreateForm, ExperienceUpsertForm, EducationUpsertForm, UserSkillUpsertForm
 from django.views.generic import FormView, TemplateView, View, ListView, CreateView, UpdateView, DetailView
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
@@ -9,8 +7,6 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from django.urls import reverse
 from django.contrib.sites.shortcuts import get_current_site
-from .models import CustomUser, Address, Experience, Education, UserHobby, UserImages, UserInterest, UserSkill
-from jobs.models import Job, JobApplication, JobPortalProfile
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.utils.encoding import force_bytes
@@ -19,14 +15,15 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import update_session_auth_hash
 from django.db import IntegrityError
-from .models import UserImages
-from django.core.paginator import Paginator
-from job_portal.mixin import JobPortalProfileRequiredMixin, RedirectAuthenticatedUserMixin
+from .token import custom_token_generator
+from .forms import ImageForm, UserDetailAddForm, UserHobbyAddForm, UserHobbyForm, UserImageForm, UserInterestAddForm, UserInterestForm, UserRegistrationForm, LoginForm, ForgotPasswordForm, ResetPasswordForm, ProfileUpdateForm, ChangePasswordForm, AddressCreateForm, ExperienceUpsertForm, EducationUpsertForm, UserSkillUpsertForm
+from .models import CustomUser, Address, Experience, Education, UserHobby, UserImages, UserInterest, UserSkill
+from job_portal.mixin import RedirectAuthenticatedUserMixin
 
 
 # Create your views here.
 
-
+# Register 1st step
 class CustomRegisterView(RedirectAuthenticatedUserMixin, FormView):
     template_name = "accounts/signup.html"
     form_class = UserRegistrationForm
@@ -61,7 +58,7 @@ class CustomRegisterView(RedirectAuthenticatedUserMixin, FormView):
             return redirect("user:login")
         
 
-# Add Profile
+# Register 2nd step
 class RegisterCompleteView(LoginRequiredMixin, FormView):
     template_name = 'accounts/registrationcomplete.html'
     success_url = reverse_lazy("job:select_profile")
@@ -155,6 +152,7 @@ class CustomLogoutView(View):
 # Forgot Password
 class ForgotPasswordView(RedirectAuthenticatedUserMixin, View):
     template_name = 'accounts/forgot_password.html'
+    success_template_name = 'accounts/emailsentforgotpassword.html'
     form_class = ForgotPasswordForm
     
     def get(self, request):
@@ -177,7 +175,7 @@ class ForgotPasswordView(RedirectAuthenticatedUserMixin, View):
                     'user': user,
                     'domain': current_site.domain,
                     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                    'token': default_token_generator.make_token(user),
+                    'token': custom_token_generator.make_token(user),
                 })
                 to_email = email
                 send_email = EmailMessage(mail_subject, message, to=[to_email])
@@ -185,10 +183,9 @@ class ForgotPasswordView(RedirectAuthenticatedUserMixin, View):
                 send_email.send()
                 
                 context = {
-                    'email_sent': True,
                     'email': email,
                 }
-                return render(request, self.template_name, context)
+                return render(request, self.success_template_name, context)
             else:
                 messages.error(request, 'Account does not exist.')
                 return redirect('user:forgot-password')
@@ -211,7 +208,7 @@ class ResetPasswordView(RedirectAuthenticatedUserMixin, View):
     def get(self, request, uidb64, token):
         user = self.get_user(uidb64)
         
-        if user is not None and default_token_generator.check_token(user, token):
+        if user is not None and custom_token_generator.check_token(user, token):
             form = self.form_class()
             return render(request, self.template_name, {'form': form})
         else:
@@ -221,7 +218,7 @@ class ResetPasswordView(RedirectAuthenticatedUserMixin, View):
     def post(self, request, uidb64, token):
         user = self.get_user(uidb64)
         
-        if user is not None and default_token_generator.check_token(user, token):
+        if user is not None and custom_token_generator.check_token(user, token):
             form = self.form_class(request.POST)
             if form.is_valid():
                 password = form.cleaned_data['password']
@@ -238,7 +235,7 @@ class ResetPasswordView(RedirectAuthenticatedUserMixin, View):
         else:
             messages.error(request, 'This link has expired or is invalid.')
             return redirect('user:login')
- 
+
        
 # Profile View
 class ProfileView(LoginRequiredMixin, TemplateView):
