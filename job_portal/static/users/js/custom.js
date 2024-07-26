@@ -1,21 +1,16 @@
-// Automatically close alerts after 5 seconds
-window.onload = function() {
-    var alerts = document.querySelectorAll('.alert');
-    alerts.forEach(function(alert) {
-        setTimeout(function() {
-            alert.style.opacity = '1';
-            alert.classList.add('fadeInRight');
-        }, 100);
-        setTimeout(function() {
-            alert.style.opacity = '0';
-            alert.classList.remove('fadeInRight');
-            alert.classList.add('fadeOutRight');
-            setTimeout(function() {
-                alert.remove();
-            }, 1000);
-        }, 4000);
+// close alerts after on clicking
+document.addEventListener('DOMContentLoaded', function() {
+  const closeButtons = document.querySelectorAll('.custom-close');
+
+  closeButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const alert = this.closest('.custom-alert');
+      if (alert) {
+        alert.classList.add('closing');
+      }
     });
-};
+  });
+});
 
 // Pagination Js
 let currentPage = document.querySelector('.page-item.active');

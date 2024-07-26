@@ -27,13 +27,13 @@
         <div id="message-container">
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} mb-3 alert-dismissible fade show" role="alert">
+                    <div class="custom-alert custom-alert-{{ message.tags }} mb-3" role="alert">
                         {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close custom-close" aria-label="Close"></button>
                     </div>
                 {% endfor %}
             {% endif %}
-        </div>     
+        </div>             
 
         <header>
             {% include 'shared/navbar.html' %}
