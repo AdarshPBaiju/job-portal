@@ -1,7 +1,7 @@
-{% extends 'accounts/shared/accounts_base.html' %}
+{% extends 'job_profile/shared/accounts_base.html' %}
 
 
-{% block accounts_title %}{% if request.path == '/accounts/skill/create/' %}Add{% else %}Update{% endif %} Skill{% endblock accounts_title %}
+{% block accounts_title %}{% if request.path == '/job_profile/job/create/' %}Add{% else %}Update{% endif %} Skill{% endblock accounts_title %}
 
 
 {% block accounts_content %}
@@ -14,7 +14,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        {% if request.path == '/accounts/job/create/' %}
+                        {% if request.path == '/job_profile/job/create/' %}
                         <h1 class="card-title text-center mb-4">Add Job</h1>
                         {% else %}
                         <h1 class="card-title text-center mb-4">Update Job</h1>

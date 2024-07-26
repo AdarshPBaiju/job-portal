@@ -12,8 +12,11 @@
       <div class="col-md-6 mb-4">
          <div class="card job-card h-100" onclick="window.open('{% url 'job:job-detail' job_item.id %}', '_blank')">
             <div class="card-body position-relative">
-               <a href="#" class="btn btn-link save-job-btn" aria-label="Save Job" onclick="event.stopPropagation();">
-                  <i class="fa-solid fa-bookmark"></i>
+               <a href="#" class="btn btn-link save-job-btn" 
+                  aria-label="{% if job_item.id in saved_job_ids %}Remove Job{% else %}Save Job{% endif %}" 
+                  data-job-id="{{ job_item.id }}"
+                  data-action="{% if job_item.id in saved_job_ids %}remove{% else %}save{% endif %}">
+                  <i class="{% if job_item.id in saved_job_ids %}fa-solid fa-bookmark{% else %}far fa-bookmark{% endif %}"></i>
                </a>
                <h4 class="card-title mb-3">{{ job_item.job_title }}</h4>
                <h6 class="card-subtitle mb-3 text-muted">
@@ -85,4 +88,5 @@
    {% endif %}
 </div>
 {% endif %}
+{% include "jobs/savejobajax.html" %}
 {% endblock content %}

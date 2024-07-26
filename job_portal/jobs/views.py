@@ -10,7 +10,7 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from .forms import EmployeeForm, JobApplicationForm, JobSeekerForm
-from .models import Job, JobApplication, JobPortalProfile, NotificationList
+from .models import Job, JobApplication, JobPortalProfile, NotificationList, SaveJob
 from job_portal.mixin import JobPortalProfileRequiredMixin
 
 
@@ -135,11 +135,13 @@ class JobListView(LoginRequiredMixin, JobPortalProfileRequiredMixin, View):
         page_obj = paginator.get_page(page_number)
         
         applied_job_ids = JobApplication.objects.filter(applicant=request.user.jobportalprofile).values_list('job_id', flat=True)
-
+        saved_job_ids = SaveJob.objects.filter(user=request.user.jobportalprofile).values_list('job_id', flat=True)
+        
         context = {
             'jobs': page_obj,
             'search_query': search_query,
             'applied_job_ids': applied_job_ids,
+            'saved_job_ids': saved_job_ids,
         }
         return render(request, self.template_name, context)
     
@@ -155,6 +157,7 @@ class JobDetailView(LoginRequiredMixin, JobPortalProfileRequiredMixin, DetailVie
         job = self.get_object()
         applicant = self.request.user.jobportalprofile
         context['already_applied'] = JobApplication.objects.filter(job=job, applicant=applicant).exists()
+        context['saved_job'] = SaveJob.objects.filter(job=job, user=applicant)
         return context
     
  
@@ -212,6 +215,40 @@ class JobApplicationSuccessView(LoginRequiredMixin, JobPortalProfileRequiredMixi
             return JobApplication.objects.get(pk=self.kwargs['pk'], applicant=self.request.user.jobportalprofile)
         except self.model.DoesNotExist:
             raise Http404('Job application not found.')
+        
+
+# Save Job
+class SaveRemoveJobView(View):
+    def get(self, request, *args, **kwargs):
+        action = request.GET.get('action')
+        job_id = request.GET.get('job_id')
+        
+        if not action or not job_id:
+            return JsonResponse({'status': 'error', 'message': 'Missing action or job ID'})
+        
+        user = request.user.jobportalprofile
+        job = get_object_or_404(Job, id=job_id)
+        
+        if action == 'save':
+            # Handle save action
+            saved_job, created = SaveJob.objects.get_or_create(user=user, job=job)
+            if created:
+                return JsonResponse({'status': 'success', 'message': 'Job saved successfully'})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Job already saved'})
+        
+        elif action == 'remove':
+            # Handle remove action
+            try:
+                saved_job = SaveJob.objects.get(user=user, job=job)
+                saved_job.delete()
+                return JsonResponse({'status': 'success', 'message': 'Job removed successfully'})
+            except SaveJob.DoesNotExist:
+                return JsonResponse({'status': 'error', 'message': 'Job not found'})
+        
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Invalid action'})
+
 
 
 # Notification

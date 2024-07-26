@@ -27,61 +27,11 @@
                                 </div>
                             </a>
                         </li>
-                        <li class="list-group-item nav-text {% if request.path == '/user/job_profile/' %}active{% endif %}">
-                            <a href="{% url 'user:job_profile' %}" class="text-decoration-none {% if request.path == '/user/job_profile/' %}text-color{% endif %}">
-                                <div class="d-flex align-items-center">
-                                    <i class="fa-regular fa-user me-2 {% if request.path == '/user/job_profile/' %}text-color{% endif %}"></i>
-                                    <span>Job Profile</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="list-group-item nav-text">
-                            {% if user.jobportalprofile.is_jobseeker %}
-                            <a href="{% url 'job:create_employee_profile' %}" class="text-decoration-none">
-                                <div class="d-flex align-items-center">
-                                    <i class="fa-regular fa-user me-2"></i>
-                                    <span>Become An Employee</span>
-                                </div>
-                            </a>
-                            {% elif user.jobportalprofile.is_employee %}
-                            <a href="{% url 'job:create_job_seeker_profile' %}" class="text-decoration-none">
-                                <div class="d-flex align-items-center">
-                                    <i class="fa-regular fa-user me-2"></i>
-                                    <span>Become a Job Seeker</span>
-                                </div>
-                            </a>
-                            {% else %}
-                            <a href="{% url 'job:select_profile' %}" class="text-decoration-none">
-                                <div class="d-flex align-items-center">
-                                    <i class="fa-regular fa-user me-2"></i>
-                                    <span>Create Job Profile</span>
-                                </div>
-                            </a>
-                            {% endif %}
-                        </li>
                         <li class="list-group-item nav-text {% if request.path == '/user/skill/' %}active{% endif %}">
                             <a href="{% url "user:skill_list" %}" class="text-decoration-none {% if request.path == '/user/skill/' %}text-color{% endif %}">
                                 <div class="d-flex align-items-center">
-                                    <i class="fas fa-laptop-code me-2 {% if request.path == '/user/skill/' %}text-color{% endif %}"></i>
+                                    <i class="fa-solid fa-lightbulb me-2 {% if request.path == '/user/skill/' %}text-color{% endif %}"></i>
                                     <span>Skill</span>
-                                </div>
-                            </a>
-                        </li>
-                        {% if user.jobportalprofile.is_employee %}
-                        <li class="list-group-item nav-text {% if request.path == '/user/job/' %}active{% endif %}">
-                            <a href="{% url "user:job-list" %}" class="text-decoration-none {% if request.path == '/user/job/' %}text-color{% endif %}">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-laptop-code me-2 {% if request.path == '/user/job/' %}text-color{% endif %}"></i>
-                                    <span>Job</span>
-                                </div>
-                            </a>
-                        </li>
-                        {% endif %}
-                        <li class="list-group-item nav-text {% if request.path == '/user/applications/' %}active{% endif %}">
-                            <a href="{% url 'user:job_applications_for_applicants' %}" class="text-decoration-none {% if request.path == '/user/applications/' %}text-color{% endif %}">
-                                <div class="d-flex align-items-center">
-                                    <i class="fa-solid fa-file-invoice me-2 {% if request.path == '/user/applications/' %}text-color{% endif %}"></i>
-                                    <span>Applications</span>
                                 </div>
                             </a>
                         </li>
@@ -112,7 +62,7 @@
                         <li class="list-group-item nav-text {% if request.path == '/user/change-password/' %}active{% endif %}">
                             <a href="{% url "user:change_password" %}" class="text-decoration-none {% if request.path == '/user/change-password/' %}text-color{% endif %}">
                                 <div class="d-flex align-items-center">
-                                    <i class="fa-solid fa-gears me-2 {% if request.path == '/user/change-password/' %}text-color{% endif %}"></i>
+                                    <i class="fa-solid fa-gear me-2 {% if request.path == '/user/change-password/' %}text-color{% endif %}"></i>
                                     <span>Change Password</span>
                                 </div>
                             </a>

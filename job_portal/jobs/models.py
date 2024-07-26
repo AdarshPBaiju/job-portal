@@ -89,6 +89,15 @@ class JobApplication(models.Model):
     
     def __str__(self):
         return f"{self.applicant} applied for {self.job.job_title}"
+
+
+class SaveJob(models.Model):
+    user = models.ForeignKey(JobPortalProfile, on_delete=models.CASCADE)
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.user} saved {self.job.job_title}"
     
 
 class Notification(models.Model):

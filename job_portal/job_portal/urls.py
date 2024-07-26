@@ -7,6 +7,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("core.urls", namespace="core")),
     path("job/", include("jobs.urls", namespace="job")),
+    path("job-profile/", include("job_profile.urls", namespace="job_profile")),
     path("accounts/", include("user.urls", namespace="user")),
     path("administrator/", include("admin_panel.urls", namespace="admin-d")),
     path('tinymce/', include('tinymce.urls')),

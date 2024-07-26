@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'core',
     'user',
     'jobs',
+    'job_profile',
     'admin_panel'
 ]
 

@@ -10,8 +10,13 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body position-relative">
-                    <a href="#" class="btn btn-link position-absolute top-0 end-0"><i class="fa-solid fa-flag"></i></a>
-                    <a href="#" class="btn btn-link save-job-icon"><i class="far fa-bookmark"></i></a>
+                    {% comment %} <a href="#" class="btn btn-link position-absolute top-0 end-0"><i class="fa-solid fa-flag"></i></a> {% endcomment %}
+                    <a href="#" class="btn btn-link save-job-icon save-job-btn" 
+                        aria-label="{% if saved_job %}Remove Job{% else %}Save Job{% endif %}"
+                        data-job-id="{{ job.id }}"
+                        data-action="{% if saved_job %}remove{% else %}save{% endif %}">
+                        <i class="{% if saved_job %}fa-solid fa-bookmark{% else %}far fa-bookmark{% endif %}"></i>
+                    </a>
                     <div class="d-flex align-items-center mb-3">
                         <div class="ms-3">
                             <h3 class="card-title">{{job.job_title}}</h3>
@@ -20,7 +25,7 @@
                     </div>
                     <div class="mt-3 mb-3 ms-3">
                         <h5 class="card-subtitle mb-3 text-muted">Salary</h5>
-                        <div class="badge salary-badge">{{ job.salary_from|intcomma }}{% if job.salary_to %} - {{ job.salary_to|intcomma }}{% endif %}</div>
+                        <div class="badge salary-badge">₹{{ job.salary_from|intcomma }}{% if job.salary_to %} - ₹{{ job.salary_to|intcomma }}{% endif %}</div>
                     </div>
                     <div class="mt-3 mb-3 ms-3">
                         <h5 class="card-subtitle mb-3 text-muted">Expected Joining Date</h5>
@@ -43,4 +48,5 @@
         </div>
     </div>
 </div>
+{% include "jobs/savejobajax.html" %}
 {% endblock content %}
