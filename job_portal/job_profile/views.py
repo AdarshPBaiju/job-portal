@@ -29,7 +29,7 @@ class JobListView(LoginRequiredMixin, JobPortalProfileRequiredMixin, ListView):
 class JobCreateView(LoginRequiredMixin, JobPortalProfileRequiredMixin, CreateView):
     form_class = JobForm
     template_name = 'job_profile/job_upsert.html'
-    success_url = reverse_lazy('user:job-list')
+    success_url = reverse_lazy('job_profile:job-list')
     
     def form_valid(self, form):
         form.instance.user = self.request.user.jobportalprofile
@@ -47,7 +47,7 @@ class JobUpdateView(LoginRequiredMixin, JobPortalProfileRequiredMixin, UpdateVie
     form_class = JobForm
     model = Job
     template_name = 'job_profile/job_upsert.html'
-    success_url = reverse_lazy('user:job-list')
+    success_url = reverse_lazy('job_profile:job-list')
     pk_url_kwarg = 'id'
     
     def get_queryset(self):

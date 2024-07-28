@@ -96,7 +96,6 @@ body {
   color: #0056b3;
 }
 
-
 /* Nav Bar */
 .navbar-nav {
   margin-left: auto;
@@ -112,7 +111,9 @@ nav {
   background-color: #0056b3;
 }
 
-.navbar-brand:hover,.fa-user:hover,.fa-bell:hover {
+.navbar-brand:hover,
+.fa-user:hover,
+.fa-bell:hover {
   color: #0056b3;
 }
 
@@ -158,37 +159,36 @@ nav {
 
 @media (max-width: 344px) {
   .navbar-brand h3 {
-      font-size: 1.25rem;
+    font-size: 1.25rem;
   }
 
   .fa-bell {
-      font-size: 1.25rem;
+    font-size: 1.25rem;
   }
 
   .profile-icon {
-      font-size: 1.25rem;
+    font-size: 1.25rem;
   }
 
   .notification-icon-container,
   .profile-icon,
   .btn-outline-custom {
-      margin: 0.5rem 0;
+    margin: 0.5rem 0;
   }
 
   .navbar .d-flex {
-      flex-direction: row;
-      align-items: flex-start;
+    flex-direction: row;
+    align-items: flex-start;
   }
 
   .notification-icon-container {
-      order: 1;
+    order: 1;
   }
 
   .btn-group {
-      order: 2;
+    order: 2;
   }
 }
-
 
 /* Banner Section */
 .banner {
@@ -295,7 +295,7 @@ nav {
     display: none;
   }
 
-  .btn-banner{
+  .btn-banner {
     border-radius: 25px;
   }
 
@@ -312,7 +312,6 @@ nav {
   }
 }
 
-
 /* Job Card Section */
 .save-job-btn {
   position: absolute;
@@ -324,7 +323,7 @@ nav {
 }
 
 .save-job-btn:hover {
-  transform: scale(1.10);
+  transform: scale(1.1);
 }
 
 .salary-badge {
@@ -375,7 +374,8 @@ nav {
   box-shadow: none;
 }
 
-.fa-flag, .fa-pen {
+.fa-flag,
+.fa-pen {
   font-size: 30px;
   color: #525050;
   padding: 10px;
@@ -573,7 +573,6 @@ a:hover {
   padding: 1rem;
 }
 
-
 /* Notification */
 .notification-item {
   margin-bottom: 1rem;
@@ -603,7 +602,6 @@ a:hover {
   border-top: 1px solid #dee2e6;
 }
 
-
 /* home */
 .banner {
   background-color: #f8f9fa;
@@ -617,7 +615,6 @@ a:hover {
   color: #333;
   margin-bottom: 10px;
 }
-
 
 .banner-text {
   font-size: 1.2rem;
@@ -709,35 +706,34 @@ a:hover {
 
 @media (max-width: 768px) {
   .card-item .card-image {
-      height: 250px;
+    height: 250px;
   }
 
   .card-wrapper {
-      flex-direction: column;
-      align-items: center;
+    flex-direction: column;
+    align-items: center;
   }
 
   .card-item {
-      width: 100%;
-      margin-bottom: 20px;
+    width: 100%;
+    margin-bottom: 20px;
   }
 }
 
 @media (max-width: 576px) {
   .card-item .card-image {
-      height: 200px;
+    height: 200px;
   }
 }
 
 .job-card {
-  transition: border .5s;
+  transition: border 0.5s;
   cursor: pointer;
 }
 
 .job-card:hover {
   border: 1px solid #0056b3;
 }
-
 
 /* footer css start */
 .custom-footer {
@@ -813,7 +809,14 @@ a:hover {
 
 .instagram {
   background-color: #e4405f;
-  background-image: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  background-image: linear-gradient(
+    45deg,
+    #f09433 0%,
+    #e6683c 25%,
+    #dc2743 50%,
+    #cc2366 75%,
+    #bc1888 100%
+  );
   color: #ffffff;
 }
 
@@ -839,12 +842,11 @@ a:hover {
 
 @media (max-width: 768px) {
   .footer-social {
-      text-align: center;
-      margin-top: 10px;
-      margin-bottom: 10px;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
   }
 }
-
 
 /* home banner flying images */
 .flying-images-container {
@@ -874,12 +876,13 @@ a:hover {
 }
 
 @keyframes fly {
-  0%, 100% {
-      transform: translateY(0);
+  0%,
+  100% {
+    transform: translateY(0);
   }
 
   50% {
-      transform: translateY(-20%);
+    transform: translateY(-20%);
   }
 }
 
@@ -928,7 +931,7 @@ a:hover {
   margin: 0 10px;
 }
 
-.controls input[type=range] {
+.controls input[type="range"] {
   width: 100px;
   -webkit-appearance: none;
   appearance: none;
@@ -937,7 +940,7 @@ a:hover {
   margin: 0 10px;
 }
 
-.controls input[type=range]::-webkit-slider-thumb {
+.controls input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 15px;
@@ -946,7 +949,7 @@ a:hover {
   cursor: pointer;
 }
 
-.controls input[type=range]::-moz-range-thumb {
+.controls input[type="range"]::-moz-range-thumb {
   width: 15px;
   height: 15px;
   background-color: #0056b3;
@@ -997,10 +1000,101 @@ a:hover {
 
 @media (max-width: 768px) {
   .transparent-modal .modal-lg {
-      max-width: 100%;
+    max-width: 100%;
   }
 
   .transparent-modal .modal-image-container img {
     min-width: 300px;
+  }
+}
+
+/* loader */
+.lds-roller,
+.lds-roller div,
+.lds-roller div:after {
+  box-sizing: border-box;
+}
+.lds-roller {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-roller div {
+  animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  transform-origin: 40px 40px;
+}
+.lds-roller div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  width: 7.2px;
+  height: 7.2px;
+  border-radius: 50%;
+  background: currentColor;
+  margin: -3.6px 0 0 -3.6px;
+}
+.lds-roller div:nth-child(1) {
+  animation-delay: -0.036s;
+}
+.lds-roller div:nth-child(1):after {
+  top: 62.62742px;
+  left: 62.62742px;
+}
+.lds-roller div:nth-child(2) {
+  animation-delay: -0.072s;
+}
+.lds-roller div:nth-child(2):after {
+  top: 67.71281px;
+  left: 56px;
+}
+.lds-roller div:nth-child(3) {
+  animation-delay: -0.108s;
+}
+.lds-roller div:nth-child(3):after {
+  top: 70.90963px;
+  left: 48.28221px;
+}
+.lds-roller div:nth-child(4) {
+  animation-delay: -0.144s;
+}
+.lds-roller div:nth-child(4):after {
+  top: 72px;
+  left: 40px;
+}
+.lds-roller div:nth-child(5) {
+  animation-delay: -0.18s;
+}
+.lds-roller div:nth-child(5):after {
+  top: 70.90963px;
+  left: 31.71779px;
+}
+.lds-roller div:nth-child(6) {
+  animation-delay: -0.216s;
+}
+.lds-roller div:nth-child(6):after {
+  top: 67.71281px;
+  left: 24px;
+}
+.lds-roller div:nth-child(7) {
+  animation-delay: -0.252s;
+}
+.lds-roller div:nth-child(7):after {
+  top: 62.62742px;
+  left: 17.37258px;
+}
+.lds-roller div:nth-child(8) {
+  animation-delay: -0.288s;
+}
+.lds-roller div:nth-child(8):after {
+  top: 56px;
+  left: 12.28719px;
+}
+@keyframes lds-roller {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }

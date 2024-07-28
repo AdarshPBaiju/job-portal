@@ -386,38 +386,60 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize notification count on page load
     updateNotificationCount();
 
-    // Auto-reload notification count every 30 seconds
-    setInterval(updateNotificationCount, 10000); // 30000 milliseconds = 30 seconds
+    // Auto-reload notification count every 10 seconds
+    setInterval(updateNotificationCount, 10000);
 });
 
 
 // Load Notification
 $(document).ready(function() {
     function loadNotifications() {
+        // Show loading spinner
+        $('#notificationList').html(`
+            <div class="loading-spinner">
+                <div class="lds-roller">
+                    <div></div><div></div><div></div><div></div>
+                    <div></div><div></div><div></div><div></div>
+                </div>
+            </div>
+        `);
+
         $.ajax({
             url: notificationsUrl,
             method: 'GET',
             success: function(data) {
+                // Sort notifications by creation date
                 data.sort(function(a, b) {
                     return new Date(b.created) - new Date(a.created);
                 });
+
+                // Prepare the HTML for notifications
                 let notificationsHtml = '';
-                data.forEach(notification => {
-                    notificationsHtml += `
-                        <a href="${notification.url}" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-                            <img src="${notificationImage}" alt="notification" width="32" height="32" class="flex-shrink-0">
-                            <div class="d-flex gap-2 w-100 justify-content-between">
-                                <div>
-                                    <h6 class="mb-0">${notification.subject}</h6>
-                                    <p class="mb-0 opacity-75">${notification.content}</p>
+                if (data.length > 0) {
+                    data.forEach(notification => {
+                        notificationsHtml += `
+                            <a href="${notification.url}" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                                <img src="${notificationImage}" alt="notification" width="32" height="32" class="flex-shrink-0">
+                                <div class="d-flex gap-2 w-100 justify-content-between">
+                                    <div>
+                                        <h6 class="mb-0">${notification.subject}</h6>
+                                        <p class="mb-0 opacity-75">${notification.content}</p>
+                                    </div>
+                                    <small class="opacity-50 text-nowrap">${moment(notification.created).fromNow()}</small>
                                 </div>
-                                <small class="opacity-50 text-nowrap">${moment(notification.created).fromNow()}</small>
-                            </div>
-                        </a>
-                    `;
-                });
+                            </a>
+                        `;
+                    });
+                } else {
+                    notificationsHtml = '<div class="no-notifications-container"><div class="no-notifications">No notifications</div></div>';
+                }
+
+                // Update the notification list with the fetched data
                 $('#notificationList').html(notificationsHtml);
             },
+            error: function() {
+                $('#notificationList').html('<div class="error">Error loading notifications</div>');
+            }
         });
     }
 

@@ -201,7 +201,6 @@ class JobApplicationCreateView(LoginRequiredMixin, JobPortalProfileRequiredMixin
         applicant = self.request.user.jobportalprofile
         form.instance.applicant = applicant
         form.instance.job = job
-        messages.success(self.request, f'You have successfully applied for the job: {job.job_title.title}')
         return super().form_valid(form)
 
 
