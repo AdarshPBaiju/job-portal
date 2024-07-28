@@ -192,6 +192,8 @@ cython_debug/
 .ionide
 
 job_portal.bat
+db.sqlite3-shm
+db.sqlite3-wal
 
 # End of https://www.toptal.com/developers/gitignore/api/django,visualstudiocode
 SquareX Safe File Viewer
