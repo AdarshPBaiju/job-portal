@@ -358,6 +358,10 @@ document.addEventListener('DOMContentLoaded', function() {
 // Notification Count and mark as read
 document.addEventListener('DOMContentLoaded', function() {
     function updateNotificationCount() {
+        if (!notificationcountUrl) {
+            return;
+        }
+
         fetch(notificationcountUrl, {
             method: 'GET',
             headers: {
@@ -366,21 +370,40 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-            document.getElementById('notificationCount').textContent = data.unread_count;
+            // Update count for notificationButton
+            const notificationCountElement1 = document.getElementById('notificationCount');
+            if (notificationCountElement1) {
+                if (data.unread_count === 0) {
+                    notificationCountElement1.classList.add('d-none');
+                } else {
+                    notificationCountElement1.classList.remove('d-none');
+                    notificationCountElement1.textContent = data.unread_count;
+                }
+            }
+
+            // Update count for notificationButton2
+            const notificationCountElement2 = document.getElementById('notificationCount2');
+            if (notificationCountElement2) {
+                if (data.unread_count === 0) {
+                    notificationCountElement2.classList.add('d-none');
+                } else {
+                    notificationCountElement2.classList.remove('d-none');
+                    notificationCountElement2.textContent = data.unread_count;
+                }
+            }
         })
+        .catch(() => {
+            // Handle errors silently without logging
+        });
     }
 
-    document.getElementById('notificationButton').addEventListener('click', function() {
-        fetch(notificationcountUrl, {
-            method: 'GET',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            updateNotificationCount();
-        })
+    const notificationButtons = document.querySelectorAll('#notificationButton, #notificationButton2');
+    notificationButtons.forEach(button => {
+        if (button) {
+            button.addEventListener('click', function() {
+                updateNotificationCount();
+            });
+        }
     });
 
     // Initialize notification count on page load

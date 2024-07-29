@@ -10,7 +10,7 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from .forms import EmployeeForm, JobApplicationForm, JobSeekerForm
-from .models import Job, JobApplication, JobPortalProfile, NotificationList, SaveJob
+from .models import Job, JobApplication, JobPortalProfile, Location, NotificationList, SaveJob
 from job_portal.mixin import JobPortalProfileRequiredMixin
 
 
@@ -112,38 +112,51 @@ class EmployeeProfileUpsertView(LoginRequiredMixin, View):
 # Job List View
 class JobListView(LoginRequiredMixin, JobPortalProfileRequiredMixin, View):
     template_name = 'jobs/job.html'
-    paginate_by = 1
-    
+
     def get(self, request, *args, **kwargs):
         search_query = request.GET.get('q', '')
+        selected_locations = request.GET.getlist('location')
+        items_per_page = int(request.GET.get('items_per_page', 1))
         
-        if search_query:
-            job_list = Job.objects.filter(
-                job_title__title__icontains=search_query
-            ).exclude(
-                user=request.user.jobportalprofile
-            ).order_by('-created_at')
-        else:
-            job_list = Job.objects.filter(
+        job_list = Job.objects.filter(
                 job_title__title__icontains=request.user.jobportalprofile.title
             ).exclude(
                 user=request.user.jobportalprofile
             ).order_by('-created_at')
+
+        if search_query:
+            job_list = Job.objects.filter(job_title__title__icontains=search_query)
+        else:
+           job_list = Job.objects.filter(
+                job_title__title__icontains=request.user.jobportalprofile.title
+            ).exclude(
+                user=request.user.jobportalprofile
+            ).order_by('-created_at') 
         
-        paginator = Paginator(job_list, self.paginate_by)
+        if selected_locations:
+            location_ids = Location.objects.filter(location__in=selected_locations).values_list('id', flat=True)
+            job_list = job_list.filter(location__id__in=location_ids)
+        
+        paginator = Paginator(job_list, items_per_page)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         
         applied_job_ids = JobApplication.objects.filter(applicant=request.user.jobportalprofile).values_list('job_id', flat=True)
         saved_job_ids = SaveJob.objects.filter(user=request.user.jobportalprofile).values_list('job_id', flat=True)
-        
+
+        available_locations = Location.objects.filter(job__in=job_list).distinct()
+
         context = {
             'jobs': page_obj,
             'search_query': search_query,
             'applied_job_ids': applied_job_ids,
             'saved_job_ids': saved_job_ids,
+            'locations': available_locations,
+            'selected_locations': selected_locations,
+            'items_per_page': items_per_page,
         }
         return render(request, self.template_name, context)
+
     
 
 # Job Detail View

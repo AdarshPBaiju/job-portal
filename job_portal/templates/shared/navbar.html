@@ -9,7 +9,10 @@
 <nav class="navbar navbar-light p-3" style="background-color: white;">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url "core:home" %}"><h3>CareerConnect</h3></a>
-        <div class="d-flex align-items-center">
+        <button class="navbar-toggler nav-menu-btn d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="d-flex align-items-center d-none d-lg-flex">
             <div class="notification-icon-container me-3">
                 {% if user.is_authenticated %}
                 <button id="notificationButton" class="notification-icon btn btn-link position-relative" type="button" data-bs-toggle="modal" data-bs-target="#notificationModal">
@@ -17,7 +20,7 @@
                     <span id="notificationCount" class="badge bg-danger rounded-pill position-absolute top-0 translate-middle p-1 ps-1" style="font-size: 0.7rem;">
                         <span class="visually-hidden">unread messages</span>
                     </span>
-                </button>            
+                </button>
                 {% endif %}
             </div>
 
@@ -29,7 +32,7 @@
                 <ul class="dropdown-menu dropdown-menu-end mt-3" aria-labelledby="profileDropdown">
                     <li><a class="dropdown-item" href="{% url "user:profile_view" %}">Profile</a></li>
                     <li><a class="dropdown-item" href="{% url "job_profile:job_profile" %}">Job Profile</a></li>
-                    <li><a class="dropdown-item" href="#">Messages</a></li>
+                    {% comment %} <li><a class="dropdown-item" href="#">Messages</a></li> {% endcomment %}
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="{% url 'user:logout' %}">Logout</a></li>
                 </ul>
@@ -41,6 +44,44 @@
         </div>
     </div>
 </nav>
+
+<div class="collapse d-lg-none" id="navbarNav">
+    <div class="card mt-3 m-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-end">
+                <div class="notification-icon-container me-3">
+                    {% if user.is_authenticated %}
+                    <button id="notificationButton2" class="notification-icon btn btn-link position-relative" type="button" data-bs-toggle="modal" data-bs-target="#notificationModal">
+                        <i class="fa-regular fa-bell"></i>
+                        <span id="notificationCount2" class="badge bg-danger rounded-pill position-absolute top-0 translate-middle p-1 ps-1" style="font-size: 0.7rem;">
+                            <span class="visually-hidden">unread messages</span>
+                        </span>
+                    </button>
+                    {% endif %}
+                </div>
+
+                <div class="btn-group">
+                    {% if user.is_authenticated %}
+                    <button class="profile-icon btn btn-link" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-regular fa-user"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end mt-3" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item" href="{% url "user:profile_view" %}">Profile</a></li>
+                        <li><a class="dropdown-item" href="{% url "job_profile:job_profile" %}">Job Profile</a></li>
+                        {% comment %} <li><a class="dropdown-item" href="#">Messages</a></li> {% endcomment %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'user:logout' %}">Logout</a></li>
+                    </ul>
+                    {% else %}
+                    <a class="btn btn-outline-custom ms-2" href="{% url 'user:login' %}">Sign In</a>
+                    <a class="btn btn-outline-custom ms-2" href="{% url 'user:register' %}">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% if user.is_authenticated %}
 {% include "shared/notification.html" %}
 {% endif %}

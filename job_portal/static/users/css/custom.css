@@ -129,6 +129,10 @@ nav {
   display: none;
 }
 
+.nav-menu-btn {
+  display: block;
+}
+
 .notification-icon,
 .profile-icon {
   background: none;
@@ -183,10 +187,6 @@ nav {
 
   .notification-icon-container {
     order: 1;
-  }
-
-  .btn-group {
-    order: 2;
   }
 }
 
@@ -1097,4 +1097,32 @@ a:hover {
   100% {
     transform: rotate(360deg);
   }
+}
+
+
+.custom-filter-button {
+  background-color: #0056b3;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.custom-filter-button:hover {
+  background-color: #034fa0;
+  color: white;
+}
+
+.custom-items-dropdown {
+  width: 60px;
+  height: 37px;
+  border-radius: 4px;
+  padding: 5px;
 }
