@@ -138,7 +138,7 @@ class JobListView(LoginRequiredMixin, JobPortalProfileRequiredMixin, View):
         location_job_count_dict = {loc['location__location']: loc['count'] for loc in location_job_counts}
 
         # Get all locations
-        all_locations = Location.objects.all()
+        all_locations = Location.objects.filter(job__in=base_job_list).distinct()
 
         # Merge job counts with all locations
         location_counts = []
