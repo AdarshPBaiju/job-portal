@@ -9,6 +9,7 @@ from django.views.generic import TemplateView, View, CreateView
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Count
 from .forms import EmployeeForm, JobApplicationForm, JobSeekerForm
 from .models import Job, JobApplication, JobPortalProfile, Location, NotificationList, SaveJob
 from job_portal.mixin import JobPortalProfileRequiredMixin
@@ -118,25 +119,43 @@ class JobListView(LoginRequiredMixin, JobPortalProfileRequiredMixin, View):
         selected_locations = request.GET.getlist('location')
         items_per_page = int(request.GET.get('items_per_page', 1))
         
-        job_list = Job.objects.filter(
+        # Base job list filtered by search query or user profile
+        if search_query:
+            base_job_list = Job.objects.filter(job_title__title__icontains=search_query)
+        else:
+            base_job_list = Job.objects.filter(
                 job_title__title__icontains=request.user.jobportalprofile.title
             ).exclude(
                 user=request.user.jobportalprofile
             ).order_by('-created_at')
 
-        if search_query:
-            job_list = Job.objects.filter(job_title__title__icontains=search_query)
-        else:
-           job_list = Job.objects.filter(
-                job_title__title__icontains=request.user.jobportalprofile.title
-            ).exclude(
-                user=request.user.jobportalprofile
-            ).order_by('-created_at') 
+        total_job_count = base_job_list.count()
+
+        # Aggregate job counts by location
+        location_job_counts = base_job_list.values('location__location').annotate(count=Count('id')).order_by('-count')
+
+        # Create a dictionary of location counts
+        location_job_count_dict = {loc['location__location']: loc['count'] for loc in location_job_counts}
+
+        # Get all locations
+        all_locations = Location.objects.all()
+
+        # Merge job counts with all locations
+        location_counts = []
+        for loc in all_locations:
+            loc_name = loc.location
+            loc_count = location_job_count_dict.get(loc_name, 0)
+            location_counts.append((loc_name, loc_count))
         
+        # Sort locations by job count in descending order
+        sorted_location_counts = sorted(location_counts, key=lambda x: x[1], reverse=True)
+
         if selected_locations:
             location_ids = Location.objects.filter(location__in=selected_locations).values_list('id', flat=True)
-            job_list = job_list.filter(location__id__in=location_ids)
-        
+            job_list = base_job_list.filter(location__id__in=location_ids)
+        else:
+            job_list = base_job_list
+
         paginator = Paginator(job_list, items_per_page)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
@@ -144,19 +163,17 @@ class JobListView(LoginRequiredMixin, JobPortalProfileRequiredMixin, View):
         applied_job_ids = JobApplication.objects.filter(applicant=request.user.jobportalprofile).values_list('job_id', flat=True)
         saved_job_ids = SaveJob.objects.filter(user=request.user.jobportalprofile).values_list('job_id', flat=True)
 
-        available_locations = Location.objects.filter(job__in=job_list).distinct()
-
         context = {
             'jobs': page_obj,
             'search_query': search_query,
             'applied_job_ids': applied_job_ids,
             'saved_job_ids': saved_job_ids,
-            'locations': available_locations,
+            'locations': sorted_location_counts,
             'selected_locations': selected_locations,
             'items_per_page': items_per_page,
+            'total_job_count': total_job_count,
         }
         return render(request, self.template_name, context)
-
     
 
 # Job Detail View
