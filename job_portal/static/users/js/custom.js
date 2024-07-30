@@ -441,19 +441,20 @@ $(document).ready(function() {
                 if (data.length > 0) {
                     data.forEach(notification => {
                         notificationsHtml += `
-                            <a href="${notification.url}" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-                                <img src="${notificationImage}" alt="notification" width="32" height="32" class="flex-shrink-0">
-                                <div class="d-flex gap-2 w-100 justify-content-between">
-                                    <div>
+                            <a href="${notification.url}" class="list-group-item list-group-item-action d-flex flex-column flex-md-row gap-3 py-3" aria-current="true">
+                                <div class="d-flex flex-grow-1 align-items-start">
+                                    <img src="${notificationImage}" alt="notification" width="32" height="32" class="flex-shrink-0 me-3">
+                                    <div class="d-flex flex-column w-100">
                                         <h6 class="mb-0">${notification.subject}</h6>
                                         <p class="mb-0 opacity-75">${notification.content}</p>
                                     </div>
-                                    <small class="opacity-50 text-nowrap">${moment(notification.created).fromNow()}</small>
                                 </div>
+                                <small class="opacity-50 text-nowrap mt-2 mt-md-0 align-self-md-center align-self-end">${moment(notification.created).fromNow()}</small>
                             </a>
                         `;
                     });
-                } else {
+                }                
+                else {
                     notificationsHtml = '<div class="no-notifications-container"><div class="no-notifications">No notifications</div></div>';
                 }
 

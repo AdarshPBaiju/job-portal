@@ -23,7 +23,7 @@
                 {% if user.is_authenticated %}
                 <button id="notificationButton" class="notification-icon btn btn-link position-relative" type="button" data-bs-toggle="modal" data-bs-target="#notificationModal">
                     <i class="fa-regular fa-bell"></i>
-                    <span id="notificationCount" class="badge bg-danger rounded-pill position-absolute top-0 translate-middle p-1 ps-1" style="font-size: 0.7rem;">
+                    <span id="notificationCount" class="badge bg-danger rounded-pill position-absolute top-0 translate-middle p-1 ps-1 d-none" style="font-size: 0.7rem;">
                         <span class="visually-hidden">unread messages</span>
                     </span>
                 </button>
@@ -59,7 +59,7 @@
                     {% if user.is_authenticated %}
                     <button id="notificationButton2" class="notification-icon btn btn-link position-relative" type="button" data-bs-toggle="modal" data-bs-target="#notificationModal">
                         <i class="fa-regular fa-bell"></i>
-                        <span id="notificationCount2" class="badge bg-danger rounded-pill position-absolute top-0 translate-middle p-1 ps-1" style="font-size: 0.7rem;">
+                        <span id="notificationCount2" class="badge bg-danger rounded-pill position-absolute top-0 translate-middle p-1 ps-1 d-none" style="font-size: 0.7rem;">
                             <span class="visually-hidden">unread messages</span>
                         </span>
                     </button>
