@@ -140,25 +140,35 @@
            <!-- Location filter options -->
            <div class="mb-3">
                <label class="form-label">Location</label>
-               <div class="form-check">
-                   <input class="form-check-input" type="checkbox" id="filter-location-all" onchange="toggleAllLocations(this)">
-                   <label class="form-check-label" for="filter-location-all">
-                       All ({{ total_job_count }} jobs)
-                   </label>
-               </div>
-               {% for location, count in locations %}
+               <div class="checkbox-container" style="max-height: calc(100vh - 200px); overflow-y: auto;">
                    <div class="form-check">
-                       <input class="form-check-input" type="checkbox" name="location" value="{{ location }}" id="filter-location-{{ forloop.counter }}" {% if location in selected_locations %}checked{% endif %} {% if count == 0 %}disabled{% endif %}>
-                       <label class="form-check-label" for="filter-location-{{ forloop.counter }}">
-                           {{ location }} ({{ count }} jobs)
+                       <input class="form-check-input" type="checkbox" id="filter-location-all" onchange="toggleAllLocations(this)">
+                       <label class="form-check-label" for="filter-location-all">
+                           All ({{ total_job_count }} jobs)
                        </label>
                    </div>
-               {% endfor %}
+                   {% for location, count in locations %}
+                       <div class="form-check">
+                           <input class="form-check-input" type="checkbox" name="location" value="{{ location }}" id="filter-location-{{ forloop.counter }}" {% if location in selected_locations %}checked{% endif %} {% if count == 0 %}disabled{% endif %}>
+                           <label class="form-check-label" for="filter-location-{{ forloop.counter }}">
+                               {{ location }} ({{ count }} jobs)
+                           </label>
+                       </div>
+                   {% endfor %}
+               </div>
            </div>
-           <button type="submit" class="btn btn-custom">Apply Filters</button>
+           <button type="submit" class="btn btn-custom w-100">Apply Filters</button>
        </form>
    </div>
 </div>
+
+<style>
+   .checkbox-container {
+       max-height: calc(100vh - 200px);
+       min-height: calc(100vh - 200px);
+       overflow-y: auto;
+   }
+</style>
 
 <script>
     function toggleAllLocations(allCheckbox) {
