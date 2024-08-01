@@ -10,6 +10,11 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from tinymce.widgets import TinyMCE
 
+def validate_age(dob):
+    today = date.today()
+    age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+    if age < 18:
+        raise ValidationError('You must be at least 18 years old.')
 
 
 class MultipleImageInput(forms.ClearableFileInput):
@@ -96,7 +101,9 @@ class UserRegistrationForm(forms.ModelForm):
             }),
 
             'phone': TextInput({
-                'class': 'form-control'
+                'class': 'form-control',
+                'minlength': '10',
+                'maxlength': '10' 
             }),
         }
 
@@ -153,6 +160,11 @@ class UserDetailAddForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field_name, field_instance in self.fields.items():
             field_instance.required = True
+    
+    def clean_dob(self):
+        dob = self.cleaned_data.get('dob')
+        validate_age(dob)
+        return dob
    
     def clean_short_reel(self):
         short_reel = self.cleaned_data.get('short_reel', False)
@@ -276,7 +288,8 @@ class ProfileUpdateForm(forms.ModelForm):
 
             'dob': DateInput({
                 'class': 'form-control',
-                'type': 'date'
+                'type': 'date',
+                'required': True
             }),
 
             'qualification': Select({

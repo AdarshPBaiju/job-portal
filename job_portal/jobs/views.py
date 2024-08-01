@@ -2,20 +2,16 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import DetailView
-from django.urls import reverse_lazy
+from django.views.generic import DetailView, TemplateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView, View, CreateView
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Count
+
 from .forms import EmployeeForm, JobApplicationForm, JobSeekerForm
 from .models import Job, JobApplication, JobPortalProfile, Location, NotificationList, SaveJob
 from job_portal.mixin import JobPortalProfileRequiredMixin
-
-
-# Create your views here.
 
 # Job Profile Select View
 class JobProfileSelectView(LoginRequiredMixin, TemplateView):
@@ -24,12 +20,10 @@ class JobProfileSelectView(LoginRequiredMixin, TemplateView):
     def dispatch(self, request, *args, **kwargs):
         if JobPortalProfile.objects.filter(user=request.user).exists():
             return redirect('user:profile_view')
-        
         return super().dispatch(request, *args, **kwargs)
     
     def get(self, request, *args, **kwargs):
-        job_type = self.request.GET.get('type', None)
-        
+        job_type = request.GET.get('type', None)
         if job_type == 'employer':
             return redirect(reverse_lazy('job:create_employee_profile'))
         elif job_type == 'jobseeker':
@@ -37,20 +31,18 @@ class JobProfileSelectView(LoginRequiredMixin, TemplateView):
         else:
             return super().get(request, *args, **kwargs)
 
-
-# job Seeker create view
-class JobSeekerProfileUpsertView(LoginRequiredMixin, View):
-    template_name = "jobs/job_seeker_create.html"
-    success_url = reverse_lazy('user:job_profile')
+# Base Profile Upsert View
+class ProfileUpsertView(LoginRequiredMixin, View):
+    success_url = reverse_lazy('job_profile:job_profile')
 
     def get(self, request, *args, **kwargs):
         profile = self.get_profile(request)
-        form = JobSeekerForm(instance=profile)
+        form = self.get_form(instance=profile)
         return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
         profile = self.get_profile(request)
-        form = JobSeekerForm(request.POST, instance=profile)
+        form = self.get_form(request.POST, instance=profile)
         if form.is_valid():
             return self.form_valid(form)
         else:
@@ -65,50 +57,41 @@ class JobSeekerProfileUpsertView(LoginRequiredMixin, View):
     def form_valid(self, form):
         profile = form.save(commit=False)
         profile.user = self.request.user
+        self.customize_profile(profile)
+        profile.save()
+        return redirect(self.success_url)
+
+    def form_invalid(self, form):
+        return render(self.request, self.template_name, {'form': form})
+
+    def get_form(self, *args, **kwargs):
+        raise NotImplementedError("Subclasses should implement this method")
+
+    def customize_profile(self, profile):
+        raise NotImplementedError("Subclasses should implement this method")
+
+# Job Seeker Profile Upsert View
+class JobSeekerProfileUpsertView(ProfileUpsertView):
+    template_name = 'jobs/job_seeker_create.html'
+
+    def get_form(self, *args, **kwargs):
+        return JobSeekerForm(*args, **kwargs)
+
+    def customize_profile(self, profile):
         profile.job_profile = 'Job Seeker'
         profile.company = None
         profile.location = None
-        profile.save()
-        return redirect(self.success_url)
 
-    def form_invalid(self, form):
-        return render(self.request, self.template_name, {'form': form})
+# Employee Profile Upsert View
+class EmployeeProfileUpsertView(ProfileUpsertView):
+    template_name = 'jobs/employee_create.html'
 
+    def get_form(self, *args, **kwargs):
+        return EmployeeForm(*args, **kwargs)
 
-class EmployeeProfileUpsertView(LoginRequiredMixin, View):
-    template_name = "jobs/employee_create.html"
-    success_url = reverse_lazy('user:job_profile')
-
-    def get(self, request, *args, **kwargs):
-        profile = self.get_profile(request)
-        form = EmployeeForm(instance=profile)
-        return render(request, self.template_name, {'form': form})
-
-    def post(self, request, *args, **kwargs):
-        profile = self.get_profile(request)
-        form = EmployeeForm(request.POST, instance=profile)
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
-
-    def get_profile(self, request):
-        try:
-            return JobPortalProfile.objects.get(user=request.user)
-        except JobPortalProfile.DoesNotExist:
-            return None
-
-    def form_valid(self, form):
-        profile = form.save(commit=False)
-        profile.user = self.request.user
+    def customize_profile(self, profile):
         profile.job_profile = 'Employee'
         profile.expertise_level = None
-        profile.save()
-        return redirect(self.success_url)
-
-    def form_invalid(self, form):
-        return render(self.request, self.template_name, {'form': form})
-
 
 # Job List View
 class JobListView(LoginRequiredMixin, JobPortalProfileRequiredMixin, View):
@@ -137,7 +120,7 @@ class JobListView(LoginRequiredMixin, JobPortalProfileRequiredMixin, View):
         # Create a dictionary of location counts
         location_job_count_dict = {loc['location__location']: loc['count'] for loc in location_job_counts}
 
-        # Get all locations
+        # Get locations
         all_locations = Location.objects.filter(job__in=base_job_list).distinct()
 
         # Merge job counts with all locations
@@ -174,7 +157,6 @@ class JobListView(LoginRequiredMixin, JobPortalProfileRequiredMixin, View):
             'total_job_count': total_job_count,
         }
         return render(request, self.template_name, context)
-    
 
 # Job Detail View
 class JobDetailView(LoginRequiredMixin, JobPortalProfileRequiredMixin, DetailView):
@@ -189,9 +171,8 @@ class JobDetailView(LoginRequiredMixin, JobPortalProfileRequiredMixin, DetailVie
         context['already_applied'] = JobApplication.objects.filter(job=job, applicant=applicant).exists()
         context['saved_job'] = SaveJob.objects.filter(job=job, user=applicant)
         return context
-    
- 
-# Job Application   
+
+# Job Application Create View
 class JobApplicationCreateView(LoginRequiredMixin, JobPortalProfileRequiredMixin, CreateView):
     model = JobApplication
     form_class = JobApplicationForm
@@ -203,10 +184,10 @@ class JobApplicationCreateView(LoginRequiredMixin, JobPortalProfileRequiredMixin
     def dispatch(self, request, *args, **kwargs):
         job_id = self.kwargs.get('job_id')
         job = get_object_or_404(Job, id=job_id)
-        applicant = self.request.user.jobportalprofile
+        applicant = request.user.jobportalprofile
 
         if JobApplication.objects.filter(job=job, applicant=applicant).exists():
-            messages.error(self.request, 'You have already applied for this job.')
+            messages.error(request, 'You have already applied for this job.')
             return redirect('job:job-detail', pk=job.pk)
 
         return super().dispatch(request, *args, **kwargs)
@@ -233,7 +214,7 @@ class JobApplicationCreateView(LoginRequiredMixin, JobPortalProfileRequiredMixin
         form.instance.job = job
         return super().form_valid(form)
 
-
+# Job Application Success View
 class JobApplicationSuccessView(LoginRequiredMixin, JobPortalProfileRequiredMixin, DetailView):
     model = JobApplication
     template_name = 'jobs/job_application_success.html'
@@ -244,9 +225,8 @@ class JobApplicationSuccessView(LoginRequiredMixin, JobPortalProfileRequiredMixi
             return JobApplication.objects.get(pk=self.kwargs['pk'], applicant=self.request.user.jobportalprofile)
         except self.model.DoesNotExist:
             raise Http404('Job application not found.')
-        
 
-# Save Job
+# Save/Remove Job View
 class SaveRemoveJobView(View):
     def get(self, request, *args, **kwargs):
         action = request.GET.get('action')
@@ -259,7 +239,6 @@ class SaveRemoveJobView(View):
         job = get_object_or_404(Job, id=job_id)
         
         if action == 'save':
-            # Handle save action
             saved_job, created = SaveJob.objects.get_or_create(user=user, job=job)
             if created:
                 return JsonResponse({'status': 'success', 'message': 'Job saved successfully'})
@@ -267,7 +246,6 @@ class SaveRemoveJobView(View):
                 return JsonResponse({'status': 'error', 'message': 'Job already saved'})
         
         elif action == 'remove':
-            # Handle remove action
             try:
                 saved_job = SaveJob.objects.get(user=user, job=job)
                 saved_job.delete()
@@ -278,9 +256,7 @@ class SaveRemoveJobView(View):
         else:
             return JsonResponse({'status': 'error', 'message': 'Invalid action'})
 
-
-
-# Notification
+# Get Notifications View
 class GetNotificationsView(View):
     def get(self, request, *args, **kwargs):
         try:
@@ -309,27 +285,20 @@ class GetNotificationsView(View):
         if notification.notification.job:
             return reverse_lazy('job:job-detail', args=[notification.notification.job.id])
         elif notification.notification.job_application:
-            # If the notification is related to a job application
             if request.user.jobportalprofile.job_profile == 'Employee':
-                # Return the URL for the employee's application list
                 return reverse_lazy('job_profile:application-list', args=[notification.notification.job_application.job.id])
             else:
-                # Return the URL for the applicant's application list
                 return reverse_lazy('job_profile:job_applications_for_applicants')
         else:
-            # Handle case where no URL is applicable
             return reverse_lazy('core:home')
-    
+
+# Notification Data View
 class NotificationDataView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         try:
-            # Get unread notifications count
             user_profile = request.user.jobportalprofile
             unread_count = NotificationList.objects.filter(user=user_profile, is_read=False).count()
-
-            # Mark all unread notifications as read
             NotificationList.objects.filter(user=user_profile, is_read=False).update(is_read=True)
-
             return JsonResponse({'unread_count': unread_count})
         except JobPortalProfile.DoesNotExist:
             return JsonResponse({'error': 'Profile not found'}, status=404)

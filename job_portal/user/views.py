@@ -1,6 +1,6 @@
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import get_object_or_404, render, redirect
-from django.views.generic import FormView, TemplateView, View, ListView, CreateView, UpdateView, DetailView
+from django.views.generic import FormView, TemplateView, View, ListView, CreateView, UpdateView
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
@@ -11,7 +11,6 @@ from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import update_session_auth_hash
 from django.db import IntegrityError

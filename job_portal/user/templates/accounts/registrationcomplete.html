@@ -46,7 +46,7 @@
                         </div>
                         <div class="d-grid">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-custom mt-4">Save</button>
+                            <button type="submit" id="submit-button" class="btn btn-custom mt-4">Save</button>
                         </div>
                     </form>
                 </div>
@@ -54,6 +54,42 @@
         </div>
     </div>
 </div>
+<script>
+    document.getElementById('id_dob').addEventListener('input', function() {
+        const dob = new Date(this.value);
+        const age = calculateAge(dob);
+        const errorElementId = 'age-error';
+        let errorElement = document.getElementById(errorElementId);
+        const submitButton = document.getElementById('submit-button');
 
+        if (age < 18) {
+            if (!errorElement) {
+                errorElement = document.createElement('p');
+                errorElement.id = errorElementId;
+                errorElement.className = 'text-danger';
+                errorElement.innerText = 'You must be at least 18 years old.';
+                this.parentElement.appendChild(errorElement);
+            }
+            submitButton.disabled = true;
+        } else {
+            if (errorElement) {
+                errorElement.remove();
+            }
+            submitButton.disabled = false;
+        }
+    });
+
+    function calculateAge(dob) {
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const monthDifference = today.getMonth() - dob.getMonth();
+
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < dob.getDate())) {
+            age--;
+        }
+
+        return age;
+    }
+</script>
 {% endblock content %}
     
