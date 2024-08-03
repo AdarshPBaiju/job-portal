@@ -16,7 +16,8 @@ urlpatterns = [
     path('job/update/<id>', JobUpdateView.as_view(), name='job-update'),
     path('job/delete/<id>/', JobDeleteView.as_view(), name='job-delete'),
     path('saved-job/', SavedJobListView.as_view(), name='saved-job'),
-     path('add-job-title/', AddJobTitleView.as_view(), name='add_job_title'),
+    path('add-job-title/', AddJobTitleView.as_view(), name='add_job_title'),
+    path('upload_image/', upload_image, name='upload_image'),
     
     # Job Application
     path('<int:job_id>/applications/', JobApplicationListView.as_view(), name='application-list'),

@@ -7,12 +7,25 @@ from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import default_storage
 
 from job_portal.mixin import JobPortalProfileRequiredMixin
 from jobs.models import Job, JobApplication, JobPortalProfile, SaveJob, JobTitle
 from user.forms import JobForm
 
 # Create your views here.
+def upload_image(request):
+    if request.method == 'POST' and request.FILES.get('file'):
+        image = request.FILES['file']
+        file_path = default_storage.save(f'images/{image.name}', image)
+        file_url = default_storage.url(file_path)
+        return JsonResponse({'location': file_url})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+
+
+
 # job profile
 class JobProfileView(LoginRequiredMixin, JobPortalProfileRequiredMixin, TemplateView):
     template_name = 'job_profile/job_profile.html'

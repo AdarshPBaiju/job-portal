@@ -175,8 +175,7 @@ TINYMCE_DEFAULT_CONFIG = {
     'selector': 'textarea',
     'theme': 'modern',
     'plugins': "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table powerpaste advcode help wordcount spellchecker typography autosave directionality",
-    'toolbar':
-    "undo redo | formatselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | link image | removeformat | code",
+    'toolbar': "undo redo | formatselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | link image | removeformat | code",
     'toolbar_items_size': 'small',
     'image_advtab': True,
     'content_css': [
@@ -203,4 +202,6 @@ TINYMCE_DEFAULT_CONFIG = {
     'contextmenu': 'formats | link image',
     'menubar': True,
     'statusbar': True,
+    'images_upload_url': '/upload_image/',  # URL where the image upload handler is located
 }
+

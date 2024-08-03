@@ -10,8 +10,85 @@
 
 {% block accounts_content %}
 <script src="https://cdn.tiny.cloud/1/2hgv81y54xc01vmnbp8pre1ylwsfvvamsla2umvzuma66wa2/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-<script>
+{% comment %} <script>
     tinymce.init({selector: 'textarea'});
+</script> {% endcomment %}
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        var uploadImageUrl = "{% url 'job_profile:upload_image' %}";
+        tinymce.init({
+            selector: 'textarea',
+            height: 360,
+            width: 900,
+            plugins: 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount spellchecker autosave directionality',
+            toolbar: 'undo redo | formatselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist | link image | removeformat | code',
+            image_advtab: true,
+            content_css: [
+                '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+                '//www.tiny.cloud/css/codepen.min.css'
+            ],
+            font_formats: 'Andale Mono=andale mono,times;' +
+                          'Arial=arial,helvetica,sans-serif;' +
+                          'Arial Black=arial black,avant garde;' +
+                          'Book Antiqua=book antiqua,palatino;' +
+                          'Comic Sans MS=comic sans ms,sans-serif;' +
+                          'Courier New=courier new,courier;' +
+                          'Georgia=georgia,palatino;' +
+                          'Helvetica=helvetica;' +
+                          'Impact=impact,chicago;' +
+                          'Symbol=symbol;' +
+                          'Tahoma=tahoma,arial,helvetica,sans-serif;' +
+                          'Terminal=terminal,monaco;' +
+                          'Times New Roman=times new roman,times;' +
+                          'Trebuchet MS=trebuchet ms,geneva;' +
+                          'Verdana=verdana,geneva;' +
+                          'Webdings=webdings;' +
+                          'Wingdings=wingdings,zapf dingbats',
+            contextmenu: 'formats link image',
+            menubar: true,
+            statusbar: true,
+            images_upload_handler: function (blobInfo, success, failure) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', uploadImageUrl);
+                xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken')); // Include CSRF token
+
+                xhr.onload = function() {
+                    var json;
+                    if (xhr.status != 200) {
+                        failure('HTTP Error: ' + xhr.status);
+                        return;
+                    }
+                    json = JSON.parse(xhr.responseText);
+                    if (!json.location) {
+                        failure('Invalid JSON: ' + xhr.responseText);
+                        return;
+                    }
+                    success(json.location);
+                };
+
+                var formData = new FormData();
+                formData.append('file', blobInfo.blob(), blobInfo.filename());
+                xhr.send(formData);
+            }
+        });
+    });
 </script>
     <div class="container">
         <div class="row justify-content-center">
