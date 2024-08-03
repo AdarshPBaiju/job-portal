@@ -109,32 +109,78 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 // select Search
-function initializeSelectSearchByIds(selectIds) {
+// Function to initialize the custom search and select elements
+function initializeSelectSearchByIds(selectIds, noResultButtonIds) {
     document.addEventListener("DOMContentLoaded", function() {
+        const selectElements = {};
+
         selectIds.forEach(function(selectId) {
             const selectElement = document.getElementById(selectId);
 
-            // Check if selectElement exists
             if (selectElement) {
+                selectElements[selectId] = selectElement;
+
+                // Hide the select element
+                selectElement.style.display = "none";
+
+                // Create search input
                 const searchInput = document.createElement("input");
                 searchInput.type = "text";
                 searchInput.id = `${selectId}Search`;
-                searchInput.classList.add("form-control");
-                searchInput.classList.add("mb-2");
-                searchInput.placeholder = "Search...";
+                searchInput.classList.add("form-control", "mb-2");
+                searchInput.placeholder = `Search in ${selectElement.getAttribute('name') || 'options'}...`;
 
+                // Create div for displaying search results
+                const searchResultsDiv = document.createElement("div");
+                searchResultsDiv.id = `${selectId}Results`;
+                searchResultsDiv.classList.add("search-results");
+
+                // Insert search input and results div before the select element
                 selectElement.parentNode.insertBefore(searchInput, selectElement);
-
-                const originalOptions = Array.from(selectElement.options);
+                selectElement.parentNode.insertBefore(searchResultsDiv, selectElement);
 
                 function filterOptions(searchText) {
-                    selectElement.innerHTML = '';
-                    originalOptions.forEach(function(option) {
+                    searchResultsDiv.innerHTML = '';
+                    let resultsFound = false;
+                    const options = Array.from(selectElement.options);
+
+                    options.forEach(function(option) {
                         const optionText = option.textContent.toLowerCase();
                         if (optionText.includes(searchText.toLowerCase())) {
-                            selectElement.appendChild(option.cloneNode(true));
+                            const optionDiv = document.createElement("div");
+                            optionDiv.textContent = option.textContent;
+                            optionDiv.classList.add("search-option");
+                            optionDiv.dataset.value = option.value;
+
+                            optionDiv.addEventListener("click", function() {
+                                selectElement.value = optionDiv.dataset.value;
+                                searchInput.value = optionDiv.textContent;
+                                searchResultsDiv.innerHTML = '';
+                                searchResultsDiv.style.display = "none";
+                            });
+
+                            searchResultsDiv.appendChild(optionDiv);
+                            resultsFound = true;
                         }
                     });
+
+                    // Add the button as the last child
+                    if (noResultButtonIds.includes(selectId)) {
+                        const button = document.createElement("button");
+                        button.type = "button";
+                        button.id = "open-modal-button";
+                        button.classList.add("btn", "btn-secondary", "w-100");
+                        button.textContent = "Add New Job Title";
+                        button.setAttribute("data-bs-toggle", "modal");
+                        button.setAttribute("data-bs-target", "#addJobTitleModal");
+                        searchResultsDiv.appendChild(button);
+                    }
+                   // Show or hide the results div
+                   if (searchText.trim() === '') {
+                    searchResultsDiv.style.display = "none";
+                    } else {
+                        searchResultsDiv.style.display = resultsFound || noResultButtonIds.includes(selectId) ? "block" : "none";
+                    }
                 }
 
                 searchInput.addEventListener("input", function() {
@@ -142,14 +188,111 @@ function initializeSelectSearchByIds(selectIds) {
                     filterOptions(searchText);
                 });
 
-                filterOptions(''); // Initialize the select with all options
+                selectElement.addEventListener("change", function() {
+                    const selectedOption = selectElement.options[selectElement.selectedIndex];
+                    if (selectedOption) {
+                        searchInput.value = selectedOption.text;
+                        filterOptions(searchInput.value);
+                    }
+                });
+
+                filterOptions('');
             }
         });
+
+        // Function to fetch and update options from the server
+        window.fetchOptions = function() {
+            selectIds.forEach(function(selectId) {
+                const selectElement = selectElements[selectId];
+                if (selectElement) {
+                    fetch(`/job-profile/job-titles/`) // Adjust the URL based on your setup
+                        .then(response => response.json())
+                        .then(data => {
+                            selectElement.innerHTML = ''; // Clear existing options
+
+                            data.forEach(function(option) {
+                                const newOption = new Option(option.title, option.id);
+                                selectElement.add(newOption);
+                            });
+
+                            const searchInput = document.getElementById(`${selectId}Search`);
+                            if (searchInput) {
+                                searchInput.dispatchEvent(new Event('input')); // Update search results
+                            }
+                        })
+                        .catch(error => console.error('Error fetching options:', error));
+                }
+            });
+        }
+
+        // Initialize options
+        fetchOptions();
     });
 }
 
-// select Search ids
-initializeSelectSearchByIds(["id_skill", "id_job_title", "id_location", "id_title"]);
+// Usage
+initializeSelectSearchByIds(["id_skill", "id_job_title", "id_location", "id_title"], ["id_title", "id_job_title"]);
+
+// jQuery code for handling the modal and adding job titles
+$(document).ready(function() {
+    // Set CSRF token for AJAX requests
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+    });
+
+    $('#open-modal-button').click(function() {
+        $('#addJobTitleModal').modal('show');
+    });
+
+    $('#add-job-title').click(function() {
+        var newTitle = $('#new-job-title').val().trim();
+        if (newTitle) {
+            $.ajax({
+                url: jobtitleaddUrl, // Ensure this URL is correctly set
+                method: 'POST',
+                data: {
+                    'title': newTitle
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#new-job-title').val('');
+                        $('#addJobTitleModal').modal('hide');
+
+                        // Call fetchOptions to update select options
+                        fetchOptions();
+
+                        // Show success alert
+                        alert('Job title added successfully.');
+                    } else {
+                        alert('Failed to add job title:', response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred:', error);
+                }
+            });
+        } else {
+            console.error('Job title cannot be empty.');
+        }
+    });
+});
+
 
 
 // Pause video

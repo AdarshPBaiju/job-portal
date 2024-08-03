@@ -18,9 +18,9 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-body">
-            <div class="row">
+            <div class="row justify-content-center">
               {% if user.jobportalprofile.title %}
-              <div class="col-lg-4 col-md-6 mb-3 d-flex">
+              <div class="col-lg-6 col-md-6 mt-3 mb-3  d-flex">
                 <div class="card w-100">
                   <div class="card-body d-flex flex-column">
                     <h5 class="card-title">Title</h5>
@@ -30,7 +30,7 @@
               </div>
               {% endif %}
               {% if user.jobportalprofile.expertise_level %}
-              <div class="col-lg-4 col-md-6 mb-3 d-flex">
+              <div class="col-lg-6 mt-3 mb-3 col-md-6 d-flex">
                 <div class="card w-100">
                   <div class="card-body d-flex flex-column">
                     <h5 class="card-title">Expertise Level</h5>
@@ -40,7 +40,7 @@
               </div>
               {% endif %}
               {% if user.jobportalprofile.company %}
-              <div class="col-lg-4 col-md-6 mb-3 d-flex">
+              <div class="col-lg-6 mt-3 mb-3 col-md-6 d-flex">
                 <div class="card w-100">
                   <div class="card-body d-flex flex-column">
                     <h5 class="card-title">Company</h5>
@@ -50,7 +50,7 @@
               </div>
               {% endif %}
               {% if user.jobportalprofile.location %}
-              <div class="col-lg-4 col-md-6 mb-3 d-flex">
+              <div class="col-lg-6 mt-3 mb-3 col-md-6 d-flex">
                 <div class="card w-100">
                   <div class="card-body d-flex flex-column">
                     <h5 class="card-title">Location</h5>

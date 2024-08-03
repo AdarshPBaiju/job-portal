@@ -32,4 +32,90 @@
         </div>
     </div>
 </div>
+    <!-- Bootstrap Modal for Adding Job Title -->
+    <div class="modal fade" id="addJobTitleModal" tabindex="-1" aria-labelledby="addJobTitleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addJobTitleModalLabel">Add New Job Title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="new-job-title">New Job Title</label>
+                        <input type="text" id="new-job-title" class="form-control" placeholder="Enter new job title">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="add-job-title" class="btn btn-custom">Add Job Title</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        {% comment %} $(document).ready(function() {
+            // Set CSRF token for AJAX requests
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    function getCookie(name) {
+                        let cookieValue = null;
+                        if (document.cookie && document.cookie !== '') {
+                            const cookies = document.cookie.split(';');
+                            for (let i = 0; i < cookies.length; i++) {
+                                const cookie = cookies[i].trim();
+                                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                    break;
+                                }
+                            }
+                        }
+                        return cookieValue;
+                    }
+                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                }
+            });
+    
+            $('#open-modal-button').click(function() {
+                $('#addJobTitleModal').modal('show');
+            });
+    
+            $('#add-job-title').click(function() {
+                var newTitle = $('#new-job-title').val();
+                if (newTitle) {
+                    $.ajax({
+                        url: '{% url "job_profile:add_job_title" %}',
+                        method: 'POST',
+                        data: {
+                            'title': newTitle
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                var newOption = new Option(response.title, response.id, true, true);
+                                $('#id_title').append(newOption).trigger('change');
+                                $('#new-job-title').val('');
+                                $('#addJobTitleModal').modal('hide');
+                                alert('Job title added successfully.');
+                                
+                                // Update search results if using custom search functionality
+                                let searchInput = document.getElementById('id_titleSearch');
+                                if (searchInput) {
+                                    searchInput.dispatchEvent(new Event('input'));
+                                }
+                            }
+                            // No alert needed; just silently reload
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle errors silently or log them for debugging
+                            console.error('An error occurred:', error);
+                        }
+                    });
+                }
+            });
+        }); {% endcomment %}
+
+        
+    </script>    
 {% endblock content %}

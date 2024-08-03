@@ -193,7 +193,6 @@ class UserImageForm(forms.ModelForm):
         return instance
 
 
-# Job Seeker Form
              
 
 # user login

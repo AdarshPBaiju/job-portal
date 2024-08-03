@@ -1,5 +1,6 @@
 from django import forms
 from .models import Job, JobApplication, JobPortalProfile
+from django_select2.forms import Select2Widget
 
 
 class JobSeekerForm(forms.ModelForm):
@@ -12,7 +13,7 @@ class JobSeekerForm(forms.ModelForm):
         ]
         
         widgets = {
-            'title': forms.Select(attrs={'class': 'form-control','required':True}),
+            'title': Select2Widget(attrs={'class': 'form-control','required':True}),
             'expertise_level': forms.Select(attrs={'class': 'form-control','required':True})
         }
 
@@ -36,7 +37,7 @@ class EmployeeForm(forms.ModelForm):
             'location',
             ]
         widgets = {
-            'title': forms.Select(attrs={'class': 'form-control', 'required':True}),
+            'title': Select2Widget(attrs={'class': 'form-control', 'required':True}),
             'company': forms.Select(attrs={'class': 'form-control','required':True}),
             'location': forms.Select(attrs={'class': 'form-control', 'required':True}),
         }

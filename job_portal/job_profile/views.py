@@ -6,7 +6,7 @@ from django.views.generic import TemplateView, View, ListView, CreateView, Updat
 from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect
 from django.core.files.storage import default_storage
 
 from job_portal.mixin import JobPortalProfileRequiredMixin
@@ -23,7 +23,9 @@ def upload_image(request):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
-
+def get_job_titles(request):
+    job_titles = JobTitle.objects.all().values('id', 'title')
+    return JsonResponse(list(job_titles), safe=False)
 
 
 # job profile
@@ -58,17 +60,18 @@ class JobCreateView(LoginRequiredMixin, JobPortalProfileRequiredMixin, CreateVie
         return super().form_invalid(form)
 
 # add job title ajax
-@method_decorator(csrf_exempt, name='dispatch')
+@method_decorator(csrf_protect, name='dispatch')
 class AddJobTitleView(View):
     def post(self, request, *args, **kwargs):
         title = request.POST.get('title')
-        if title:
-            job_title, created = JobTitle.objects.get_or_create(title=title)
-            if created:
-                return JsonResponse({'success': True, 'id': job_title.id, 'title': job_title.title})
-            else:
-                return JsonResponse({'success': False, 'message': 'Job title already exists.'})
-        return JsonResponse({'success': False, 'message': 'Title cannot be empty.'})
+        if not title:
+            return JsonResponse({'success': False, 'message': 'Title cannot be empty.'})
+        
+        job_title, created = JobTitle.objects.get_or_create(title=title)
+        if created:
+            return JsonResponse({'success': True, 'id': job_title.id, 'title': job_title.title})
+        else:
+            return JsonResponse({'success': False, 'message': 'Job title already exists.'})
 
 # Job Update
 class JobUpdateView(LoginRequiredMixin, JobPortalProfileRequiredMixin, UpdateView):

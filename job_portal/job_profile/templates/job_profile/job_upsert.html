@@ -194,7 +194,7 @@
                             {% csrf_token %}
                             <div class="form-group">
                                 {% include 'components/form_field.html' with field=form.job_title %}
-                                <button type="button" id="open-modal-button" class="btn btn-secondary">Add New Job Title</button>
+                                {% comment %} <button type="button" id="open-modal-button" class="btn btn-secondary">Add New Job Title</button> {% endcomment %}
                             </div>
                             {% include 'components/form_field.html' with field=form.location %}
                             <div class="row">
@@ -242,11 +242,31 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Show the modal when the button is clicked
+            // Set CSRF token for AJAX requests
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    function getCookie(name) {
+                        let cookieValue = null;
+                        if (document.cookie && document.cookie !== '') {
+                            const cookies = document.cookie.split(';');
+                            for (let i = 0; i < cookies.length; i++) {
+                                const cookie = cookies[i].trim();
+                                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                    break;
+                                }
+                            }
+                        }
+                        return cookieValue;
+                    }
+                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                }
+            });
+    
             $('#open-modal-button').click(function() {
                 $('#addJobTitleModal').modal('show');
             });
-        
+    
             $('#add-job-title').click(function() {
                 var newTitle = $('#new-job-title').val();
                 if (newTitle) {
@@ -254,8 +274,7 @@
                         url: '{% url "job_profile:add_job_title" %}',
                         method: 'POST',
                         data: {
-                            'title': newTitle,
-                            'csrfmiddlewaretoken': '{{ csrf_token }}'
+                            'title': newTitle
                         },
                         success: function(response) {
                             if (response.success) {
@@ -264,16 +283,20 @@
                                 $('#new-job-title').val('');
                                 $('#addJobTitleModal').modal('hide');
                                 alert('Job title added successfully.');
-                            } else {
-                                alert(response.message);
+                                
+                                // Update search results if using custom search functionality
+                                let searchInput = document.getElementById('id_job_titleSearch');
+                                if (searchInput) {
+                                    searchInput.dispatchEvent(new Event('input'));
+                                }
                             }
-                        }
+                            // No alert needed; just silently reload
+                        },
                     });
-                } else {
-                    alert('Please enter a job title.');
                 }
             });
-        });        
+        });
     </script>
+    
 
 {% endblock accounts_content %}
