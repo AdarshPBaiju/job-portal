@@ -168,7 +168,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 TINYMCE_DEFAULT_CONFIG = {
-    'height': 360,
+    'height': 500,
     'width': 900,
     'cleanup_on_startup': True,
     'custom_undo_redo_levels': 20,
