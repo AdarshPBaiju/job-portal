@@ -1,12 +1,15 @@
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.views.generic import TemplateView, View, ListView, CreateView, UpdateView, DetailView
 from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+
 from job_portal.mixin import JobPortalProfileRequiredMixin
-from jobs.models import Job, JobApplication, JobPortalProfile, SaveJob
+from jobs.models import Job, JobApplication, JobPortalProfile, SaveJob, JobTitle
 from user.forms import JobForm
 
 # Create your views here.
@@ -41,6 +44,18 @@ class JobCreateView(LoginRequiredMixin, JobPortalProfileRequiredMixin, CreateVie
         messages.error(self.request, 'Job creation failed.')
         return super().form_invalid(form)
 
+# add job title ajax
+@method_decorator(csrf_exempt, name='dispatch')
+class AddJobTitleView(View):
+    def post(self, request, *args, **kwargs):
+        title = request.POST.get('title')
+        if title:
+            job_title, created = JobTitle.objects.get_or_create(title=title)
+            if created:
+                return JsonResponse({'success': True, 'id': job_title.id, 'title': job_title.title})
+            else:
+                return JsonResponse({'success': False, 'message': 'Job title already exists.'})
+        return JsonResponse({'success': False, 'message': 'Title cannot be empty.'})
 
 # Job Update
 class JobUpdateView(LoginRequiredMixin, JobPortalProfileRequiredMixin, UpdateView):

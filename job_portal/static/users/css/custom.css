@@ -357,9 +357,9 @@ nav {
   color: #0056b3;
   background-color: #fff;
   border: 1px solid #dee2e6;
-  border-radius: 50%;
+  border-radius: 10px;
   padding: 8px 12px;
-  margin: 0 4px;
+  margin: 0 15px;
 }
 
 .pagination .page-link:hover {

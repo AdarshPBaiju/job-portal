@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     
     # third party app
     'tinymce',
+    'django_select2',
 
     # custom app
     'core',

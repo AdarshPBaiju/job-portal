@@ -127,14 +127,14 @@ class CustomUser(AbstractUser):
 
 
 class Hobby(models.Model):
-    hobby = models.CharField(max_length=100)
+    hobby = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.hobby
 
 
 class Interest(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name

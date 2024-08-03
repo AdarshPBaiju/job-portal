@@ -158,6 +158,7 @@ class JobListView(LoginRequiredMixin, JobPortalProfileRequiredMixin, View):
         }
         return render(request, self.template_name, context)
 
+
 # Job Detail View
 class JobDetailView(LoginRequiredMixin, JobPortalProfileRequiredMixin, DetailView):
     model = Job

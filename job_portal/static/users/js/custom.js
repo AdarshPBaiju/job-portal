@@ -108,41 +108,48 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-// Skill Search
-document.addEventListener("DOMContentLoaded", function() {
-    const skillSelect = document.getElementById("id_skill");
+// select Search
+function initializeSelectSearchByIds(selectIds) {
+    document.addEventListener("DOMContentLoaded", function() {
+        selectIds.forEach(function(selectId) {
+            const selectElement = document.getElementById(selectId);
 
-    // Check if skillSelect exists
-    if (skillSelect) {
-        const skillSearchInput = document.createElement("input");
-        skillSearchInput.type = "text";
-        skillSearchInput.id = "skillSearch";
-        skillSearchInput.classList.add("form-control");
-        skillSearchInput.classList.add("mb-2");
-        skillSearchInput.placeholder = "Search skill...";
+            // Check if selectElement exists
+            if (selectElement) {
+                const searchInput = document.createElement("input");
+                searchInput.type = "text";
+                searchInput.id = `${selectId}Search`;
+                searchInput.classList.add("form-control");
+                searchInput.classList.add("mb-2");
+                searchInput.placeholder = "Search...";
 
-        skillSelect.parentNode.insertBefore(skillSearchInput, skillSelect);
+                selectElement.parentNode.insertBefore(searchInput, selectElement);
 
-        const originalOptions = Array.from(skillSelect.options);
+                const originalOptions = Array.from(selectElement.options);
 
-        function filterOptions(searchText) {
-            skillSelect.innerHTML = '';
-            originalOptions.forEach(function(option) {
-                const optionText = option.textContent.toLowerCase();
-                if (optionText.startsWith(searchText.toLowerCase())) {
-                    skillSelect.appendChild(option.cloneNode(true));
+                function filterOptions(searchText) {
+                    selectElement.innerHTML = '';
+                    originalOptions.forEach(function(option) {
+                        const optionText = option.textContent.toLowerCase();
+                        if (optionText.includes(searchText.toLowerCase())) {
+                            selectElement.appendChild(option.cloneNode(true));
+                        }
+                    });
                 }
-            });
-        }
 
-        skillSearchInput.addEventListener("input", function() {
-            const searchText = skillSearchInput.value.trim();
-            filterOptions(searchText);
+                searchInput.addEventListener("input", function() {
+                    const searchText = searchInput.value.trim();
+                    filterOptions(searchText);
+                });
+
+                filterOptions(''); // Initialize the select with all options
+            }
         });
+    });
+}
 
-        filterOptions('');
-    }
-});
+// select Search ids
+initializeSelectSearchByIds(["id_skill", "id_job_title", "id_location", "id_title"]);
 
 
 // Pause video

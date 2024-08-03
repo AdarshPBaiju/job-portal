@@ -11,5 +11,6 @@ urlpatterns = [
     path("accounts/", include("user.urls", namespace="user")),
     path("administrator/", include("admin_panel.urls", namespace="admin-d")),
     path('tinymce/', include('tinymce.urls')),
+    path("select2/", include("django_select2.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

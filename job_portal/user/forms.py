@@ -9,6 +9,7 @@ from .validators import validate_video_file
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from tinymce.widgets import TinyMCE
+from django_select2.forms import Select2Widget
 
 def validate_age(dob):
     today = date.today()
@@ -530,7 +531,7 @@ class JobForm(forms.ModelForm):
         fields = ['job_title', 'job_description', 'salary_from', 'salary_to', 'location', 'expected_joining_date']
         
         widgets = {
-            'job_title': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Enter job title', 'required':True}),
+            'job_title': Select2Widget(attrs={'class': 'form-control', 'placeholder': 'Enter job title', 'required':True}),
             'job_description': TinyMCE(attrs={'cols': 80, 'rows': 20}),
             'location': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Enter job location', 'required':True}),
             'expected_joining_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'placeholder': 'Enter expected joining date', 'required':True}),

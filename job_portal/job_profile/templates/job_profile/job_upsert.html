@@ -1,13 +1,17 @@
 {% extends 'job_profile/shared/accounts_base.html' %}
 
-
-{% block accounts_title %}{% if request.path == '/job-profile/job/create/' %}Add{% else %}Update{% endif %} Skill{% endblock accounts_title %}
-
+{% block accounts_title %}
+    {% if request.path == '/job-profile/job/create/' %}
+        Add Job
+    {% else %}
+        Update Job
+    {% endif %}
+{% endblock accounts_title %}
 
 {% block accounts_content %}
 <script src="https://cdn.tiny.cloud/1/2hgv81y54xc01vmnbp8pre1ylwsfvvamsla2umvzuma66wa2/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
-    tinymce.init({selector:'textarea'});
+    tinymce.init({selector: 'textarea'});
 </script>
     <div class="container">
         <div class="row justify-content-center">
@@ -15,24 +19,27 @@
                 <div class="card">
                     <div class="card-body">
                         {% if request.path == '/job-profile/job/create/' %}
-                        <h1 class="card-title text-center mb-4">Add Job</h1>
+                            <h1 class="card-title text-center mb-4">Add Job</h1>
                         {% else %}
-                        <h1 class="card-title text-center mb-4">Update Job</h1>
+                            <h1 class="card-title text-center mb-4">Update Job</h1>
                         {% endif %}
                         <form method="post">
                             {% csrf_token %}
+                            <div class="form-group">
                                 {% include 'components/form_field.html' with field=form.job_title %}
-                                {% include 'components/form_field.html' with field=form.location %}
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        {% include 'components/form_field.html' with field=form.salary_from %}
-                                    </div>
-                                    <div class="col-md-6">
-                                        {% include 'components/form_field.html' with field=form.salary_to %}
-                                    </div>
+                                <button type="button" id="open-modal-button" class="btn btn-secondary">Add New Job Title</button>
+                            </div>
+                            {% include 'components/form_field.html' with field=form.location %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {% include 'components/form_field.html' with field=form.salary_from %}
                                 </div>
-                                {% include 'components/form_field.html' with field=form.expected_joining_date %}
-                                {% include 'components/form_field.html' with field=form.job_description %}
+                                <div class="col-md-6">
+                                    {% include 'components/form_field.html' with field=form.salary_to %}
+                                </div>
+                            </div>
+                            {% include 'components/form_field.html' with field=form.expected_joining_date %}
+                            {% include 'components/form_field.html' with field=form.job_description %}
                             <div class="d-grid mt-3 mb-5">
                                 <button type="submit" class="btn btn-custom btn-block">Save</button>
                             </div>
@@ -42,5 +49,64 @@
             </div>
         </div>
     </div>
+
+    <!-- Bootstrap Modal for Adding Job Title -->
+    <div class="modal fade" id="addJobTitleModal" tabindex="-1" aria-labelledby="addJobTitleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addJobTitleModalLabel">Add New Job Title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="new-job-title">New Job Title</label>
+                        <input type="text" id="new-job-title" class="form-control" placeholder="Enter new job title">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="add-job-title" class="btn btn-custom">Add Job Title</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Show the modal when the button is clicked
+            $('#open-modal-button').click(function() {
+                $('#addJobTitleModal').modal('show');
+            });
+        
+            $('#add-job-title').click(function() {
+                var newTitle = $('#new-job-title').val();
+                if (newTitle) {
+                    $.ajax({
+                        url: '{% url "job_profile:add_job_title" %}',
+                        method: 'POST',
+                        data: {
+                            'title': newTitle,
+                            'csrfmiddlewaretoken': '{{ csrf_token }}'
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                var newOption = new Option(response.title, response.id, true, true);
+                                $('#id_job_title').append(newOption).trigger('change');
+                                $('#new-job-title').val('');
+                                $('#addJobTitleModal').modal('hide');
+                                alert('Job title added successfully.');
+                            } else {
+                                alert(response.message);
+                            }
+                        }
+                    });
+                } else {
+                    alert('Please enter a job title.');
+                }
+            });
+        });        
+    </script>
+
 {% endblock accounts_content %}
-    

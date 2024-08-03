@@ -39,7 +39,9 @@
                 {{ form.username }}
               <label for="floatingInput">{{ form.username.label }}</label>
               <div class="text-danger">
-                {{ form.username.errors.as_p }}
+                {% for e in form.username.errors %}
+                        <p class="text-danger">{{ e }}</p>
+                {% endfor %}
               </div>
             </div>
             </div>
@@ -48,7 +50,9 @@
                 {{ form.phone }}
               <label for="floatingInput">{{ form.phone.label }}</label>
               <div class="text-danger">
-                {{ form.phone.errors.as_p }}
+                {% for e in form.phone.errors %}
+                        <p class="text-danger">{{ e }}</p>
+                {% endfor %}
               </div>
             </div>
             </div>
@@ -66,22 +70,18 @@
                 {{ form.password }}
               <label for="floatingPassword">{{ form.password.label }}</label>
               {% if form.password.errors %}
-                <div class="alert alert-danger">
                     {% for e in form.password.errors %}
                         <p class="text-danger">{{ e }}</p>
                     {% endfor %}
-                </div>
                 {% endif %}
             </div>
             <div class="form-floating mb-3">
                 {{ form.confirm_password }}
               <label for="floatingPassword">{{ form.confirm_password.label }}</label>
               {% if form.confirm_password.errors %}
-                <div class="alert alert-danger">
                     {% for e in form.confirm_password.errors %}
                         <p class="text-danger">{{ e }}</p>
                     {% endfor %}
-                </div>
                 {% endif %}
             </div>
             <button class="w-100 mb-2 btn btn-lg rounded-3 btn-custom" type="submit">Sign Up</button>
