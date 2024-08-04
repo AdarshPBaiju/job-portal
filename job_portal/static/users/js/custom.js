@@ -109,8 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 // select Search
-// Function to initialize the custom search and select elements
-function initializeSelectSearchByIds(selectIds, noResultButtonIds) {
+function initializeSelectSearchByIds(selectIds, noResultButtonIds, fetchjobtitlesIds) {
     document.addEventListener("DOMContentLoaded", function() {
         const selectElements = {};
 
@@ -134,14 +133,15 @@ function initializeSelectSearchByIds(selectIds, noResultButtonIds) {
                 const searchResultsDiv = document.createElement("div");
                 searchResultsDiv.id = `${selectId}Results`;
                 searchResultsDiv.classList.add("search-results");
+                searchResultsDiv.style.display = "none"; // Initially hidden
 
                 // Insert search input and results div before the select element
                 selectElement.parentNode.insertBefore(searchInput, selectElement);
                 selectElement.parentNode.insertBefore(searchResultsDiv, selectElement);
 
                 function filterOptions(searchText) {
-                    searchResultsDiv.innerHTML = '';
-                    let resultsFound = false;
+                    searchResultsDiv.innerHTML = ''; // Clear previous results
+                    let resultsFound = true;
                     const options = Array.from(selectElement.options);
 
                     options.forEach(function(option) {
@@ -155,8 +155,9 @@ function initializeSelectSearchByIds(selectIds, noResultButtonIds) {
                             optionDiv.addEventListener("click", function() {
                                 selectElement.value = optionDiv.dataset.value;
                                 searchInput.value = optionDiv.textContent;
-                                searchResultsDiv.innerHTML = '';
+                                searchResultsDiv.innerHTML = ''; // Clear results
                                 searchResultsDiv.style.display = "none";
+                                updatePlaceholder(); // Update placeholder after selection
                             });
 
                             searchResultsDiv.appendChild(optionDiv);
@@ -164,8 +165,8 @@ function initializeSelectSearchByIds(selectIds, noResultButtonIds) {
                         }
                     });
 
-                    // Add the button as the last child
-                    if (noResultButtonIds.includes(selectId)) {
+                    // Add the button as the last child if applicable
+                    if (fetchjobtitlesIds.includes(selectId)) {
                         const button = document.createElement("button");
                         button.type = "button";
                         button.id = "open-modal-button";
@@ -175,11 +176,21 @@ function initializeSelectSearchByIds(selectIds, noResultButtonIds) {
                         button.setAttribute("data-bs-target", "#addJobTitleModal");
                         searchResultsDiv.appendChild(button);
                     }
-                   // Show or hide the results div
-                   if (searchText.trim() === '') {
-                    searchResultsDiv.style.display = "none";
+
+                    // Show or hide the results div
+                    if (searchText.trim() === '') {
+                        searchResultsDiv.style.display = "none";
                     } else {
                         searchResultsDiv.style.display = resultsFound || noResultButtonIds.includes(selectId) ? "block" : "none";
+                    }
+                }
+
+                function updatePlaceholder() {
+                    const selectedOption = selectElement.options[selectElement.selectedIndex];
+                    if (selectedOption) {
+                        searchInput.placeholder = selectedOption.textContent;
+                    } else {
+                        searchInput.placeholder = `Search in ${selectElement.getAttribute('name') || 'options'}...`;
                     }
                 }
 
@@ -189,6 +200,7 @@ function initializeSelectSearchByIds(selectIds, noResultButtonIds) {
                 });
 
                 selectElement.addEventListener("change", function() {
+                    updatePlaceholder(); // Update placeholder when selection changes
                     const selectedOption = selectElement.options[selectElement.selectedIndex];
                     if (selectedOption) {
                         searchInput.value = selectedOption.text;
@@ -196,18 +208,27 @@ function initializeSelectSearchByIds(selectIds, noResultButtonIds) {
                     }
                 });
 
-                filterOptions('');
+                // Set initial placeholder and value
+                const selectedOption = selectElement.options[selectElement.selectedIndex];
+                if (selectedOption) {
+                    searchInput.placeholder = selectedOption.text;
+                    updatePlaceholder();
+                } else {
+                    searchInput.placeholder = `Search in ${selectElement.getAttribute('name') || 'options'}...`;
+                }
+                filterOptions(''); // Display all options initially
             }
         });
 
         // Function to fetch and update options from the server
         window.fetchOptions = function() {
-            selectIds.forEach(function(selectId) {
+            fetchjobtitlesIds.forEach(function(selectId) {
                 const selectElement = selectElements[selectId];
                 if (selectElement) {
                     fetch(`/job-profile/job-titles/`) // Adjust the URL based on your setup
                         .then(response => response.json())
                         .then(data => {
+                            const previousLength = selectElement.options.length;
                             selectElement.innerHTML = ''; // Clear existing options
 
                             data.forEach(function(option) {
@@ -215,23 +236,36 @@ function initializeSelectSearchByIds(selectIds, noResultButtonIds) {
                                 selectElement.add(newOption);
                             });
 
+                            // Re-filter the options if the input has a value
                             const searchInput = document.getElementById(`${selectId}Search`);
                             if (searchInput) {
-                                searchInput.dispatchEvent(new Event('input')); // Update search results
+                                const searchText = searchInput.value.trim();
+                                if (searchText) {
+                                    filterOptions(searchText);
+                                    searchResultsDiv.style.display = "block";
+                                }
+                            }
+
+                            // Automatically show results if new options are added and search input is not empty
+                            if (previousLength < selectElement.options.length) {
+                                const searchInput = document.getElementById(`${selectId}Search`);
+                                if (searchInput) {
+                                    const searchText = searchInput.value.trim();
+                                    if (searchText) {
+                                        filterOptions(searchText);
+                                    }
+                                }
                             }
                         })
                         .catch(error => console.error('Error fetching options:', error));
                 }
             });
         }
-
-        // Initialize options
-        fetchOptions();
     });
 }
 
 // Usage
-initializeSelectSearchByIds(["id_skill", "id_job_title", "id_location", "id_title"], ["id_title", "id_job_title"]);
+initializeSelectSearchByIds(["id_skill", "id_job_title", "id_location", "id_title", "id_company"], ["id_title", "id_job_title"], ["id_title", "id_job_title"]);
 
 // jQuery code for handling the modal and adding job titles
 $(document).ready(function() {

@@ -248,7 +248,6 @@ class Education(models.Model):
 class UserSkill(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
-    level = models.CharField(max_length=12, choices=LEVEL_CHOICES)
     
     class Meta:
         unique_together = ['user', 'skill']

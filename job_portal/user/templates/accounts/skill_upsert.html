@@ -17,8 +17,7 @@
                         {% endif %}
                         <form method="post">
                             {% csrf_token %}
-                                    {% include 'components/form_field.html' with field=form.skill %}
-                                    {% include 'components/form_field.html' with field=form.level %}
+                            {% include 'components/form_field.html' with field=form.skill %}
                             <div class="d-grid mt-3 mb-5">
                                 <button type="submit" class="btn btn-custom btn-block">Save</button>
                             </div>

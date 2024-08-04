@@ -469,11 +469,6 @@ class UserSkillUpsertForm(forms.ModelForm):
                 'class' : 'form-control',
                 'autocomplete': 'skill',
             }),
-
-            'level': Select({
-                'class': 'form-control',
-                'autocomplete': 'level',
-            }),
         }
     
     def __init__(self, *args, **kwargs):
