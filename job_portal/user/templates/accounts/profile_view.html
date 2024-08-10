@@ -332,14 +332,4 @@
     });
 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        if ({{ form_errors|yesno:"true,false" }}) {
-            var modalElement = document.getElementById('uploadImageModal');
-            var modal = new bootstrap.Modal(modalElement);
-            modal.show();
-        }
-    });
-</script>
-
 {% endblock accounts_content %}
